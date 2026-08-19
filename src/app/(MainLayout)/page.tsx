@@ -8,8 +8,14 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-react";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth.api.getSession({
+    headers: await headers(), // you need to pass the headers object.
+  });
+  console.log(session.user);
   const features = [
     {
       title: "Product Management",
