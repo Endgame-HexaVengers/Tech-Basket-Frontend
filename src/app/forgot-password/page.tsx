@@ -35,9 +35,6 @@ const ForgotPasswordPage = () => {
                 redirectTo: "/reset-password", 
             });
 
-            console.log("data:", data);
-            console.log("error:", error);
-
             if (error) {
                 toast.error(
                     error.message || "Unable to send password reset link."

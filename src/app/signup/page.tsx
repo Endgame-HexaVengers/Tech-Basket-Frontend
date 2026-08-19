@@ -34,17 +34,15 @@ const RegisterPage = () => {
             email: string;
             password: string;
             confirmPassword: string;
-            // companyName: string;
+            
         };
 
         if (userData.password !== userData.confirmPassword) {
-            console.log(userData, "Password mismatch");
-
             toast.error("Passwords do not match");
             setIsLoading(false);
             return;
         }
-        //   console.log("Password matched");
+      
 
         try {
             const { data, error } = await signUp.email({
@@ -55,10 +53,6 @@ const RegisterPage = () => {
                 branch: "Main Branch",
                 role: "user",
             });
-
-            // console.log("SignUp Response Data:", data);
-            // console.log("SignUp Error:", error);
-
 
             if (!error) {
                 toast.success("Signup successful!");
