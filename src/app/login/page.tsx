@@ -33,7 +33,7 @@ export default function LoginPage() {
 
         const formData = new FormData(e.currentTarget);
         const userData = Object.fromEntries(formData.entries());
-        console.log("data:", userData);
+        // console.log("data:", userData);
 
         try {
             const { data, error } = await authClient.signIn.email({

@@ -56,8 +56,8 @@ const RegisterPage = () => {
                 role: "user",
             });
 
-            console.log("SignUp Response Data:", data);
-            console.log("SignUp Error:", error);
+            // console.log("SignUp Response Data:", data);
+            // console.log("SignUp Error:", error);
 
 
             if (!error) {
