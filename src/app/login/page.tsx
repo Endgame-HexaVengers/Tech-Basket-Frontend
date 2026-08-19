@@ -11,6 +11,7 @@ import { ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import FadeUp from "@/components/FadeUp";
 import Link from "next/link";
+import { TiArrowRight } from "react-icons/ti";
 
 const BRANCHES = [
     "MPL Shop 1316",
@@ -32,7 +33,7 @@ export default function LoginPage() {
 
         const formData = new FormData(e.currentTarget);
         const userData = Object.fromEntries(formData.entries());
-        // console.log("data:", userData);
+        console.log("data:", userData);
 
         try {
             const { data, error } = await authClient.signIn.email({
@@ -41,8 +42,6 @@ export default function LoginPage() {
                 rememberMe: true,
                 callbackURL: "/",
             });
-            console.log("data:", data);
-            console.log("error:", error);
 
             if (error) {
                 toast.error(error.message || "An error occurred during login.");
@@ -55,6 +54,8 @@ export default function LoginPage() {
         } finally {
             setIsLoading(false);
         }
+
+        // const companyName = "TechBasket Ltd.";
     };
 
     return (
@@ -87,6 +88,8 @@ export default function LoginPage() {
                                     </InputGroup.Prefix>
                                     <InputGroup.Input
                                         name="companyName"
+                                        value="TechBasket Ltd."
+                                        readOnly 
                                         placeholder="TechBasket Ltd."
                                     />
                                 </InputGroup>
@@ -210,22 +213,22 @@ export default function LoginPage() {
 
 
                             <div className="text-center mt-1 ">
-                                    <Link
-                                        href="/forgot-password"
-                                        className="text-sm text-red-500 hover:underline font-medium"
-                                    >
-                                        Forgot Password?
-                                    </Link>
-                          
-                                <p className="text-center text-sm text-default-500 mt-8">
-                                    New to TechBasket?{" "}
+                                <Link
+                                    href="/forgot-password"
+                                    className="text-sm text-red-500 hover:underline font-medium"
+                                >
+                                    Forgot Password?
+                                </Link>
+
+                                <div className="text-center text-sm text-default-500 mt-8 flex gap-1">
+                                    <p className="font-medium text-gray-500">New to TechBasket?{" "}</p>
                                     <Link
                                         href="/signup"
                                         className="text-blue-600 hover:underline font-semibold transition-colors"
                                     >
-                                        Create an account
+                                        <p className="flex items-center">Create an account <TiArrowRight /></p>
                                     </Link>
-                                </p>
+                                </div>
                             </div>
                         </Form>
                     </div>

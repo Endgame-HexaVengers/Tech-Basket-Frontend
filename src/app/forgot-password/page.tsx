@@ -36,7 +36,7 @@ const ForgotPasswordPage = () => {
             });
 
             console.log("data:", data);
-            // console.log("error:", error);
+            console.log("error:", error);
 
             if (error) {
                 toast.error(

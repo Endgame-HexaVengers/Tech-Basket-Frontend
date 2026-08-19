@@ -16,6 +16,7 @@ import FadeUp from "@/components/FadeUp";
 import toast from "react-hot-toast";
 import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import { ArrowRight } from "lucide-react";
+import { TiArrowRight } from "react-icons/ti";
 
 const RegisterPage = () => {
     const router = useRouter();
@@ -46,20 +47,22 @@ const RegisterPage = () => {
         //   console.log("Password matched");
 
         try {
-            const {data, error } = await signUp.email({
+            const { data, error } = await signUp.email({
                 name: userData.name,
                 email: userData.email,
                 password: userData.password,
-                // companyName: userData.companyName,
+                companyName: "N/A",
+                branch: "Main Branch",
+                role: "user",
             });
 
-            // console.log("SignUp Response Data:", data);
-            // console.log("SignUp Error:", error);
+            console.log("SignUp Response Data:", data);
+            console.log("SignUp Error:", error);
 
 
             if (!error) {
                 toast.success("Signup successful!");
-                router.push("/");
+                router.push("/login");
             } else {
                 toast.error(error.message || "Something went wrong");
             }
@@ -86,8 +89,8 @@ const RegisterPage = () => {
                         </div>
 
                         <Form className="flex flex-col gap-4"
-                         onSubmit={onSubmit}>
-                            
+                            onSubmit={onSubmit}>
+
                             {/* NAME */}
                             <TextField
                                 isRequired
@@ -233,15 +236,15 @@ const RegisterPage = () => {
                             </Button>
                         </Form>
 
-                        <p className="text-center text-sm text-default-500 mt-8">
-                            Already have an account?{" "}
+                        <div className="text-center text-sm text-default-500 mt-8 flex gap-1">
+                            <p className="font-medium text-gray-500">Already have an account?{" "}</p>
+                            
                             <Link
                                 href="/login"
-                                className="text-blue-600 hover:underline font-semibold transition-colors"
-                            >
-                                Login
+                                className="text-blue-600 hover:underline font-semibold transition-colors">
+                                <p className="flex items-center">Login <TiArrowRight /></p>
                             </Link>
-                        </p>
+                        </div>
                     </div>
                     {/* FOOTER */}
                     <div className="border-t border-default-100 bg-default-50 px-8 py-4 text-center">
