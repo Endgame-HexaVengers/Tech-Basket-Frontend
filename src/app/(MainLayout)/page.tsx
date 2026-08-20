@@ -15,7 +15,7 @@ export default async function Home() {
   const session = await auth.api.getSession({
     headers: await headers(), // you need to pass the headers object.
   });
-  console.log(session.user);
+  // console.log(session?.user);
   const features = [
     {
       title: "Product Management",
