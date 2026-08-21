@@ -1,10 +1,17 @@
-import React from "react";
+import DashboardShell from "@/components/dashboard/DashboardShell";
+import SmoothScroll from "@/components/SmoothScroll";
+
+
 
 const MainLayout = ({ children }: LayoutProps<"/">) => {
   return (
     <div>
       <aside></aside>
-      <main>{children}</main>
+      <DashboardShell>
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
+      </DashboardShell>
     </div>
   );
 };
