@@ -33,21 +33,21 @@ export default function LoginPage() {
 
         const formData = new FormData(e.currentTarget);
         const userData = Object.fromEntries(formData.entries());
-        
+
 
         try {
             const { data, error } = await authClient.signIn.email({
                 email: userData.userIdOrEmail as string,
                 password: userData.password as string,
                 rememberMe: true,
-                callbackURL: "/",
+                callbackURL: "/dashboard",
             });
 
             if (error) {
                 toast.error(error.message || "An error occurred during login.");
             } else if (data) {
-                toast.success("Login successful!");
-                router.push("/");
+                toast.success("Successfully logged in!");
+                router.push("/dashboard");
             }
         } catch (error) {
             toast.error("Something went wrong. Please try again.");
@@ -87,7 +87,7 @@ export default function LoginPage() {
                                     <InputGroup.Input
                                         name="companyName"
                                         value="TechBasket Ltd."
-                                        readOnly 
+                                        readOnly
                                         placeholder="TechBasket Ltd."
                                     />
                                 </InputGroup>
