@@ -40,14 +40,14 @@ export default function LoginPage() {
                 email: userData.userIdOrEmail as string,
                 password: userData.password as string,
                 rememberMe: true,
-                callbackURL: "/dashboard",
+                callbackURL: "/",
             });
 
             if (error) {
                 toast.error(error.message || "An error occurred during login.");
             } else if (data) {
                 toast.success("Successfully logged in!");
-                router.push("/dashboard");
+                router.push("/");
             }
         } catch (error) {
             toast.error("Something went wrong. Please try again.");

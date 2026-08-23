@@ -39,11 +39,12 @@ const defaultBranches: Branch[] = [
   { id: "6", name: "Cumilla Point" },
 ];
 
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000/api";
 
 export default function ApprovalPage() {
   const [branches, setBranches] = useState<Branch[]>(defaultBranches);
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([
+    
     // Initial UI Preview Data
     { id: "1", invoiceNumber: "INV-2026-000121" },
     { id: "2", invoiceNumber: "INV-2026-000122" },
@@ -56,8 +57,6 @@ export default function ApprovalPage() {
   const [selectedBranch, setSelectedBranch] = useState<string>("");
   const [fromDate, setFromDate] = useState<string>("");
   const [toDate, setToDate] = useState<string>("");
-
-  // Selection & Loading States
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [actionLoading, setActionLoading] = useState<boolean>(false);
@@ -130,6 +129,7 @@ export default function ApprovalPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: selectedIds }),
       });
+
       if (res.ok) {
         setPurchaseOrders((prev) => prev.filter((po) => !selectedIds.includes(po.id)));
         setSelectedIds([]);
@@ -166,10 +166,10 @@ export default function ApprovalPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <div className="space-y-6">
       {/* Top Filter Card */}
       <FadeUp>
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+        <div className="rounded-xl border border-dashed border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-4 md:items-end">
 
             {/* Branch Select */}
@@ -182,7 +182,7 @@ export default function ApprovalPage() {
                 <select
                   value={selectedBranch}
                   onChange={(e) => setSelectedBranch(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-4 text-sm text-slate-800 outline-none transition focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-4 text-sm text-slate-800 outline-none transition focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
                 >
                   <option value="">Select Branch</option>
                   {branches.map((b) => (
@@ -205,7 +205,7 @@ export default function ApprovalPage() {
                   type="date"
                   value={fromDate}
                   onChange={(e) => setFromDate(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2 pl-10 pr-3 text-sm text-slate-800 outline-none transition focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-2 pl-10 pr-3 text-sm text-slate-800 outline-none transition focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
                 />
               </div>
             </div>
@@ -221,7 +221,7 @@ export default function ApprovalPage() {
                   type="date"
                   value={toDate}
                   onChange={(e) => setToDate(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2 pl-10 pr-3 text-sm text-slate-800 outline-none transition focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-2 pl-10 pr-3 text-sm text-slate-800 outline-none transition focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-100"
                 />
               </div>
             </div>
@@ -246,7 +246,7 @@ export default function ApprovalPage() {
 
       {/* Main List Box */}
       <FadeUp>
-        <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-xl border border-dashed border-slate-200/80 bg-white shadow-sm">
           {/* Header / Select All Bar */}
           <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/80 px-6 py-4">
             <button
@@ -259,7 +259,7 @@ export default function ApprovalPage() {
                   <Check className="h-3.5 w-3.5 stroke-[3]" />
                 </div>
               ) : (
-                <div className="h-5 w-5 rounded-md border-2 border-slate-300 bg-white transition-all group-hover:border-blue-500" />
+                <div className="h-5 w-5 rounded-full border-2  border-slate-300 bg-white transition-all group-hover:border-blue-500" />
               )}
               Select All
             </button>
@@ -270,7 +270,7 @@ export default function ApprovalPage() {
           </div>
 
           {/* Column Label */}
-          <div className="border-b border-slate-100 bg-slate-100/60 px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+          <div className="border-b border-dashed border-slate-100 bg-slate-100/60 px-6 py-3 text-[11px] font-bold uppercase tracking-widest text-slate-400">
             Invoice Number
           </div>
 
@@ -294,7 +294,7 @@ export default function ApprovalPage() {
                           <Check className="h-3.5 w-3.5 stroke-[3]" />
                         </div>
                       ) : (
-                        <div className="h-5 w-5 rounded-md border-2 border-slate-300 bg-white transition-all group-hover:border-blue-400" />
+                        <div className="h-5 w-5 rounded-full border-2  border-slate-300 bg-white transition-all group-hover:border-blue-400" />
                       )}
                     </div>
 
@@ -315,7 +315,7 @@ export default function ApprovalPage() {
       </FadeUp>
       {/* Action Buttons Bar */}
       <FadeUp>
-        <div className="flex items-center justify-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
+        <div className="flex items-center justify-center gap-4 rounded-xl border border-dashed border-gray-200 bg-white p-4 shadow-sm">
           <Button
             type="button"
             onClick={handleReport}

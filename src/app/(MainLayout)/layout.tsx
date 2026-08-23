@@ -1,20 +1,19 @@
-import DashboardShell from "@/components/dashboard/DashboardShell";
+
 import SmoothScroll from "@/components/SmoothScroll";
+import DashboardShell from "./page";
 
 
 
 const MainLayout = ({ children }: LayoutProps<"/">) => {
   return (
     <div>
-      <aside></aside>
+      <aside className="col-span-2"></aside>
       <DashboardShell>
         <SmoothScroll>
-          {children}
+          <main className="col-span-10">{children}</main>
         </SmoothScroll>
       </DashboardShell>
-    <div className="grid grid-cols-12">
-      <aside className="col-span-2"></aside>
-      <main className="col-span-10">{children}</main>
+
     </div>
   );
 };
