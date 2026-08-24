@@ -17,6 +17,7 @@ import {
   FcPackage,
   FcApproval,
   FcDepartment,
+  FcHome,
 } from "react-icons/fc";
 
 import { FiTruck, FiUsers } from "react-icons/fi";
@@ -44,6 +45,14 @@ const DefaultSidebar = () => {
       {/* ================= SCROLLABLE NAVIGATION ================= */}
       <nav className="min-h-0 flex-1 overflow-y-auto p-3">
         <div className="space-y-2">
+          {/* ================= DASHBOARD ================= */}
+          <SidebarLink
+            href="/dashboard"
+            label="Dashboard"
+            icon={<FcHome />}
+            pathname={pathname}
+          />
+
           {/* ================= SETUP ================= */}
           <SidebarDropdown label="Setup" icon={<FcSettings />}>
             <SidebarLink

@@ -5,12 +5,12 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { FiBell, FiHelpCircle, FiUser, FiX } from "react-icons/fi";
+import { FiBell, FiHelpCircle, FiPlus, FiUser, FiX } from "react-icons/fi";
 
 import { useTabs, type Tab } from "@/context/TabContext";
 
 const TAB_DEFINITIONS: Record<string, Tab> = {
-  "/": { path: "/", title: "Dashboard", icon: "⌂" },
+  "/dashboard": { path: "/dashboard", title: "Dashboard", icon: "⌂" },
   "/approval": { path: "/approval", title: "Approval", icon: "✓" },
   "/purchase": { path: "/purchase", title: "Purchase", icon: "🛒" },
   "/admin/users-roles": {
@@ -62,17 +62,13 @@ const DefaultHeader = () => {
   const { tabs, openTab, closeTab } = useTabs();
 
   useEffect(() => {
-    if (pathname) {
+    if (pathname && pathname !== "/") {
       openTab(createTabFromPath(pathname));
     }
   }, [openTab, pathname]);
 
   const handleCloseTab = (event: React.MouseEvent, path: string) => {
     event.stopPropagation();
-
-    if (path === "/") {
-      return;
-    }
 
     const currentIndex = tabs.findIndex((tab) => tab.path === path);
 
@@ -88,7 +84,7 @@ const DefaultHeader = () => {
         remainingTabs[currentIndex] ||
         remainingTabs[0];
 
-      router.push(nextTab?.path || "/");
+      router.push(nextTab?.path || "/dashboard");
     }
   };
 
@@ -185,14 +181,22 @@ const DefaultHeader = () => {
                 type="button"
                 onClick={(event) => handleCloseTab(event, tab.path)}
                 aria-label={`Close ${tab.title}`}
-                disabled={tab.path === "/"}
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-500 opacity-0 transition hover:bg-slate-200 group-hover:opacity-100 disabled:pointer-events-none"
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-500 opacity-0 transition hover:bg-slate-200 group-hover:opacity-100"
               >
                 <FiX className="h-4 w-4" />
               </button>
             </div>
           );
         })}
+
+        <button
+          type="button"
+          onClick={() => router.push("/")}
+          aria-label="New dashboard tab"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-t-lg border border-transparent text-slate-500 transition hover:bg-slate-200/70 hover:text-slate-700"
+        >
+          <FiPlus className="h-5 w-5" />
+        </button>
       </div>
     </div>
   );
