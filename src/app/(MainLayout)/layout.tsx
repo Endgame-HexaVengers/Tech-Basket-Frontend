@@ -1,4 +1,6 @@
 import DefaultHeader from "@/components/DefaultHeader";
+import DefaultSidebar from "@/components/DefaultSidebar";
+import { TabProvider } from "@/context/TabContext";
 // const MainLayout = ({ children }: LayoutProps<"/">) => {
 //   return (
 //     <div>
@@ -30,17 +32,24 @@ type MainLayoutProps = {
 
 const MainLayout = ({ children }: MainLayoutProps) => {
   return (
-    <div className="grid min-h-screen grid-cols-12">
-      <aside className="col-span-2">{/* Sidebar */}</aside>
+    <TabProvider>
+      {" "}
+      <div className="min-h-screen w-full">
+        {/* Fixed Sidebar */}
+        <aside className="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
+          <DefaultSidebar />
+        </aside>
 
-      <div className="col-span-10">
-        <header>
-          <DefaultHeader />
-        </header>
+        {/* Main Content */}
+        <div className="ml-64 min-h-screen">
+          <header>
+            <DefaultHeader />
+          </header>
 
-        <main>{children}</main>
+          <main>{children}</main>
+        </div>
       </div>
-    </div>
+    </TabProvider>
   );
 };
 
