@@ -9,7 +9,18 @@ import { authClient } from "@/lib/auth-client";
 // Icons Imports
 import { BiSupport } from "react-icons/bi";
 import { FcSettings } from "react-icons/fc";
-import { FiBell, FiHelpCircle, FiUser, FiCheckCircle, FiShoppingCart, FiSettings, FiUsers, FiMapPin, FiSliders, FiX } from "react-icons/fi";
+import {
+  FiBell,
+  FiHelpCircle,
+  FiUser,
+  FiCheckCircle,
+  FiShoppingCart,
+  FiSettings,
+  FiUsers,
+  FiMapPin,
+  FiSliders,
+  FiX,
+} from "react-icons/fi";
 
 interface DashboardShellProps {
   children: ReactNode;
@@ -196,7 +207,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                           : "bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                       }`}
                     >
-                      <span className="flex items-center justify-center w-5">{item.icon}</span>
+                      <span className="flex items-center justify-center w-5">
+                        {item.icon}
+                      </span>
                       <span>{item.title}</span>
                     </Button>
 
@@ -218,7 +231,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                                     : "bg-white text-slate-600 hover:bg-slate-100"
                                 }`}
                               >
-                                <span className="flex items-center justify-center">{subItem.icon}</span>
+                                <span className="flex items-center justify-center">
+                                  {subItem.icon}
+                                </span>
                                 <span>{subItem.title}</span>
                               </Button>
                             );
@@ -230,7 +245,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                 );
               }
 
-              {/* Normal Sidebar Items */}
+              {
+                /* Normal Sidebar Items */
+              }
               return (
                 <Button
                   key={item.path}
@@ -242,7 +259,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                       : "bg-white text-slate-600 hover:bg-slate-100"
                   }`}
                 >
-                  <span className="flex items-center justify-center w-5">{item.icon}</span>
+                  <span className="flex items-center justify-center w-5">
+                    {item.icon}
+                  </span>
                   <span>{item.title}</span>
                 </Button>
               );
@@ -274,11 +293,15 @@ export default function DashboardShell({ children }: DashboardShellProps) {
       {/* Main Content Area */}
       <div className="ml-64">
         {/* Header Navbar */}
-        <header className="fixed left-64 right-0 top-0 z-40 flex h-16 items-center justify-between border-b
-         border-slate-200 bg-white px-6">
+        <header
+          className="fixed left-64 right-0 top-0 z-40 flex h-16 items-center justify-between border-b
+         border-slate-200 bg-white px-6"
+        >
           <div>
             <h2 className="font-semibold text-slate-900">TechBasket ERP</h2>
-            <p className="text-xs text-slate-500">Inventory & Management System</p>
+            <p className="text-xs text-slate-500">
+              Inventory & Management System
+            </p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -338,7 +361,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
             return (
               <div
                 key={tab.path}
-                className={`group flex h-10 min-w-[150px] max-w-[220px] shrink-0 items-center gap-2 rounded-t-lg border border-b-0 px-3 ${
+                className={`group flex h-10 min-w-37.5 max-w-55 shrink-0 items-center gap-2 rounded-t-lg border border-b-0 px-3 ${
                   active
                     ? "border-slate-300 bg-white text-[#00175c]"
                     : "border-transparent bg-[#e6e8ea] text-slate-600 hover:bg-white"
@@ -350,12 +373,16 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                   className="flex min-w-0 flex-1 items-center gap-2 text-left"
                 >
                   <span className="shrink-0 text-slate-500">{tab.icon}</span>
-                  <span className={`truncate text-sm ${active ? "font-semibold" : "font-medium"}`}>
+                  <span
+                    className={`truncate text-sm ${active ? "font-semibold" : "font-medium"}`}
+                  >
                     {tab.title}
                   </span>
                 </button>
 
-                {active && <span className="h-2 w-2 shrink-0 rounded-full bg-[#00175c]" />}
+                {active && (
+                  <span className="h-2 w-2 shrink-0 rounded-full bg-[#00175c]" />
+                )}
 
                 {tab.path !== "/dashboard" && (
                   <button
