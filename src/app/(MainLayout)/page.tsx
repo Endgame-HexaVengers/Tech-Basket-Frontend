@@ -1,16 +1,26 @@
 "use client";
 
-import { ReactNode, useEffect, useState, useRef } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
-import { BiSupport } from "react-icons/bi";
 import { Button } from "@heroui/react";
-import { FcSettings } from "react-icons/fc";
-import { FiBell, FiHelpCircle, FiUser, FiLogOut } from "react-icons/fi";
-import toast from "react-hot-toast";
-
 import { authClient } from "@/lib/auth-client";
+
+// Icons Imports
+import { BiSupport } from "react-icons/bi";
+import { FcSettings } from "react-icons/fc";
+import {
+  FiBell,
+  FiHelpCircle,
+  FiUser,
+  FiCheckCircle,
+  FiShoppingCart,
+  FiSettings,
+  FiUsers,
+  FiMapPin,
+  FiSliders,
+  FiX,
+} from "react-icons/fi";
 
 interface DashboardShellProps {
   children: ReactNode;
@@ -19,39 +29,40 @@ interface DashboardShellProps {
 interface Tab {
   path: string;
   title: string;
-  icon?: string;
+  icon?: ReactNode;
 }
 
+// 1. Page Tabs Config
 const pageTabs: Record<string, Tab> = {
   "/admin": {
     path: "/admin",
     title: "Admin",
-    icon: "⚙",
+    icon: <FiSettings className="h-4 w-4" />,
   },
   "/approval": {
     path: "/approval",
     title: "Approval",
-    icon: "✓",
+    icon: <FiCheckCircle className="h-4 w-4" />,
   },
   "/purchase": {
     path: "/purchase",
     title: "Purchase",
-    icon: "🛒",
+    icon: <FiShoppingCart className="h-4 w-4" />,
   },
   "/admin/users-roles": {
     path: "/admin/users-roles",
     title: "Users & Roles",
-    icon: "⚙",
+    icon: <FiUsers className="h-4 w-4" />,
   },
   "/admin/branches-locations": {
     path: "/admin/branches-locations",
     title: "Branches / Locations",
-    icon: "⚙",
+    icon: <FiMapPin className="h-4 w-4" />,
   },
   "/admin/system-config": {
     path: "/admin/system-config",
     title: "System Config",
-    icon: "⚙",
+    icon: <FiSliders className="h-4 w-4" />,
   },
 };
 
@@ -59,17 +70,17 @@ const sidebarItems: Tab[] = [
   {
     path: "/approval",
     title: "Approval",
-    icon: "✓",
+    icon: <FiCheckCircle className="h-4 w-4" />,
   },
   {
     path: "/purchase",
     title: "Purchase",
-    icon: "🛒",
+    icon: <FiShoppingCart className="h-4 w-4" />,
   },
   {
     path: "/admin",
     title: "Admin",
-    icon: "⚙",
+    icon: <FiSettings className="h-4 w-4" />,
   },
 ];
 
@@ -77,46 +88,30 @@ const adminSubItems: Tab[] = [
   {
     path: "/admin/users-roles",
     title: "Users & Roles",
-    icon: "⚙",
+    icon: <FiUsers className="h-4 w-4" />,
   },
   {
     path: "/admin/branches-locations",
     title: "Branches / Locations",
-    icon: "⚙",
+    icon: <FiMapPin className="h-4 w-4" />,
   },
   {
     path: "/admin/system-config",
     title: "System Config",
-    icon: "⚙",
+    icon: <FiSliders className="h-4 w-4" />,
   },
 ];
 
 export default function DashboardShell({ children }: DashboardShellProps) {
-  // Session & User Data
+  // Session & User extraction
   const { data: session } = authClient.useSession();
   const user = session?.user;
-  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : null;
+  const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
 
   const router = useRouter();
   const pathname = usePathname();
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [adminOpen, setAdminOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Close dropdown on click outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   useEffect(() => {
     if (pathname?.startsWith("/admin")) {
@@ -141,20 +136,6 @@ export default function DashboardShell({ children }: DashboardShellProps) {
       return [...currentTabs, tab];
     });
   }, [pathname]);
-
-  // Handle Logout
-  const handleLogout = async () => {
-    setIsDropdownOpen(false);
-    const { error } = await authClient.signOut();
-
-    if (error) {
-      toast.error(error.message || "Logout failed!");
-      return;
-    }
-
-    toast.success("Logged out successfully!");
-    window.location.replace("/login");
-  };
 
   // Open page
   const openPage = (item: Tab) => {
@@ -205,8 +186,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           </div>
         </div>
 
+        {/* Sidebar Nav */}
         <nav className="flex-1 overflow-y-auto p-3 font-medium text-slate-700">
-          <div className="space-y-3">
+          <div className="space-y-2">
             {sidebarItems.map((item) => {
               const active = pathname === item.path;
 
@@ -215,6 +197,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
 
                 return (
                   <div key={item.path}>
+                    {/* Admin Parent Accordion Button */}
                     <Button
                       type="button"
                       onClick={() => setAdminOpen((prev) => !prev)}
@@ -224,12 +207,15 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                           : "bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                       }`}
                     >
-                      <span className="w-5 text-center">{item.icon}</span>
+                      <span className="flex items-center justify-center w-5">
+                        {item.icon}
+                      </span>
                       <span>{item.title}</span>
                     </Button>
 
+                    {/* Admin Sub Items */}
                     {(adminOpen || isAdminActive) && (
-                      <div className="ml-12 mt-2 border-l border-slate-300 pl-3">
+                      <div className="ml-6 mt-2 border-l border-slate-300 pl-3">
                         <div className="space-y-1">
                           {adminSubItems.map((subItem) => {
                             const isSubActive = pathname === subItem.path;
@@ -239,13 +225,16 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                                 key={subItem.path}
                                 type="button"
                                 onClick={() => openPage(subItem)}
-                                className={`block w-full text-left rounded-md border border-dashed border-slate-300 px-3 py-2 text-sm transition-all cursor-pointer justify-start ${
+                                className={`flex w-full text-left rounded-md border border-dashed border-slate-300 px-3 py-2 text-sm transition-all cursor-pointer items-center justify-start gap-2 ${
                                   isSubActive
                                     ? "!bg-[#d2e1fa] font-semibold !text-[#00175c]"
                                     : "bg-white text-slate-600 hover:bg-slate-100"
                                 }`}
                               >
-                                {subItem.title}
+                                <span className="flex items-center justify-center">
+                                  {subItem.icon}
+                                </span>
+                                <span>{subItem.title}</span>
                               </Button>
                             );
                           })}
@@ -256,6 +245,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                 );
               }
 
+              {
+                /* Normal Sidebar Items */
+              }
               return (
                 <Button
                   key={item.path}
@@ -267,7 +259,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                       : "bg-white text-slate-600 hover:bg-slate-100"
                   }`}
                 >
-                  <span className="w-5 text-center">{item.icon}</span>
+                  <span className="flex items-center justify-center w-5">
+                    {item.icon}
+                  </span>
                   <span>{item.title}</span>
                 </Button>
               );
@@ -275,32 +269,34 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           </div>
         </nav>
 
-        <div className="space-y-3 border-t border-slate-200 p-3">
+        {/* Sidebar Bottom Items */}
+        <div className="space-y-2 border-t border-slate-200 p-3">
           <Button
             type="button"
-            className="flex w-full items-center gap-3 rounded-md border border-dashed border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
+            className="flex w-full justify-start items-center gap-3 rounded-md border border-dashed border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
           >
-            <span>
-              <FcSettings />
-            </span>
-            Settings
+            <FcSettings className="h-5 w-5" />
+            <span>Settings</span>
           </Button>
 
           <Button
             type="button"
-            className="flex w-full items-center gap-3 rounded-md border border-dashed border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
+            className="flex w-full justify-start items-center gap-3 rounded-md border border-dashed
+             border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 hover:bg-slate-100"
           >
-            <span>
-              <BiSupport />
-            </span>
-            Support
+            <BiSupport className="h-5 w-5 text-indigo-600" />
+            <span>Support</span>
           </Button>
         </div>
       </aside>
 
-      {/* Main Content navbar */}
+      {/* Main Content Area */}
       <div className="ml-64">
-        <header className="fixed left-64 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
+        {/* Header Navbar */}
+        <header
+          className="fixed left-64 right-0 top-0 z-40 flex h-16 items-center justify-between border-b
+         border-slate-200 bg-white px-6"
+        >
           <div>
             <h2 className="font-semibold text-slate-900">TechBasket ERP</h2>
             <p className="text-xs text-slate-500">
@@ -311,7 +307,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 transition-colors"
               aria-label="Notifications"
             >
               <FiBell className="h-5 w-5" />
@@ -319,95 +315,45 @@ export default function DashboardShell({ children }: DashboardShellProps) {
 
             <button
               type="button"
-              className="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 hover:bg-slate-100 transition-colors"
               aria-label="Help"
             >
               <FiHelpCircle className="h-5 w-5" />
             </button>
 
-            {/* Profile Dropdown Container */}
-            <div className="relative" ref={dropdownRef}>
-              {user ? (
-                <button
-                  type="button"
-                  onClick={() => setIsDropdownOpen((prev) => !prev)}
-                  className="flex h-11 w-11 items-center justify-center overflow-hidden 
-                  rounded-full ring-2 ring-indigo-500/50 hover:opacity-90 transition-all cursor-pointer focus:outline-none"
-                >
-                  {user.image ? (
-                    <Image
-                      src={user.image}
-                      alt={user.name || "User Avatar"}
-                      width={40}
-                      height={40}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-tr
-                     from-indigo-600 to-purple-600 font-bold text-white text-sm">
-                      {userInitial}
-                    </div>
-                  )}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => router.push("/login")}
-                  className="flex h-10 w-10 items-center justify-center rounded-full
-                   bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer"
-                  aria-label="Guest Profile"
-                >
-                  <FiUser className="h-5 w-5" />
-                </button>
-              )}
-
-              {/* Floating Dropdown Menu */}
-              {isDropdownOpen && user && (
-                <div className="absolute right-0 top-12 w-60 rounded-xl border border-slate-100 bg-white p-2 shadow-xl z-50 animate-in fade-in zoom-in-95 duration-100">
-                  <div className="p-3 bg-slate-50 rounded-lg mb-1 border border-slate-100">
-                    <p className="text-[10px] font-bold tracking-wider uppercase text-indigo-600">
-                      Logged In As
-                    </p>
-                    <p className="truncate text-sm font-bold text-slate-900 mt-0.5">
-                      {user.name}
-                    </p>
-                    {user.email && (
-                      <p className="truncate text-xs text-slate-500">
-                        {user.email}
-                      </p>
-                    )}
+            {/* Profile / Dynamic Avatar */}
+            {user ? (
+              <button
+                type="button"
+                className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full ring-2 ring-indigo-500/20 hover:opacity-90 transition-all cursor-pointer"
+              >
+                {user.image ? (
+                  <Image
+                    src={user.image}
+                    alt={user.name || "User Avatar"}
+                    width={40}
+                    height={40}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-indigo-600 to-purple-600 font-bold text-white text-sm">
+                    {userInitial}
                   </div>
-
-                  <div className="space-y-1">
-                    <Link
-                      href="/my-profile"
-                      onClick={() => setIsDropdownOpen(false)}
-                      className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm
-                       font-medium text-slate-700 transition-all hover:bg-slate-300 border border-dashed hover:text-indigo-600 no-underline"
-                    >
-                      <FiUser className="h-4 w-4 text-slate-400" />
-                      Profile
-                    </Link>
-
-                    <div className="my-2 border-t border-slate-100" />
-
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm border border-dashed
-                       font-semibold text-rose-600 transition-all hover:bg-rose-50 cursor-pointer bg-transparent text-left"
-                    >
-                      <FiLogOut className="h-4 w-4 text-rose-500" />
-                      Log Out
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+                )}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+                aria-label="Guest Profile"
+              >
+                <FiUser className="h-5 w-5" />
+              </button>
+            )}
           </div>
         </header>
 
-        {/* Tab Bar Header */}
+        {/* Tabs  Bar */}
         <div className="fixed left-64 right-0 top-16 z-30 flex h-12 items-end gap-1 overflow-x-auto border-b border-slate-300 bg-[#eceef0] px-3">
           {tabs.map((tab) => {
             const active = pathname === tab.path;
@@ -415,7 +361,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
             return (
               <div
                 key={tab.path}
-                className={`group flex h-10 min-w-[150px] max-w-[220px] shrink-0 items-center gap-2 rounded-t-lg border border-b-0 px-3 ${
+                className={`group flex h-10 min-w-37.5 max-w-55 shrink-0 items-center gap-2 rounded-t-lg border border-b-0 px-3 ${
                   active
                     ? "border-slate-300 bg-white text-[#00175c]"
                     : "border-transparent bg-[#e6e8ea] text-slate-600 hover:bg-white"
@@ -426,11 +372,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                   onClick={() => activateTab(tab.path)}
                   className="flex min-w-0 flex-1 items-center gap-2 text-left"
                 >
-                  <span className="shrink-0">{tab.icon}</span>
+                  <span className="shrink-0 text-slate-500">{tab.icon}</span>
                   <span
-                    className={`truncate text-sm ${
-                      active ? "font-semibold" : "font-medium"
-                    }`}
+                    className={`truncate text-sm ${active ? "font-semibold" : "font-medium"}`}
                   >
                     {tab.title}
                   </span>
@@ -448,10 +392,9 @@ export default function DashboardShell({ children }: DashboardShellProps) {
                       closeTab(tab.path);
                     }}
                     aria-label={`Close ${tab.title}`}
-                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded
-                     text-slate-400 opacity-0 transition hover:bg-slate-200 hover:text-slate-900 group-hover:opacity-100"
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-slate-400 opacity-0 transition hover:bg-slate-200 hover:text-slate-900 group-hover:opacity-100"
                   >
-                    ×
+                    <FiX className="h-3.5 w-3.5" />
                   </button>
                 )}
               </div>
@@ -459,6 +402,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           })}
         </div>
 
+        {/* Page Content */}
         <main className="min-h-screen px-6 pb-10 pt-[136px]">{children}</main>
       </div>
     </div>
