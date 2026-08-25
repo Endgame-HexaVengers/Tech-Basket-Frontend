@@ -1,5 +1,7 @@
 "use client";
 
+import { User } from "@/types/user";
+import { Permission, PERMISSIONS } from "@/utils/Permission";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
@@ -10,6 +12,7 @@ import {
   BiPurchaseTag,
   BiStore,
   BiTransfer,
+  BiUserVoice,
 } from "react-icons/bi";
 
 import {
@@ -22,8 +25,217 @@ import {
 
 import { FiTruck, FiUsers } from "react-icons/fi";
 
+// RMA Options
+const RmaOptions = [
+  {
+    href: "/rma/complain-received",
+    label: "Complaint Received",
+    permission: PERMISSIONS.RMA_COMPLAINT_RECEIVED,
+  },
+  {
+    href: "/rma/customer-delivery",
+    label: "Customer Delivery",
+    permission: PERMISSIONS.RMA_CUSTOMER_DELIVERY,
+  },
+  {
+    href: "/rma/replacement-out",
+    label: "Replacement Out",
+    permission: PERMISSIONS.RMA_REPLACEMENT_OUT,
+  },
+  {
+    href: "/rma/replacement-in",
+    label: "Replacement In",
+    permission: PERMISSIONS.RMA_REPLACEMENT_IN,
+  },
+];
+// Sales Options
+const SalesOptions = [
+  {
+    href: "/sales/create",
+    label: "Sales Entry",
+    permission: PERMISSIONS.SALES_CREATE,
+  },
+  {
+    href: "/sales/invoice",
+    label: "Sales Invoice",
+    permission: PERMISSIONS.SALES_INVOICE,
+  },
+  {
+    href: "/sales/return",
+    label: "Sales Return",
+    permission: PERMISSIONS.SALES_RETURN,
+  },
+];
+
+// Purchase Options
+const PurchaseOptions = [
+  {
+    href: "/purchase/create",
+    label: "Purchase Entry",
+    permission: PERMISSIONS.PURCHASE_CREATE,
+  },
+  {
+    href: "/purchase/invoice",
+    label: "Purchase Invoice",
+    permission: PERMISSIONS.PURCHASE_INVOICE,
+  },
+  {
+    href: "/purchase/return",
+    label: "Purchase Return",
+    permission: PERMISSIONS.PURCHASE_RETURN,
+  },
+];
+
+// Approval Options
+const ApprovalOptions = [
+  {
+    href: "/approval/sales",
+    label: "Sales Approval",
+    permission: PERMISSIONS.SALES_APPROVE,
+  },
+  {
+    href: "/approval/sales-return",
+    label: "Sales Return Approval",
+    permission: PERMISSIONS.SALES_RETURN_APPROVE,
+  },
+  {
+    href: "/approval/add-product-approval",
+    label: "Product Approval",
+    permission: PERMISSIONS.PRODUCT_APPROVE,
+  },
+  {
+    href: "/approval/purchase",
+    label: "Purchase Approval",
+    permission: PERMISSIONS.PURCHASE_APPROVE,
+  },
+  {
+    href: "/approval/purchase-return",
+    label: "Purchase Return Approval",
+    permission: PERMISSIONS.PURCHASE_RETURN_APPROVE,
+  },
+  {
+    href: "/approval/stock-transfer",
+    label: "Stock Transfer Approval",
+    permission: PERMISSIONS.STOCK_TRANSFER_APPROVE,
+  },
+  {
+    href: "/approval/rma/complain-received",
+    label: "Complaint Received Approval",
+    permission: PERMISSIONS.RMA_COMPLAINT_APPROVE,
+  },
+  {
+    href: "/approval/rma/replacement-out",
+    label: "Replacement Out Approval",
+    permission: PERMISSIONS.RMA_REPLACEMENT_OUT_APPROVE,
+  },
+  {
+    href: "/approval/rma/replacement-in",
+    label: "Replacement In Approval",
+    permission: PERMISSIONS.RMA_REPLACEMENT_IN_APPROVE,
+  },
+  {
+    href: "/approval/rma/customer-delivery",
+    label: "Customer Delivery Approval",
+    permission: PERMISSIONS.RMA_CUSTOMER_DELIVERY,
+  },
+];
+
+// Inventory Options
+const InventoryOptions = [
+  {
+    href: "/inventory/current-stock",
+    label: "Current Stock",
+    permission: PERMISSIONS.INVENTORY_CURRENT_VIEW,
+  },
+  {
+    href: "/inventory/rma-stock",
+    label: "RMA Stock",
+    permission: PERMISSIONS.INVENTORY_RMA_VIEW,
+  },
+  {
+    href: "/inventory/transfer",
+    label: "Stock Transfer",
+    permission: PERMISSIONS.INVENTORY_TRANSFER,
+  },
+  {
+    href: "/inventory/transfer-invoice",
+    label: "Transfer Invoice",
+    permission: PERMISSIONS.INVENTORY_TRANSFER_INVOICE,
+  },
+];
+
+const sampleUser: User = {
+  id: "USR-001",
+  name: "Rahim Ahmed",
+  email: "rahim@techbasket.com",
+  role: "Purchase Executive",
+  permissions: [
+    PERMISSIONS.PRODUCT_CREATE,
+    PERMISSIONS.PRODUCT_VIEW,
+    PERMISSIONS.PRODUCT_UPDATE,
+
+    PERMISSIONS.PURCHASE_CREATE,
+    PERMISSIONS.PURCHASE_INVOICE,
+    PERMISSIONS.PURCHASE_RETURN,
+
+    PERMISSIONS.INVENTORY_CURRENT_VIEW,
+    PERMISSIONS.INVENTORY_RMA_VIEW,
+    PERMISSIONS.INVENTORY_TRANSFER,
+    PERMISSIONS.INVENTORY_TRANSFER_INVOICE,
+
+    PERMISSIONS.RMA_COMPLAINT_RECEIVED,
+    PERMISSIONS.RMA_CUSTOMER_DELIVERY,
+  ],
+};
+
+// const sampleUser = {
+//   id: "USR-001",
+//   name: "Rahim Ahmed",
+//   email: "rahim@techbasket.com",
+
+//   role: "Purchase Executive",
+
+//   permissions: [
+//     PERMISSIONS.PRODUCT_CREATE,
+//     PERMISSIONS.PRODUCT_VIEW,
+//     PERMISSIONS.PRODUCT_UPDATE,
+
+//     PERMISSIONS.PURCHASE_CREATE,
+//     PERMISSIONS.PURCHASE_INVOICE,
+//     PERMISSIONS.PURCHASE_RETURN,
+
+//     PERMISSIONS.INVENTORY_CURRENT_VIEW,
+//     PERMISSIONS.INVENTORY_RMA_VIEW,
+//     PERMISSIONS.INVENTORY_TRANSFER,
+//     PERMISSIONS.INVENTORY_TRANSFER_INVOICE,
+
+//     PERMISSIONS.RMA_COMPLAINT_RECEIVED,
+//     PERMISSIONS.RMA_CUSTOMER_DELIVERY,
+//   ],
+// };
+
 const DefaultSidebar = () => {
   const pathname = usePathname();
+
+  const hasPermission = (permission: Permission) => {
+    return sampleUser.permissions.includes(permission);
+  };
+
+  const allowedPurchaseOptions = PurchaseOptions.filter((item) =>
+    hasPermission(item.permission),
+  );
+  const allowedSalesOptions = SalesOptions.filter((item) =>
+    hasPermission(item.permission),
+  );
+  const allowedInventoryOptions = InventoryOptions.filter((item) =>
+    hasPermission(item.permission),
+  );
+  const allowedApprovalOptions = ApprovalOptions.filter((item) =>
+    hasPermission(item.permission),
+  );
+  const allowedRmaOptions = RmaOptions.filter((item) =>
+    hasPermission(item.permission),
+  );
 
   return (
     <aside className="flex h-screen w-full flex-col overflow-hidden border-r border-slate-200 bg-white">
@@ -90,76 +302,135 @@ const DefaultSidebar = () => {
             icon={<BiStore className="text-blue-600" />}
           >
             {/* ========== PURCHASE ========== */}
+            {/* {allowedPurchaseOptions.length > 0 && (
+              <SidebarDropdown label="Purchase" icon={<BiPurchaseTag />} nested>
+                {allowedPurchaseOptions.map((item) => (
+                  <SidebarLink
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    pathname={pathname}
+                  />
+                ))}
+              </SidebarDropdown>
+            )} */}
+
             <SidebarDropdown label="Purchase" icon={<BiPurchaseTag />} nested>
-              <SidebarLink
-                href="/purchase/new"
-                label="New Purchase"
-                pathname={pathname}
-              />
+              {PurchaseOptions.map((item) => (
+                <SidebarLink
+                  key={item.href}
+                  href={item.href}
+                  label={item.label}
+                  pathname={pathname}
+                />
+              ))}
+            </SidebarDropdown>
 
-              <SidebarLink
-                href="/purchase/orders"
-                label="Purchase Orders"
-                pathname={pathname}
-              />
+            {/* ========== Sales ========== */}
 
-              <SidebarLink
-                href="/purchase/approval"
-                label="Purchase Approval"
-                pathname={pathname}
-              />
+            {/* {allowedSalesOptions.length > 0 && (
+              <SidebarDropdown label="Sales" icon={<BiStore />} nested>
+                {allowedSalesOptions.map((item) => (
+                  <SidebarLink
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    pathname={pathname}
+                  />
+                ))}
+              </SidebarDropdown>
+            )} */}
 
-              <SidebarLink
-                href="/purchase/return"
-                label="Purchase Return"
-                pathname={pathname}
-              />
+            <SidebarDropdown label="Sales" icon={<BiStore />} nested>
+              {SalesOptions.map((item) => (
+                <SidebarLink
+                  key={item.href}
+                  href={item.href}
+                  label={item.label}
+                  pathname={pathname}
+                />
+              ))}
+            </SidebarDropdown>
+
+            {/* ========== Rma ========== */}
+            {/* {allowedRmaOptions.length > 0 && (
+              <SidebarDropdown label="Rma" icon={<BiUserVoice />} nested>
+                {allowedRmaOptions.map((item) => (
+                  <SidebarLink
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    pathname={pathname}
+                  />
+                ))}
+              </SidebarDropdown>
+            )} */}
+
+            <SidebarDropdown label="Rma" icon={<BiUserVoice />} nested>
+              {RmaOptions.map((item) => (
+                <SidebarLink
+                  key={item.href}
+                  href={item.href}
+                  label={item.label}
+                  pathname={pathname}
+                />
+              ))}
             </SidebarDropdown>
 
             {/* ========== INVENTORY ========== */}
+
+            {/* {allowedInventoryOptions.length > 0 && (
+              <SidebarDropdown label="Inventory" icon={<BiStore />} nested>
+                {allowedInventoryOptions.map((item) => (
+                  <SidebarLink
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    pathname={pathname}
+                  />
+                ))}
+              </SidebarDropdown>
+            )} */}
+
             <SidebarDropdown label="Inventory" icon={<BiStore />} nested>
-              <SidebarLink
-                href="/inventory/current-stock"
-                label="Current Stock"
-                pathname={pathname}
-              />
-
-              <SidebarLink
-                href="/inventory/rma-stock"
-                label="RMA Stock"
-                pathname={pathname}
-              />
-
-              <SidebarLink
-                href="/inventory/transfer"
-                label="Stock Transfer"
-                pathname={pathname}
-              />
+              {InventoryOptions.map((item) => (
+                <SidebarLink
+                  key={item.href}
+                  href={item.href}
+                  label={item.label}
+                  pathname={pathname}
+                />
+              ))}
             </SidebarDropdown>
 
             {/* ========== APPROVAL ========== */}
+
+            {/* {allowedApprovalOptions.length > 0 && (
+              <SidebarDropdown label="Approval" icon={<FcApproval />} nested>
+                {allowedApprovalOptions.map((item) => (
+                  <SidebarLink
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    pathname={pathname}
+                  />
+                ))}
+              </SidebarDropdown>
+            )} */}
+
             <SidebarDropdown label="Approval" icon={<FcApproval />} nested>
-              <SidebarLink
-                href="/approval/add-product-approval"
-                label="Product Approval"
-                pathname={pathname}
-              />
-
-              <SidebarLink
-                href="/approval/purchase-approval"
-                label="Purchase Approval"
-                pathname={pathname}
-              />
-
-              <SidebarLink
-                href="/approval/rma"
-                label="RMA Approval"
-                pathname={pathname}
-              />
+              {ApprovalOptions.map((item) => (
+                <SidebarLink
+                  key={item.href}
+                  href={item.href}
+                  label={item.label}
+                  pathname={pathname}
+                />
+              ))}
             </SidebarDropdown>
 
             {/* ========== STOCK TRANSFER ========== */}
-            <SidebarDropdown
+            {/* <SidebarDropdown
               label="Stock Transfer"
               icon={<BiTransfer />}
               nested
@@ -175,7 +446,7 @@ const DefaultSidebar = () => {
                 label="Transfer List"
                 pathname={pathname}
               />
-            </SidebarDropdown>
+            </SidebarDropdown> */}
           </SidebarDropdown>
         </div>
       </nav>
