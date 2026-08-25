@@ -27,7 +27,7 @@ const [filters, setFilters] = useState<FilterParams>({
   return (
     <div className="bg-white p-4 rounded border border-dashed border-gray-200 shadow-sm mb-6 flex flex-wrap gap-3 items-center justify-between">
       {/* Search Input */}
-      <div className="relative flex-1 min-w-[280px]">
+      <div className="relative flex-1 min-w-70">
         <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
         <input
           type="text"

@@ -3,15 +3,18 @@
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useRef, useState } from "react";
 
 import {
   FiBell,
+  FiChevronDown,
   FiHelpCircle,
+  FiLogOut,
   FiPlus,
   FiUser,
   FiX,
 } from "react-icons/fi";
+import { FiBell, FiHelpCircle, FiPlus, FiUser, FiX } from "react-icons/fi";
 
 import { useTabs, type Tab } from "@/context/TabContext";
 import toast from "react-hot-toast";
@@ -68,12 +71,9 @@ const createTabFromPath = (path: string): Tab => {
 
   const title = lastSegment
     ? lastSegment
-      .split(/[-_]/)
-      .map(
-        (part) =>
-          part.charAt(0).toUpperCase() + part.slice(1)
-      )
-      .join(" ")
+        .split(/[-_]/)
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" ")
     : "Dashboard";
 
   return {
@@ -90,77 +90,49 @@ const DefaultHeader = () => {
 
   const pathname = usePathname();
   const router = useRouter();
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   const { tabs, openTab, closeTab } = useTabs();
 
-  // Profile dropdown state
-  const [profileOpen, setProfileOpen] = useState(false);
-
-  // Logout loading state
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  // Dropdown reference
-  const profileRef = useRef<HTMLDivElement>(null);
-
-  // User initial
-  const userInitial =
-    user?.name?.trim()?.charAt(0)?.toUpperCase() || "U";
-
-  /**
-   * Open current pathname as a tab
-   */
   useEffect(() => {
     if (pathname && pathname !== "/") {
       openTab(createTabFromPath(pathname));
     }
   }, [openTab, pathname]);
 
-  /**
-   * Close dropdown when clicking outside
-   */
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handlePointerDown = (event: PointerEvent) => {
       if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target as Node)
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target as Node)
       ) {
-        setProfileOpen(false);
+        setIsProfileMenuOpen(false);
       }
     };
 
-    if (profileOpen) {
-      document.addEventListener(
-        "mousedown",
-        handleClickOutside
-      );
-    }
+    document.addEventListener("pointerdown", handlePointerDown);
 
-    return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
-    };
-  }, [profileOpen]);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, []);
 
-  const handleCloseTab = (
-    event: React.MouseEvent,
-    path: string
-  ) => {
+  const handleSignOut = async () => {
+    setIsProfileMenuOpen(false);
+    await authClient.signOut();
+    router.push("/login");
+  };
+
+  const handleCloseTab = (event: React.MouseEvent, path: string) => {
     event.stopPropagation();
 
-    const currentIndex = tabs.findIndex(
-      (tab) => tab.path === path
-    );
+    const currentIndex = tabs.findIndex((tab) => tab.path === path);
 
     const isCurrentTab = pathname === path;
 
     closeTab(path);
 
     if (isCurrentTab) {
-      const remainingTabs = tabs.filter(
-        (tab) => tab.path !== path
-      );
+      const remainingTabs = tabs.filter((tab) => tab.path !== path);
 
       const nextTab =
         remainingTabs[currentIndex - 1] ||
@@ -170,7 +142,6 @@ const DefaultHeader = () => {
       router.push(nextTab?.path || "/dashboard");
     }
   };
-
 
   const handleLogout = async () => {
     try {
@@ -197,9 +168,7 @@ const DefaultHeader = () => {
       <header className="flex h-20 w-full items-center justify-between border-b border-slate-200 bg-white px-6">
         {/* Brand */}
         <div>
-          <h2 className="font-semibold text-slate-900">
-            TechBasket ERP
-          </h2>
+          <h2 className="font-semibold text-slate-900">TechBasket ERP</h2>
 
           <p className="text-xs text-slate-500">
             Inventory & Management System
@@ -226,23 +195,91 @@ const DefaultHeader = () => {
             <FiHelpCircle className="h-5 w-5" />
           </button>
 
+          <div ref={profileMenuRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setIsProfileMenuOpen((isOpen) => !isOpen)}
+              aria-label="Open profile menu"
+              aria-expanded={isProfileMenuOpen}
+              aria-haspopup="menu"
+              className="flex items-center gap-1 rounded-full p-1 text-slate-600 transition-colors hover:bg-slate-100"
+            >
+              <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full ring-2 ring-indigo-500/20">
+                {user?.image ? (
+                  <Image
+                    src={user.image}
+                    alt={user.name || "User Avatar"}
+                    width={40}
+                    height={40}
+                    className="h-full w-full object-cover"
+                  />
+                ) : user ? (
+                  <span className="flex h-full w-full items-center justify-center bg-linear-to-tr from-indigo-600 to-purple-600 text-sm font-bold text-white">
+                    {userInitial}
+                  </span>
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center rounded-full bg-slate-100">
+                    <FiUser className="h-5 w-5" />
+                  </span>
+                )}
+              </span>
+              <FiChevronDown
+                className={`mr-1 h-4 w-4 transition-transform ${isProfileMenuOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {isProfileMenuOpen && (
+              <div
+                role="menu"
+                aria-label="Profile menu"
+                className="absolute right-0 top-12 z-50 w-64 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg"
+              >
+                <div className="border-b border-slate-100 px-4 py-3">
+                  <p className="truncate text-sm font-semibold text-slate-900">
+                    {user?.name || "User"}
+                  </p>
+                  <p className="truncate text-xs text-slate-500">
+                    {user?.email || "No email available"}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setIsProfileMenuOpen(false);
+                    router.push("/my-profile");
+                  }}
+                  className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
+                >
+                  <FiUser className="h-4 w-4" />
+                  Profile
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={handleSignOut}
+                  className="flex w-full items-center gap-3 border-t border-slate-100 px-4 py-3 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
+                >
+                  <FiLogOut className="h-4 w-4" />
+                  Log out
+                </button>
+              </div>
+            )}
+          </div>
           {/*   USER PROFILE */}
-          <div
-            ref={profileRef}
-            className="relative ml-2"
-          >
+          <div ref={profileRef} className="relative ml-2">
             {user ? (
               <>
                 {/* Avatar Button */}
                 <button
                   type="button"
-                  onClick={() =>
-                    setProfileOpen((prev) => !prev)
-                  }
-                  className={`flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full ring-2 duration-300 ${profileOpen
+                  onClick={() => setProfileOpen((prev) => !prev)}
+                  className={`flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full ring-2 duration-300 ${
+                    profileOpen
                       ? "scale-105 ring-indigo-500/40"
                       : "ring-indigo-500/40 hover:ring-indigo-500/80"
-                    }`}
+                  }`}
                   aria-label="Open profile menu"
                   aria-expanded={profileOpen}
                 >
@@ -255,8 +292,10 @@ const DefaultHeader = () => {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center
-                     bg-linear-to-tr from-indigo-600 to-purple-600 text-sm font-bold text-white">
+                    <div
+                      className="flex h-full w-full items-center justify-center
+                     bg-linear-to-tr from-indigo-600 to-purple-600 text-sm font-bold text-white"
+                    >
                       {userInitial}
                     </div>
                   )}
@@ -264,10 +303,11 @@ const DefaultHeader = () => {
 
                 {/* PROFILE DROPDOWN*/}
                 <div
-                  className={`absolute right-0 top-12 z-50 w-56 origin-top-right rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_10px_35px_rgba(15,23,42,0.15)] transition-all duration-200 ease-out ${profileOpen
+                  className={`absolute right-0 top-12 z-50 w-56 origin-top-right rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_10px_35px_rgba(15,23,42,0.15)] transition-all duration-200 ease-out ${
+                    profileOpen
                       ? "visible translate-y-0 scale-100 opacity-100"
                       : "invisible -translate-y-2 scale-95 opacity-0"
-                    }`}
+                  }`}
                 >
                   {/* User Information */}
                   <div className="px-3 py-2.5">
@@ -306,9 +346,7 @@ const DefaultHeader = () => {
                     isDisabled={isLoggingOut}
                     className="mt-2 w-full rounded-full border border-slate-200 bg-white px-4 py-2 text-left text-sm font-medium text-red-600 transition-all duration-200 hover:border-red-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {isLoggingOut
-                      ? "Logging out..."
-                      : "Log Out"}
+                    {isLoggingOut ? "Logging out..." : "Log Out"}
                   </Button>
                 </div>
               </>
@@ -339,10 +377,11 @@ const DefaultHeader = () => {
           return (
             <div
               key={tab.path}
-              className={`group flex h-10 min-w-37.5 items-center justify-between gap-1 rounded-t-lg border px-2 text-sm transition-all ${isActive
+              className={`group flex h-10 min-w-[150px] items-center justify-between gap-1 rounded-t-lg border px-2 text-sm transition-all ${
+                isActive
                   ? "border-slate-200 border-b-white bg-white font-medium text-slate-900"
                   : "border-transparent bg-slate-200/70 text-slate-600 hover:bg-slate-200"
-                }`}
+              }`}
             >
               {/* Tab Button */}
               <button
@@ -352,21 +391,15 @@ const DefaultHeader = () => {
                 onClick={() => router.push(tab.path)}
                 className="flex h-full min-w-0 flex-1 items-center gap-2 px-1 text-left"
               >
-                <span className="shrink-0">
-                  {tab.icon}
-                </span>
+                <span className="shrink-0">{tab.icon}</span>
 
-                <span className="truncate">
-                  {tab.title}
-                </span>
+                <span className="truncate">{tab.title}</span>
               </button>
 
               {/* Close Tab */}
               <button
                 type="button"
-                onClick={(event) =>
-                  handleCloseTab(event, tab.path)
-                }
+                onClick={(event) => handleCloseTab(event, tab.path)}
                 aria-label={`Close ${tab.title}`}
                 className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-500 opacity-0 transition-all duration-200 hover:bg-slate-200 hover:text-slate-700 group-hover:opacity-100"
               >
