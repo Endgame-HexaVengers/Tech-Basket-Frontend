@@ -3,7 +3,7 @@
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   FiBell,
@@ -14,11 +14,10 @@ import {
   FiUser,
   FiX,
 } from "react-icons/fi";
-import { FiBell, FiHelpCircle, FiPlus, FiUser, FiX } from "react-icons/fi";
 
 import { useTabs, type Tab } from "@/context/TabContext";
-import toast from "react-hot-toast";
 import { Button } from "@heroui/react";
+import toast from "react-hot-toast";
 
 const TAB_DEFINITIONS: Record<string, Tab> = {
   "/dashboard": {
@@ -87,6 +86,18 @@ const DefaultHeader = () => {
   const { data: session } = authClient.useSession();
 
   const user = session?.user;
+
+  // Profile dropdown state
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  // Logout loading state
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Dropdown reference
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // User initial
+  const userInitial = user?.name?.trim()?.charAt(0)?.toUpperCase() || "U";
 
   const pathname = usePathname();
   const router = useRouter();
