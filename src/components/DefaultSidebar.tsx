@@ -104,7 +104,7 @@ const ApprovalOptions = [
     permission: PERMISSIONS.PRODUCT_APPROVE,
   },
   {
-    href: "/approval/purchase",
+    href: "/approval/purchase-approval",
     label: "Purchase Approval",
     permission: PERMISSIONS.PURCHASE_APPROVE,
   },
