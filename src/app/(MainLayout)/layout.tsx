@@ -1,28 +1,6 @@
 import DefaultHeader from "@/components/DefaultHeader";
 import DefaultSidebar from "@/components/DefaultSidebar";
 import { TabProvider } from "@/context/TabContext";
-// const MainLayout = ({ children }: LayoutProps<"/">) => {
-//   return (
-//     <div>
-//       <aside className="col-span-2"></aside>
-//       <DashboardShell>
-//         <SmoothScroll>{children}</SmoothScroll>
-//       </DashboardShell>
-//       <div className="grid grid-cols-12">
-//         <aside className="col-span-2"></aside>
-
-//         <main className="col-span-10">
-//           <header>
-//             <h1>TechBasket</h1>
-//           </header>
-//           <main>{children}</main>
-//         </main>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default MainLayout;
 
 import type { ReactNode } from "react";
 
