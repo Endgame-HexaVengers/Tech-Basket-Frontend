@@ -292,7 +292,7 @@ const DefaultHeader = () => {
                     type="button"
                     onClick={() => {
                       setProfileOpen(false);
-                      router.push("/profile");
+                      router.push("/my-profile");
                     }}
                     className="w-full rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-left text-sm font-medium text-slate-600 transition-all duration-200 hover:border-indigo-100 hover:bg-indigo-50 hover:text-indigo-600"
                   >

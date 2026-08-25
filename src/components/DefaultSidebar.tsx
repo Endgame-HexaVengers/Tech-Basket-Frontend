@@ -146,7 +146,7 @@ const DefaultSidebar = () => {
               />
 
               <SidebarLink
-                href="/approval/purchase"
+                href="/approval/purchase-approval"
                 label="Purchase Approval"
                 pathname={pathname}
               />
