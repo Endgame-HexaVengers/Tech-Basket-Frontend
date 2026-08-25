@@ -5,9 +5,10 @@ import FadeUp from "@/components/FadeUp";
 import ResizableTable from "@/components/ResizableTable";
 import SearchCard from "@/components/SearchCard";
 import { SEARCH_TABS, RESULTS_MAP } from "@/data/searchResults";
+import type { SearchTab } from "@/types/search";
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<"advance" | "rma" | "production">("advance");
+  const [activeTab, setActiveTab] = useState<SearchTab>("advance");
   const [serial, setSerial] = useState("");
   const [phone, setPhone] = useState("");
   const [colWidths, setColWidths] = useState<Record<string, number>>({});

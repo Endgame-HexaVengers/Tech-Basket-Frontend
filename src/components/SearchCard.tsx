@@ -78,7 +78,7 @@ export default function SearchCard({
 
         <button
           type="button"
-          className="flex h-[38px] items-center justify-center gap-2 rounded-lg bg-[#00175c] px-5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#000f3d] active:scale-[0.98]"
+          className="flex h-9.5 items-center justify-center gap-2 rounded-lg bg-[#00175c] px-5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#000f3d] active:scale-[0.98]"
         >
           <Search className="h-3.5 w-3.5" />
           Search
