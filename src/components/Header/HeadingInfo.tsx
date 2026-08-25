@@ -1,5 +1,3 @@
-import Image from "next/image";
-import React from "react";
 import { FiBell, FiHelpCircle } from "react-icons/fi";
 import UserInfo from "./UserInfo";
 
