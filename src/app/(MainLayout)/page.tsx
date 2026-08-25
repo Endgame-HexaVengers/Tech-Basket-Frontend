@@ -9,7 +9,6 @@ import { Button } from "@heroui/react";
 import { FcSettings } from "react-icons/fc";
 import { FiBell, FiHelpCircle, FiUser, FiLogOut } from "react-icons/fi";
 import toast from "react-hot-toast";
-
 import { authClient } from "@/lib/auth-client";
 
 interface DashboardShellProps {
@@ -407,7 +406,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           </div>
         </header>
 
-        {/* Tab Bar Header */}
+        {/* Tab Bar */}
         <div className="fixed left-64 right-0 top-16 z-30 flex h-12 items-end gap-1 overflow-x-auto border-b border-slate-300 bg-[#eceef0] px-3">
           {tabs.map((tab) => {
             const active = pathname === tab.path;
