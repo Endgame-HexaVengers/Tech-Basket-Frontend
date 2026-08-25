@@ -116,7 +116,7 @@ const DefaultHeader = () => {
         remainingTabs[currentIndex] ||
         remainingTabs[0];
 
-      router.push(nextTab?.path || "/dashboard");
+      router.push(nextTab?.path || "/");
     }
   };
 

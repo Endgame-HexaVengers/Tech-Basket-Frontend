@@ -104,7 +104,7 @@ const ApprovalOptions = [
     permission: PERMISSIONS.PRODUCT_APPROVE,
   },
   {
-    href: "/approval/purchase",
+    href: "/approval/purchase-approval",
     label: "Purchase Approval",
     permission: PERMISSIONS.PURCHASE_APPROVE,
   },
@@ -258,12 +258,12 @@ const DefaultSidebar = () => {
       <nav className="min-h-0 flex-1 overflow-y-auto p-3">
         <div className="space-y-2">
           {/* DASHBOARD */}
-          <SidebarLink
+          {/* <SidebarLink
             href="/dashboard"
             label="Dashboard"
             icon={<FcHome />}
             pathname={pathname}
-          />
+          /> */}
 
           {/*SETUP  */}
           <SidebarDropdown label="Setup" icon={<FcSettings />}>
@@ -515,9 +515,7 @@ const SidebarDropdown = ({
   );
 };
 
-
-  //  REUSABLE SIDEBAR LINK
-
+//  REUSABLE SIDEBAR LINK
 
 type SidebarLinkProps = {
   href: string;
