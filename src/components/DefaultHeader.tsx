@@ -3,9 +3,17 @@
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { FiBell, FiHelpCircle, FiPlus, FiUser, FiX } from "react-icons/fi";
+import {
+  FiBell,
+  FiChevronDown,
+  FiHelpCircle,
+  FiLogOut,
+  FiPlus,
+  FiUser,
+  FiX,
+} from "react-icons/fi";
 
 import { useTabs, type Tab } from "@/context/TabContext";
 
@@ -58,6 +66,8 @@ const DefaultHeader = () => {
 
   const pathname = usePathname();
   const router = useRouter();
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   const { tabs, openTab, closeTab } = useTabs();
 
@@ -66,6 +76,27 @@ const DefaultHeader = () => {
       openTab(createTabFromPath(pathname));
     }
   }, [openTab, pathname]);
+
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, []);
+
+  const handleSignOut = async () => {
+    setIsProfileMenuOpen(false);
+    await authClient.signOut();
+    router.push("/login");
+  };
 
   const handleCloseTab = (event: React.MouseEvent, path: string) => {
     event.stopPropagation();
@@ -117,33 +148,78 @@ const DefaultHeader = () => {
             <FiHelpCircle className="h-5 w-5" />
           </button>
 
-          {user ? (
+          <div ref={profileMenuRef} className="relative">
             <button
               type="button"
-              className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full ring-2 ring-indigo-500/20"
+              onClick={() => setIsProfileMenuOpen((isOpen) => !isOpen)}
+              aria-label="Open profile menu"
+              aria-expanded={isProfileMenuOpen}
+              aria-haspopup="menu"
+              className="flex items-center gap-1 rounded-full p-1 text-slate-600 transition-colors hover:bg-slate-100"
             >
-              {user.image ? (
-                <Image
-                  src={user.image}
-                  alt={user.name || "User Avatar"}
-                  width={40}
-                  height={40}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-linear-to-tr from-indigo-600 to-purple-600 text-sm font-bold text-white">
-                  {userInitial}
+              <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full ring-2 ring-indigo-500/20">
+                {user?.image ? (
+                  <Image
+                    src={user.image}
+                    alt={user.name || "User Avatar"}
+                    width={40}
+                    height={40}
+                    className="h-full w-full object-cover"
+                  />
+                ) : user ? (
+                  <span className="flex h-full w-full items-center justify-center bg-linear-to-tr from-indigo-600 to-purple-600 text-sm font-bold text-white">
+                    {userInitial}
+                  </span>
+                ) : (
+                  <span className="flex h-full w-full items-center justify-center rounded-full bg-slate-100">
+                    <FiUser className="h-5 w-5" />
+                  </span>
+                )}
+              </span>
+              <FiChevronDown
+                className={`mr-1 h-4 w-4 transition-transform ${isProfileMenuOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {isProfileMenuOpen && (
+              <div
+                role="menu"
+                aria-label="Profile menu"
+                className="absolute right-0 top-12 z-50 w-64 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg"
+              >
+                <div className="border-b border-slate-100 px-4 py-3">
+                  <p className="truncate text-sm font-semibold text-slate-900">
+                    {user?.name || "User"}
+                  </p>
+                  <p className="truncate text-xs text-slate-500">
+                    {user?.email || "No email available"}
+                  </p>
                 </div>
-              )}
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600"
-            >
-              <FiUser className="h-5 w-5" />
-            </button>
-          )}
+
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setIsProfileMenuOpen(false);
+                    router.push("/my-profile");
+                  }}
+                  className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
+                >
+                  <FiUser className="h-4 w-4" />
+                  Profile
+                </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={handleSignOut}
+                  className="flex w-full items-center gap-3 border-t border-slate-100 px-4 py-3 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
+                >
+                  <FiLogOut className="h-4 w-4" />
+                  Log out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
