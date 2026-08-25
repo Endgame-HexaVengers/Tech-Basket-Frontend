@@ -1,4 +1,3 @@
-
 import BranchesLocationPage from "@/components/BranceLocation";
 import BranchManagement from "@/components/BranchManagement";
 
