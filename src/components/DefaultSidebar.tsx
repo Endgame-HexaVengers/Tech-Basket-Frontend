@@ -11,16 +11,14 @@ import {
   BiChevronRight,
   BiPurchaseTag,
   BiStore,
-  BiTransfer,
   BiUserVoice,
 } from "react-icons/bi";
 
 import {
-  FcSettings,
-  FcPackage,
   FcApproval,
   FcDepartment,
-  FcHome,
+  FcPackage,
+  FcSettings,
 } from "react-icons/fc";
 
 import { FiTruck, FiUsers } from "react-icons/fi";

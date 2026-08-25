@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 
@@ -147,17 +148,16 @@ const DefaultHeader = () => {
               }`}
             >
               {/* Tab Button */}
-              <button
-                type="button"
+              <Link
+                href={tab.path}
                 role="tab"
                 aria-selected={isActive}
-                onClick={() => router.push(tab.path)}
                 className="flex h-full min-w-0 flex-1 items-center gap-2 px-1 text-left"
               >
                 <span className="shrink-0">{tab.icon}</span>
 
                 <span className="truncate">{tab.title}</span>
-              </button>
+              </Link>
 
               {/* Close Tab */}
               <button
@@ -173,14 +173,13 @@ const DefaultHeader = () => {
         })}
 
         {/*   NEW TAB*/}
-        <button
-          type="button"
-          onClick={() => router.push("/")}
+        <Link
+          href="/"
           aria-label="New dashboard tab"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-t-lg border border-transparent text-slate-500 transition-all duration-200 hover:bg-slate-200/70 hover:text-slate-700"
         >
           <FiPlus className="h-5 w-5" />
-        </button>
+        </Link>
       </div>
     </div>
   );
