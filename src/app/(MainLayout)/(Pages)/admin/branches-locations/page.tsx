@@ -1,4 +1,4 @@
-import BranchesLocationPage from "@/components/BranceLocation";
+import BranchesLocationPage from "@/components/BranceSection/BranceLocation";
 import BranchManagement from "@/components/BranchManagement";
 
 const BranchesLocationsPage = () => {
