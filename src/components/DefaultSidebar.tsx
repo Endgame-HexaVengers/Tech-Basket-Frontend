@@ -73,7 +73,7 @@ const PurchaseOptions = [
     permission: PERMISSIONS.PURCHASE_CREATE,
   },
   {
-    href: "/purchase/generate-invoice",
+    href: "/purchase/purchase-invoice",
     label: "Purchase Invoice",
     permission: PERMISSIONS.PURCHASE_INVOICE,
   },
