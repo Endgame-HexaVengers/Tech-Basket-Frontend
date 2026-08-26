@@ -10,8 +10,6 @@ import FadeUp from '../FadeUp';
 
 
 
-
-
 export default function BranchManagement() {
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

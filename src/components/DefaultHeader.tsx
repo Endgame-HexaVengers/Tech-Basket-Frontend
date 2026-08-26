@@ -123,66 +123,66 @@ const DefaultHeader = () => {
   };
 
   return (
-    <FadeUp className="sticky top-0 z-40 bg-white">
-      {/*  HEADER */}
 
-      <HeadingInfo />
+    <header className="sticky top-0 z-40 w-full bg-white shadow-sm">
+      <FadeUp>
+        {/* HEADER INFO */}
+        <HeadingInfo />
 
-      {/*
-          TABS
-     */}
-      <div
-        role="tablist"
-        aria-label="Open pages"
-        className="flex h-11 items-end gap-1 overflow-x-auto border-b border-slate-200 bg-slate-100 px-2 pt-1"
-      >
-        {tabs.map((tab) => {
-          const isActive = pathname === tab.path;
-
-          return (
-            <div
-              key={tab.path}
-              className={`group flex h-10 min-w-[150px] items-center justify-between gap-1 rounded-t-lg border px-2 text-sm transition-all ${
-                isActive
-                  ? "border-slate-200 border-b-white bg-white font-medium text-slate-900"
-                  : "border-transparent bg-slate-200/70 text-slate-600 hover:bg-slate-200"
-              }`}
-            >
-              {/* Tab Button */}
-              <Link
-                href={tab.path}
-                role="tab"
-                aria-selected={isActive}
-                className="flex h-full min-w-0 flex-1 items-center gap-2 px-1 text-left"
-              >
-                <span className="shrink-0">{tab.icon}</span>
-
-                <span className="truncate">{tab.title}</span>
-              </Link>
-
-              {/* Close Tab */}
-              <button
-                type="button"
-                onClick={(event) => handleCloseTab(event, tab.path)}
-                aria-label={`Close ${tab.title}`}
-                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-500 opacity-0 transition-all duration-200 hover:bg-slate-200 hover:text-slate-700 group-hover:opacity-100"
-              >
-                <FiX className="h-4 w-4" />
-              </button>
-            </div>
-          );
-        })}
-
-        {/*   NEW TAB*/}
-        <Link
-          href="/"
-          aria-label="New dashboard tab"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-t-lg border border-transparent text-slate-500 transition-all duration-200 hover:bg-slate-200/70 hover:text-slate-700"
+        {/* TABS */}
+        <div
+          role="tablist"
+          aria-label="Open pages"
+          className="flex h-11 items-end gap-1 overflow-x-auto border-b border-slate-200 bg-slate-100 px-2 pt-1"
         >
-          <FiPlus className="h-5 w-5" />
-        </Link>
-      </div>
-    </FadeUp>
+          {tabs.map((tab) => {
+            const isActive = pathname === tab.path;
+
+            return (
+              <div
+                key={tab.path}
+                className={`group flex h-10 min-w-[150px] items-center justify-between gap-1 rounded-t-lg border px-2 text-sm transition-all ${
+                  isActive
+                    ? "border-slate-200 border-b-white bg-white font-medium text-slate-900"
+                    : "border-transparent bg-slate-200/70 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {/* Tab Button */}
+                <Link
+                  href={tab.path}
+                  role="tab"
+                  aria-selected={isActive}
+                  className="flex h-full min-w-0 flex-1 items-center gap-2 px-1 text-left"
+                >
+                  <span className="shrink-0">{tab.icon}</span>
+
+                  <span className="truncate">{tab.title}</span>
+                </Link>
+
+                {/* Close Tab */}
+                <button
+                  type="button"
+                  onClick={(event) => handleCloseTab(event, tab.path)}
+                  aria-label={`Close ${tab.title}`}
+                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-500 opacity-0 transition-all duration-200 hover:bg-slate-200 hover:text-slate-700 group-hover:opacity-100"
+                >
+                  <FiX className="h-4 w-4" />
+                </button>
+              </div>
+            );
+          })}
+
+          {/* NEW TAB */}
+          <Link
+            href="/"
+            aria-label="New dashboard tab"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-t-lg border border-transparent text-slate-500 transition-all duration-200 hover:bg-slate-200/70 hover:text-slate-700"
+          >
+            <FiPlus className="h-5 w-5" />
+          </Link>
+        </div>
+      </FadeUp>
+    </header>
   );
 };
 
