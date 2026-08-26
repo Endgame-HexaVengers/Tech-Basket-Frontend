@@ -14,7 +14,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       {" "}
       <div className="min-h-screen w-full">
         {/* Fixed Sidebar */}
-        <aside className="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
+        <aside className="fixed left-0 top-0 z-50 flex h-screen min-h-0 w-64 flex-col border-r border-slate-200 bg-white">
           <DefaultSidebar />
         </aside>
 

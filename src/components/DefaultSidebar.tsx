@@ -236,7 +236,7 @@ const DefaultSidebar = () => {
   );
 
   return (
-    <aside className="flex h-screen w-full flex-col overflow-hidden border-r border-slate-200 bg-white">
+    <aside className="flex h-screen min-h-0 w-full flex-col overflow-hidden border-r border-slate-200 bg-white">
       {/* LOGO  */}
       <div className="flex h-16 shrink-0 items-center gap-3 border-b border-slate-200 px-5">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#00175c] text-lg font-bold text-white">
@@ -253,7 +253,7 @@ const DefaultSidebar = () => {
       </div>
 
       {/*  SCROLLABLE NAVIGATION */}
-      <nav className="min-h-0 flex-1 overflow-y-auto p-3">
+      <nav className="min-h-0 flex-1 overflow-y-scroll overscroll-contain p-3 scrollbar-gutter-stable">
         <div className="space-y-2">
           {/* DASHBOARD */}
           {/* <SidebarLink
