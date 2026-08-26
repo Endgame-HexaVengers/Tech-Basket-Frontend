@@ -8,7 +8,7 @@ import {
   Users,
   X,
 } from "lucide-react";
-import FadeUp from "./FadeUp";
+import FadeUp from "../FadeUp";
 import { Button } from "@heroui/react";
 
 type Branch = {
