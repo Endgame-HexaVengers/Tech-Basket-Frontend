@@ -73,7 +73,7 @@ const PurchaseOptions = [
     permission: PERMISSIONS.PURCHASE_CREATE,
   },
   {
-    href: "/purchase/invoice",
+    href: "/purchase/purchase-invoice",
     label: "Purchase Invoice",
     permission: PERMISSIONS.PURCHASE_INVOICE,
   },
@@ -449,7 +449,7 @@ const DefaultSidebar = () => {
         </div>
       </nav>
 
-      {/* ================= OPTIONAL BOTTOM MENU ================= */}
+      {/*OPTIONAL BOTTOM MENU*/}
       <div className="shrink-0 border-t border-slate-200 p-3">
         <p className="text-center text-xs text-slate-400">TechBasket ERP</p>
       </div>

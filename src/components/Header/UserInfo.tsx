@@ -100,7 +100,8 @@ const UserInfo = () => {
               <Link
                 href="/my-profile"
                 onClick={() => setProfileOpen(false)}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50 hover:text-indigo-600"
+                className="flex w-full items-center gap-3
+                rounded-full px-3 py-2.5 text-sm my-3 border border-gray-100 text-slate-700 transition-colors  hover:bg-blue-100 hover:text-indigo-600"
               >
                 <FiUser className="h-4 w-4" />
                 <span>Profile</span>
@@ -111,7 +112,8 @@ const UserInfo = () => {
                 type="button"
                 onClick={handleLogout}
                 isDisabled={isLoggingOut}
-                className="mt-1 flex w-full items-center gap-3 rounded-lg border-0 bg-transparent px-3 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-1 flex w-full items-center gap-3 border border-gray-100 rounded-full bg-red-50
+                 px-3 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <FiLogOut className="h-4 w-4" />
                 <span>{isLoggingOut ? "Logging out..." : "Log Out"}</span>

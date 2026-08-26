@@ -11,20 +11,18 @@ type MainLayoutProps = {
 const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <TabProvider>
-      {" "}
-      <div className="min-h-screen w-full">
+      <div className="min-h-screen w-full bg-slate-50 flex">
         {/* Fixed Sidebar */}
         <aside className="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-slate-200 bg-white">
           <DefaultSidebar />
         </aside>
 
-        {/* Main Content */}
-        <div className="ml-64 min-h-screen">
-          <header>
-            <DefaultHeader />
-          </header>
+        {/* Main Content Area */}
+        <div className="ml-64 flex-1 min-h-screen flex flex-col">
+          <DefaultHeader />
 
-          <main>{children}</main>
+          {/* Page Content */}
+          <main className="flex-1 p-6">{children}</main>
         </div>
       </div>
     </TabProvider>
