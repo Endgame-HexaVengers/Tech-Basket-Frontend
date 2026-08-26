@@ -8,6 +8,7 @@ import { FiPlus, FiX } from "react-icons/fi";
 
 import { useTabs, type Tab } from "@/context/TabContext";
 import HeadingInfo from "./Header/HeadingInfo";
+import FadeUp from "./FadeUp";
 
 const TAB_DEFINITIONS: Record<string, Tab> = {
   "/dashboard": {
@@ -122,7 +123,7 @@ const DefaultHeader = () => {
   };
 
   return (
-    <div className="sticky top-0 z-40 bg-white">
+    <FadeUp className="sticky top-0 z-40 bg-white">
       {/*  HEADER */}
 
       <HeadingInfo />
@@ -181,7 +182,7 @@ const DefaultHeader = () => {
           <FiPlus className="h-5 w-5" />
         </Link>
       </div>
-    </div>
+    </FadeUp>
   );
 };
 

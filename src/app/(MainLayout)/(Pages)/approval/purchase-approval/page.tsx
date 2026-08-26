@@ -1,8 +1,8 @@
 "use client";
 
-import ApprovalActionsButton from "@/components/ApprovalActionsButton";
-import ApprovalFilters from "@/components/ApprovalFilters";
-import PurchaseOrderTable from "@/components/PurchaseOrderTable";
+import ApprovalActionsButton from "@/components/ApprovalSection/ApprovalActionsButton";
+import ApprovalFilters from "@/components/ApprovalSection/ApprovalFilters";
+import PurchaseOrderTable from "@/components/PurchaseOrder/PurchaseOrderTable";
 import { Branch } from "@/types/branch";
 import { PurchaseOrder } from "@/types/types";
 import { useEffect, useState } from "react";

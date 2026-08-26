@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { FiMoreVertical, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiMoreVertical } from 'react-icons/fi';
 import { LuCompass } from 'react-icons/lu';
 import { Branch, FilterParams } from '@/types/branch';
 import { FaStore } from 'react-icons/fa';
-import SearchFilters from './SearchFilters';
-import FadeUp from './FadeUp';
+import SearchFilters from '../SearchSection/SearchFilters';
+import FadeUp from '../FadeUp';
 
 
 

@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import FadeUp from "@/components/FadeUp";
 import ResizableTable from "@/components/ResizableTable";
-import SearchCard from "@/components/SearchCard";
+import SearchCard from "@/components/SearchSection/SearchCard";
 import { SEARCH_TABS, RESULTS_MAP } from "@/data/searchResults";
 import type { SearchTab } from "@/types/search";
 
