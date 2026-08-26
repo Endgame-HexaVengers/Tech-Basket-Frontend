@@ -342,7 +342,7 @@ const DefaultSidebar = () => {
             <SidebarDropdown label="Sales" icon={<BiStore />} nested>
               {SalesOptions.map((item) => (
                 <SidebarLink
-                  key={item.href}
+                  key={`${item.href}-${item.label}`}
                   href={item.href}
                   label={item.label}
                   pathname={pathname}
