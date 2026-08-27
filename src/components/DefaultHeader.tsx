@@ -130,7 +130,7 @@ const DefaultHeader = () => {
             return (
               <div
                 key={fullPath}
-                className={`group flex h-10 min-w-[150px] items-center justify-between gap-1 rounded-t-lg border px-2 text-sm transition-all ${
+                className={`group flex h-10 min-w-37.5 items-center justify-between gap-1 rounded-t-lg border px-2 text-sm transition-all ${
                   isActive
                     ? "border-slate-200 border-b-white bg-white font-medium text-slate-900"
                     : "border-transparent bg-slate-200/70 text-slate-600 hover:bg-slate-200"
