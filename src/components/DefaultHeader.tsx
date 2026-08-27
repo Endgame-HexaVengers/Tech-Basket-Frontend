@@ -118,11 +118,12 @@ const DefaultHeader = () => {
       <FadeUp>
         <HeadingInfo />
 
-        <div
-          role="tablist"
-          aria-label="Open pages"
-          className="flex h-11 items-end gap-1 overflow-x-auto border-b border-slate-200 bg-slate-100 px-2 pt-1"
-        >
+        <div className="overflow-hidden w-full">
+          <div
+            role="tablist"
+            aria-label="Open pages"
+            className="flex h-11 items-end gap-1 overflow-x-auto border-b border-slate-200 bg-slate-100 px-2 pt-1"
+          >
           {tabs.map((tab) => {
             const fullPath = getTabFullPath(tab);
             const isActive = activeTab === fullPath;
@@ -169,6 +170,7 @@ const DefaultHeader = () => {
           >
             <FiPlus className="h-5 w-5" />
           </button>
+        </div>
         </div>
       </FadeUp>
     </header>
