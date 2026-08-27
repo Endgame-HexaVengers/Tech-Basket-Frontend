@@ -39,6 +39,10 @@ export const PERMISSIONS = {
   RMA_DELIVERY_APPROVE: "approval.rma.customer_delivery",
   RMA_REPLACEMENT_OUT_APPROVE: "approval.rma.replacement_out",
   RMA_REPLACEMENT_IN_APPROVE: "approval.rma.replacement_in",
+
+  // Search
+  SEARCH_ADVANCE: "search.advance",
+  SEARCH_RMA: "search.rma",
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
