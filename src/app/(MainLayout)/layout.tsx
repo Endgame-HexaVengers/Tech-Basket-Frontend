@@ -24,8 +24,10 @@ import PurchaseHistoryPage from "@/app/(MainLayout)/(Pages)/purchase/History/pag
 import PurchaseFinalInvoicePage from "@/app/(MainLayout)/(Pages)/purchase/invoice/page";
 import RmaReplacementInPage from "@/app/(MainLayout)/(Pages)/rma/replacement-in/page";
 import ApprovalPage from "@/app/(MainLayout)/(Pages)/approval/page";
+import AddProductApprovalPage from "@/app/(MainLayout)/(Pages)/approval/add-product-approval/page";
 import SalesReturnApprovalPage from "@/app/(MainLayout)/(Pages)/approval/sales-return/page";
 import PurchaseApprovalPage from "@/app/(MainLayout)/(Pages)/approval/purchase-approval/page";
+import PurchaseReturnApprovalPage from "@/app/(MainLayout)/(Pages)/approval/purchase-return/page";
 import UserManagementPage from "@/app/(MainLayout)/(Pages)/admin/users/page";
 import ProductsPage from "@/app/(MainLayout)/(Pages)/admin/products/page";
 import AddProductPage from "@/app/(MainLayout)/(Pages)/admin/products/add/page";
@@ -52,8 +54,11 @@ const ROUTE_MAP: Record<string, ComponentType> = {
   "/purchase/invoice": PurchaseFinalInvoicePage,
   "/rma/replacement-in": RmaReplacementInPage,
   "/approval": ApprovalPage,
+  "/approval/sales": SalesApprovalPage,
   "/approval/sales-return": SalesReturnApprovalPage,
+  "/approval/add-product-approval": AddProductApprovalPage,
   "/approval/purchase-approval": PurchaseApprovalPage,
+  "/approval/purchase-return": PurchaseReturnApprovalPage,
   "/admin/users": UserManagementPage,
   "/admin/products": ProductsPage,
   "/admin/products/add": AddProductPage,
