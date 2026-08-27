@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useTabs, type Tab } from "@/context/TabContext";
 
 import { FiPlus, FiX } from "react-icons/fi";
@@ -81,12 +80,6 @@ const getTabFullPath = (tab: Tab): string => {
 
 const DefaultHeader = () => {
   const { tabs, activeTab, openTab, closeTab, setActiveTab } = useTabs();
-
-  useEffect(() => {
-    if (tabs.length === 0) {
-      openTab(TAB_DEFINITIONS["/"]);
-    }
-  }, [tabs.length, openTab]);
 
   const handleCloseTab = (event: React.MouseEvent, fullPath: string) => {
     event.stopPropagation();
