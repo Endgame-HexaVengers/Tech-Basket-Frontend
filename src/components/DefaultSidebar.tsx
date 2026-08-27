@@ -82,6 +82,11 @@ const PurchaseOptions = [
     label: "Purchase Invoice",
     permission: PERMISSIONS.PURCHASE_INVOICE,
   },
+  // {
+  //   href: "/purchase/purchase-order",
+  //   label: "Purchase Order",
+  //   permission: PERMISSIONS.PURCHASE_RETURN,
+  // },
   {
     href: "/purchase/return",
     label: "Purchase Return",
@@ -207,7 +212,7 @@ const DefaultSidebar = () => {
               openTab={openTab}
             />
             <SidebarLink
-              href="/admin/users"
+              href="/admin/users-management"
               label="Users"
               icon={<FiUsers />}
               activeTab={activeTab}
@@ -215,6 +220,9 @@ const DefaultSidebar = () => {
             />
           </SidebarDropdown>
 
+<<<<<<< HEAD
+          {/*TASK */}
+=======
           <SidebarDropdown label="Search" icon={<FiSearch />}>
             {SearchOptions.map((item) => (
               <SidebarLink
@@ -228,6 +236,7 @@ const DefaultSidebar = () => {
             ))}
           </SidebarDropdown>
 
+>>>>>>> a5eceb3e00465051da2d60954c0c9dca0dd9e002
           <SidebarDropdown
             label="Task"
             icon={<BiStore className="text-blue-600" />}
