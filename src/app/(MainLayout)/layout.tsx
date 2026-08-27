@@ -18,7 +18,6 @@ import PurchaseCreatePage from "@/app/(MainLayout)/(Pages)/purchase/create/page"
 import PurchaseInvoicePage from "@/app/(MainLayout)/(Pages)/purchase/purchase-invoice/page";
 import PurchaseReturnPage from "@/app/(MainLayout)/(Pages)/purchase/return/page";
 import PurchaseListPage from "@/app/(MainLayout)/(Pages)/purchase/purchaseList/page";
-import AddPurchaseOrderPage from "@/app/(MainLayout)/(Pages)/purchase/addPurcheseOrder/page";
 import OrderDetailsPage from "@/app/(MainLayout)/(Pages)/purchase/order-details/page";
 import PurchaseHistoryPage from "@/app/(MainLayout)/(Pages)/purchase/History/page";
 import PurchaseFinalInvoicePage from "@/app/(MainLayout)/(Pages)/purchase/invoice/page";
@@ -49,7 +48,6 @@ const ROUTE_MAP: Record<string, ComponentType> = {
   "/purchase/purchase-invoice": PurchaseInvoicePage,
   "/purchase/return": PurchaseReturnPage,
   "/purchase/purchaseList": PurchaseListPage,
-  "/purchase/addPurcheseOrder": AddPurchaseOrderPage,
   "/purchase/order-details": OrderDetailsPage,
   "/purchase/History": PurchaseHistoryPage,
   "/purchase/invoice": PurchaseFinalInvoicePage,
