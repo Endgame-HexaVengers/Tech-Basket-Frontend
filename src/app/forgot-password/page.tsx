@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
     Form,
     Button,
@@ -20,7 +19,6 @@ import { authClient } from "@/lib/auth-client";
 
 const ForgotPasswordPage = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -30,7 +28,7 @@ const ForgotPasswordPage = () => {
         const email = formData.get("email") as string;
 
         try {
-            const { data, error } = await authClient.requestPasswordReset({
+            const { error } = await authClient.requestPasswordReset({
                 email,
                 redirectTo: "/reset-password", 
             });
