@@ -1,4 +1,3 @@
-import { users } from "@/types/user-data";
 import {
   CircleCheck,
   CircleX,
@@ -10,15 +9,6 @@ import FadeUp from "../FadeUp";
 
 const UserStats = () => {
   const totalUsers = 48;
-
-  const activeUsers = users.filter(
-    (user) => user.status === "Active"
-  ).length;
-
-  const inactiveUsers = users.filter(
-    (user) => user.status === "Inactive"
-  ).length;
-
   const unassignedUsers = 2;
 
   const stats = [

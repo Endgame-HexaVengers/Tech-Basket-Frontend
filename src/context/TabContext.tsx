@@ -4,7 +4,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useState,
   type ComponentType,
   type ReactNode,
@@ -45,25 +44,22 @@ const titleFromPath = (path: string): string => {
 };
 
 export const TabProvider = ({ children }: { children: ReactNode }) => {
-  const [tabs, setTabs] = useState<Tab[]>([]);
-  const [activeTab, setActiveTabState] = useState<string>("");
+  const [tabs, setTabs] = useState<Tab[]>(() => {
+    if (typeof window === "undefined") return [];
+    const path = window.location.pathname;
+    const query = window.location.search.slice(1) || undefined;
+    return [{ path, title: titleFromPath(path), icon: "•", query }];
+  });
+  const [activeTab, setActiveTabState] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    const path = window.location.pathname;
+    const query = window.location.search.slice(1);
+    return query ? `${path}?${query}` : path;
+  });
   const [pageRegistry, setPageRegistry] = useState<
     Map<string, ComponentType>
   >(new Map());
   const [mountedPages, setMountedPages] = useState<string[]>([]);
-
-  useEffect(() => {
-    const path = window.location.pathname;
-    const query = window.location.search.slice(1) || undefined;
-    const fullPath = query ? `${path}?${query}` : path;
-
-    setTabs((currentTabs) =>
-      currentTabs.length > 0
-        ? currentTabs
-        : [{ path, title: titleFromPath(path), icon: "•", query }],
-    );
-    setActiveTabState(fullPath);
-  }, []);
 
   const setActiveTab = useCallback((path: string, replace = false) => {
     setActiveTabState(path);

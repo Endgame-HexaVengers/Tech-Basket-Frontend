@@ -51,7 +51,7 @@ export default function ResizableTable({
       document.addEventListener("mousemove", onMouseMove);
       document.addEventListener("mouseup", onMouseUp);
     },
-    [onColResize],
+    [colWidths, onColResize],
   );
 
   const onRowResizeStart = useCallback(

@@ -38,7 +38,7 @@ const RegisterPage = () => {
     }
 
     try {
-      const { data, error } = await signUp.email({
+      const { error } = await signUp.email({
         name: userData.name,
         email: userData.email,
         password: userData.password,
@@ -53,7 +53,7 @@ const RegisterPage = () => {
       } else {
         toast.error(error.message || "Something went wrong");
       }
-    } catch (err) {
+    } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);

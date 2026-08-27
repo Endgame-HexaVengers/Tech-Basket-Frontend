@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Building2,
   CheckCircle2,
@@ -54,32 +54,6 @@ export default function BranchesPage() {
 
   const [error, setError] = useState("");
 
-  const fetchBranches = async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch(`${API_URL}/api/branches`);
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch branches");
-      }
-
-      const data = await response.json();
-
-      const branchList: Branch[] = Array.isArray(data)
-        ? data
-        : data.branches || data.data || [];
-
-      setBranches(branchList);
-
-      calculateStats(branchList);
-    } catch (error) {
-      console.error("Error fetching branches:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const calculateStats = (branchList: Branch[]) => {
     const totalBranches = branchList.length;
 
@@ -111,10 +85,37 @@ export default function BranchesPage() {
     });
   };
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchBranches();
+  const fetchBranches = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const response = await fetch(`${API_URL}/api/branches`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch branches");
+      }
+
+      const data = await response.json();
+
+      const branchList: Branch[] = Array.isArray(data)
+        ? data
+        : data.branches || data.data || [];
+
+      setBranches(branchList);
+
+      calculateStats(branchList);
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    fetchBranches();
+  }, [fetchBranches]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleAddBranch = async (
     e: React.FormEvent<HTMLFormElement>
