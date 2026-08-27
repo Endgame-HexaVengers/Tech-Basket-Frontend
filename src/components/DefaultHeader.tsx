@@ -46,6 +46,12 @@ const TAB_DEFINITIONS: Record<string, Tab> = {
     title: "System Config",
     icon: "⚙",
   },
+
+  "/search": {
+    path: "/search",
+    title: "Search",
+    icon: "🔍",
+  },
 };
 
 const createTabFromPath = (path: string): Tab => {

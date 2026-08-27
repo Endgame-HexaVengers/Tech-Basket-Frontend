@@ -19,6 +19,7 @@ type TabContextType = {
   activeTab: string;
   openTab: (tab: Tab) => void;
   closeTab: (path: string) => void;
+  updateTabTitle: (path: string, title: string) => void;
 };
 
 const TabContext = createContext<TabContextType | null>(null);
@@ -43,6 +44,12 @@ export const TabProvider = ({ children }: { children: ReactNode }) => {
     setActiveTab((current) => (current === path ? "" : current));
   }, []);
 
+  const updateTabTitle = useCallback((path: string, title: string) => {
+    setTabs((prev) =>
+      prev.map((tab) => (tab.path === path ? { ...tab, title } : tab)),
+    );
+  }, []);
+
   return (
     <TabContext.Provider
       value={{
@@ -50,6 +57,7 @@ export const TabProvider = ({ children }: { children: ReactNode }) => {
         activeTab,
         openTab,
         closeTab,
+        updateTabTitle,
       }}
     >
       {children}
