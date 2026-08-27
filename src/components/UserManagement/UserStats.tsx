@@ -41,14 +41,14 @@ const UserStats = () => {
       value: 4,
       icon: CircleX,
       iconBg: "bg-red-50",
-      iconColor: "text-red-600",
+      iconColor: "text-blue-600",
     },
     {
       title: "Unassigned",
       value: unassignedUsers,
       icon: UserRoundX,
       iconBg: "bg-gray-100",
-      iconColor: "text-gray-600",
+      iconColor: "text-blue-600",
     },
   ];
 

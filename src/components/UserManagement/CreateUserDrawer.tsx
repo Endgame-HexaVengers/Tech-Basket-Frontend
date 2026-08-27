@@ -179,18 +179,17 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
     );
 
     return (
-        <FadeUp className="fixed inset-0 z-50 overflow-hidden">
+        <div className="fixed inset-0 z-50 overflow-hidden">
             {/* Background Overlay */}
             <div
                 className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
-                onClick={!isSubmitting ? onClose : undefined}
-            />
+                onClick={!isSubmitting ? onClose : undefined}/>
 
-            <div className="fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <FadeUp className="fixed inset-y-0 right-0 flex max-w-full pl-10">
                 <div className="w-screen max-w-xl bg-slate-50 text-slate-800 shadow-2xl flex flex-col justify-between transform transition-transform duration-300">
 
                     {/* Header */}
-                    <div className="flex items-start justify-between bg-white border-b border-gray-200 px-6 py-5">
+                    <FadeUp className="flex items-start justify-between bg-white border-b border-gray-200 px-6 py-5">
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900">Create New User</h2>
                             <p className="mt-1 text-xs text-slate-500 font-medium">
@@ -205,13 +204,13 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                         >
                             <X size={20} />
                         </button>
-                    </div>
+                    </FadeUp>
 
                     {/* Form Scrollable Content */}
                     <div className="flex-1 overflow-y-auto p-6 space-y-5">
 
                         {/* 1. Basic Info Section */}
-                        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
+                        <FadeUp className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
                             <div className="flex items-center gap-2 font-semibold text-slate-900 text-sm mb-4">
                                 <User size={18} className="text-blue-600" />
                                 Basic Info
@@ -230,7 +229,7 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                                             disabled={isSubmitting}
                                             value={formData.fullName}
                                             onChange={handleInputChange}
-                                            placeholder="Jane Doe"
+                                            placeholder="Your full name"
                                             className="w-full rounded-lg border border-slate-200 bg-slate-50/50 pl-9 pr-3 py-2 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                         />
                                     </div>
@@ -241,7 +240,7 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                                         <label className="text-xs font-semibold text-slate-700">
                                             Username <span className="text-rose-500">*</span>
                                         </label>
-                                        <span className="text-[10px] text-emerald-600 font-medium flex items-center gap-0.5">
+                                        <span className="text-[10px] text-blue-600 font-medium flex items-center gap-0.5">
                                             <Check size={10} /> Available
                                         </span>
                                     </div>
@@ -253,7 +252,7 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                                             disabled={isSubmitting}
                                             value={formData.username}
                                             onChange={handleInputChange}
-                                            placeholder="janedoe"
+                                            placeholder="Your username"
                                             className="w-full rounded-lg border border-slate-200 bg-slate-50/50 pl-9 pr-3 py-2 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                         />
                                     </div>
@@ -271,7 +270,7 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                                             disabled={isSubmitting}
                                             value={formData.email}
                                             onChange={handleInputChange}
-                                            placeholder="jane@techbasket.com"
+                                            placeholder="Your email address"
                                             className="w-full rounded-lg border border-slate-200 bg-slate-50/50 pl-9 pr-3 py-2 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                         />
                                     </div>
@@ -289,16 +288,16 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                                             disabled={isSubmitting}
                                             value={formData.phone}
                                             onChange={handleInputChange}
-                                            placeholder="+1 (555) 000-0000"
+                                            placeholder="Your phone number"
                                             className="w-full rounded-lg border border-slate-200 bg-slate-50/50 pl-9 pr-3 py-2 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                         />
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </FadeUp>
 
                         {/* 2. Security Section */}
-                        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
+                        <FadeUp className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
                             <div className="flex items-center gap-2 font-semibold text-slate-900 text-sm mb-4">
                                 <Lock size={18} className="text-blue-600" />
                                 Security
@@ -355,20 +354,10 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="mt-3">
-                                <div className="grid grid-cols-4 gap-1.5 h-1">
-                                    <div className="bg-rose-500 rounded-full h-full"></div>
-                                    <div className="bg-amber-800 rounded-full h-full"></div>
-                                    <div className="bg-slate-200 rounded-full h-full"></div>
-                                    <div className="bg-slate-200 rounded-full h-full"></div>
-                                </div>
-                                <span className="text-[10px] text-slate-400 block text-right mt-1">Fair</span>
-                            </div>
-                        </div>
+                        </FadeUp>
 
                         {/* 3. Role & Branch */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <FadeUp className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                             <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between">
                                 <div>
@@ -445,11 +434,11 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                                 </div>
                             </div>
 
-                        </div>
+                        </FadeUp>
                     </div>
 
                     {/* Footer Buttons with Loading Spinners */}
-                    <div className="flex items-center justify-between border-t border-gray-200 px-6 py-4 bg-white">
+                    <FadeUp className="flex items-center justify-between border-t border-gray-200 px-6 py-6 bg-white">
                         <button
                             type="button"
                             disabled={isSubmitting}
@@ -464,7 +453,7 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                                 type="button"
                                 disabled={isSubmitting}
                                 onClick={() => handleSaveAction("draft")}
-                                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 active:scale-[0.98] disabled:opacity-60 cursor-pointer min-w-[120px]"
+                                className="inline-flex items-center justify-center gap-2 rounded border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 active:scale-[0.98] disabled:opacity-60 cursor-pointer min-w-[120px]"
                             >
                                 {isSavingDraft ? (
                                     <>
@@ -480,7 +469,7 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                                 type="button"
                                 disabled={isSubmitting}
                                 onClick={() => handleSaveAction("create")}
-                                className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-blue-700 px-4 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-blue-800 active:scale-[0.98] disabled:opacity-60 cursor-pointer min-w-[130px]"
+                                className="inline-flex items-center justify-center gap-1.5 rounded bg-blue-700 px-4 py-2 text-xs font-semibold text-white shadow-2xs hover:bg-blue-800 active:scale-[0.98] disabled:opacity-60 cursor-pointer min-w-[130px]"
                             >
                                 {isCreatingUser ? (
                                     <>
@@ -494,11 +483,10 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
                                 )}
                             </button>
                         </div>
-                    </div>
-
+                    </FadeUp>
                 </div>
-            </div>
-        </FadeUp>
+            </FadeUp>
+        </div>
     );
 };
 
