@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import FadeUp from "@/components/FadeUp";
 import ResizableTable from "@/components/ResizableTable";
 import SearchCard from "@/components/SearchSection/SearchCard";
@@ -18,24 +18,16 @@ const parseTabFromActive = (activeTab: string): SearchTab => {
 };
 
 export default function SearchPage() {
-  const { activeTab, updateTabTitle } = useTabs();
+  const { activeTab, setActiveTab, updateTabTitle } = useTabs();
 
   const [serialMap, setSerialMap] = useState<Record<SearchTab, string>>({
     advance: "",
     rma: "",
     production: "",
   });
-  const [phoneMap, setPhoneMap] = useState<Record<SearchTab, string>>({
-    advance: "",
-    rma: "",
-    production: "",
-  });
   const [colWidths, setColWidths] = useState<Record<string, number>>({});
 
-  const searchType = useMemo(
-    () => parseTabFromActive(activeTab),
-    [activeTab],
-  );
+  const searchType = parseTabFromActive(activeTab);
 
   const results = RESULTS_MAP[searchType];
 
@@ -43,24 +35,14 @@ export default function SearchPage() {
     (tab: SearchTab) => {
       const label = SEARCH_TABS.find((t) => t.key === tab)?.label ?? "Search";
       updateTabTitle("/search", label);
-
-      const url = new URL(window.location.href);
-      url.searchParams.set("tab", tab);
-      window.history.replaceState(null, "", url.toString());
+      setActiveTab(`/search?tab=${tab}`, true);
     },
-    [updateTabTitle],
+    [updateTabTitle, setActiveTab],
   );
 
   const handleSerialChange = useCallback(
     (value: string) => {
       setSerialMap((prev) => ({ ...prev, [searchType]: value }));
-    },
-    [searchType],
-  );
-
-  const handlePhoneChange = useCallback(
-    (value: string) => {
-      setPhoneMap((prev) => ({ ...prev, [searchType]: value }));
     },
     [searchType],
   );
@@ -78,8 +60,6 @@ export default function SearchPage() {
           onTabChange={handleTabChange}
           serial={serialMap[searchType]}
           onSerialChange={handleSerialChange}
-          phone={phoneMap[searchType]}
-          onPhoneChange={handlePhoneChange}
         />
       </FadeUp>
 

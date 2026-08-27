@@ -22,7 +22,7 @@ type TabContextType = {
   openTab: (tab: Tab) => void;
   closeTab: (path: string) => void;
   updateTabTitle: (path: string, title: string) => void;
-  setActiveTab: (path: string) => void;
+  setActiveTab: (path: string, replace?: boolean) => void;
   registerPage: (path: string, component: ComponentType) => void;
   unregisterPage: (path: string) => void;
   getPageComponent: (path: string) => ComponentType | undefined;
@@ -65,9 +65,22 @@ export const TabProvider = ({ children }: { children: ReactNode }) => {
   >(new Map());
   const [mountedPages, setMountedPages] = useState<string[]>([]);
 
-  const setActiveTab = useCallback((path: string) => {
+  const setActiveTab = useCallback((path: string, replace = false) => {
     setActiveTabState(path);
-    window.history.pushState(null, "", path);
+
+    const basePath = getBasePath(path);
+    const query = path.split("?")[1] || undefined;
+    setTabs((prev) =>
+      prev.map((tab) =>
+        tab.path === basePath ? { ...tab, query } : tab
+      )
+    );
+
+    if (replace) {
+      window.history.replaceState(null, "", path);
+    } else {
+      window.history.pushState(null, "", path);
+    }
   }, []);
 
   const registerPage = useCallback((path: string, component: ComponentType) => {

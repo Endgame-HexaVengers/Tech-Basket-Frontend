@@ -367,7 +367,7 @@ type SidebarLinkProps = {
 
 const SidebarLink = ({ href, label, icon, query, activeTab, openTab }: SidebarLinkProps) => {
   const fullPath = query ? `${href}?${query}` : href;
-  const isActive = activeTab === fullPath || activeTab.startsWith(`${href}?`) || activeTab.startsWith(`${href}/`);
+  const isActive = activeTab === fullPath || (query && activeTab.startsWith(`${href}?`));
 
   const handleClick = () => {
     openTab({ path: href, title: label, icon: "•", query });
