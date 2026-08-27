@@ -1,11 +1,6 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export default function NotFound() {
-  const pathname = usePathname();
-
   return (
     <div className="flex h-full flex-col items-center justify-center px-6 text-center">
       <div className="max-w-md space-y-6">
@@ -33,12 +28,6 @@ export default function NotFound() {
           This page is currently being built and is not available yet. Our team
           is working hard to bring this feature to you soon.
         </p>
-
-        {pathname && (
-          <p className="rounded-md bg-gray-100 px-3 py-1.5 font-mono text-xs text-gray-400">
-            {pathname}
-          </p>
-        )}
 
         <div className="pt-1">
           <Link
