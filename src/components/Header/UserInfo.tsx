@@ -1,8 +1,8 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
+import { useTabs } from "@/context/TabContext";
 import { Button } from "@heroui/react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,6 +13,7 @@ const UserInfo = () => {
 
   const user = session?.user;
   const router = useRouter();
+  const { openTab, tabs } = useTabs();
 
   // Profile dropdown state
   const [profileOpen, setProfileOpen] = useState(false);
@@ -97,15 +98,22 @@ const UserInfo = () => {
               <div className="my-1 border-t border-slate-100" />
 
               {/* Profile */}
-              <Link
-                href="/my-profile"
-                onClick={() => setProfileOpen(false)}
+              <button
+                type="button"
+                onClick={() => {
+                  setProfileOpen(false);
+                  const exists = tabs.some((t) => t.path === "/my-profile");
+                  openTab({ path: "/my-profile", title: "My Profile", icon: "👤" });
+                  if (!exists) {
+                    openTab({ path: "/my-profile", title: "My Profile", icon: "👤" });
+                  }
+                }}
                 className="flex w-full items-center gap-3
                 rounded-full px-3 py-2.5 text-sm my-3 border border-gray-100 text-slate-700 transition-colors  hover:bg-blue-100 hover:text-indigo-600"
               >
                 <FiUser className="h-4 w-4" />
                 <span>Profile</span>
-              </Link>
+              </button>
 
               {/* Logout */}
               <Button

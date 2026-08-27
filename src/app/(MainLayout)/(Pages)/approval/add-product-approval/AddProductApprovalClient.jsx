@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  FileText,
   RefreshCw,
   Search,
   X,
@@ -51,6 +52,7 @@ const AddProductApproval = () => {
   const [selected, setSelected] = useState([]);
   const [message, setMessage] = useState("");
   const [approvalRequest, setApprovalRequest] = useState(null);
+  const [reportRequest, setReportRequest] = useState(null);
 
   const filteredRequests = useMemo(
     () =>
@@ -94,7 +96,9 @@ const AddProductApproval = () => {
 
   const approveRequest = () => {
     if (!approvalRequest) return;
-    setRequests((current) => current.filter((request) => request.id !== approvalRequest.id));
+    setRequests((current) =>
+      current.filter((request) => request.id !== approvalRequest.id),
+    );
     setApprovalRequest(null);
     setMessage("Product approved successfully.");
     window.setTimeout(() => setMessage(""), 2500);
@@ -105,10 +109,10 @@ const AddProductApproval = () => {
       <div className="mx-auto max-w-362.5">
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-                <h1 className="text-[29px] font-bold tracking-tight text-[#111827]">
+            <h1 className="text-[29px] font-bold tracking-tight text-[#111827]">
               Product Approval
             </h1>
-                <p className="mt-1 text-[13px] text-[#526079]">
+            <p className="mt-1 text-[14px] text-[#526079]">
               Review and approve newly created products before they become
               available for business operations.
             </p>
@@ -119,14 +123,14 @@ const AddProductApproval = () => {
               setRequests(initialRequests);
               setSelected([]);
             }}
-            className="inline-flex h-10 items-center gap-2 rounded-md border border-[#d3dbe7] bg-white px-4 text-[12px] font-semibold text-[#344054] shadow-sm hover:bg-[#f1f5f9]"
+            className="inline-flex h-10 items-center gap-2 rounded-md border border-[#d3dbe7] bg-white px-4 text-[14px] font-semibold text-[#344054] shadow-sm hover:bg-[#f1f5f9]"
           >
             <RefreshCw size={13} /> Refresh List
           </button>
         </div>
         <section className="mb-5 rounded-md border border-[#d6dce6] bg-white p-4 shadow-[0_2px_5px_rgba(15,23,42,0.05)]">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
-            <label className="block text-[11px] font-semibold text-[#344054]">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.45fr)]">
+            <label className="block min-w-0 text-[14px] font-semibold text-[#344054]">
               Search
               <div className="relative">
                 <Search
@@ -137,7 +141,7 @@ const AddProductApproval = () => {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="SKU, Name..."
-                  className="mt-1.5 h-10 w-full rounded-md border border-[#d6dce6] pl-8 pr-2 text-[12px] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
+                  className="mt-1.5 h-10 w-full rounded-md border border-[#d6dce6] pl-8 pr-2 text-[14px] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
                 />
               </div>
             </label>
@@ -159,22 +163,22 @@ const AddProductApproval = () => {
               options={["All Categories", "Peripherals", "Monitor"]}
               onChange={setCategory}
             />
-            <label className="block text-[11px] font-semibold text-[#344054]">
+            <label className="block min-w-0 text-[14px] font-semibold text-[#344054]">
               Date Range
-              <div className="mt-1.5 flex h-10 items-center gap-2">
-                <span className="relative block flex-1">
+              <div className="mt-1.5 flex h-10 min-w-0 items-center gap-2">
+                <span className="relative block min-w-0 flex-1">
                   <input
                     type="date"
                     aria-label="From date"
-                    className="h-10 w-full rounded-md border border-[#d6dce6] bg-white px-2 text-[11px] text-[#718096] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
+                    className="h-10 w-full min-w-0 rounded-md border border-[#d6dce6] bg-white px-2 text-[14px] text-[#718096] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
                   />
                 </span>
-                <span className="text-[12px] text-[#718096]">-</span>
-                <span className="relative block flex-1">
+                <span className="text-[14px] text-[#718096]">-</span>
+                <span className="relative block min-w-0 flex-1">
                   <input
                     type="date"
                     aria-label="To date"
-                    className="h-10 w-full rounded-md border border-[#d6dce6] bg-white px-2 text-[11px] text-[#718096] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
+                    className="h-10 w-full min-w-0 rounded-md border border-[#d6dce6] bg-white px-2 text-[14px] text-[#718096] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
                   />
                 </span>
               </div>
@@ -184,14 +188,14 @@ const AddProductApproval = () => {
         {message && (
           <div
             role="status"
-            className="mb-3 rounded-md border border-[#c8d7f4] bg-[#eef4ff] px-3 py-2 text-[12px] text-[#2949a8]"
+            className="mb-3 rounded-md border border-[#c8d7f4] bg-[#eef4ff] px-3 py-2 text-[14px] text-[#2949a8]"
           >
             {message}
           </div>
         )}
         <section className="overflow-hidden rounded-md border border-[#d6dce6] bg-white shadow-[0_2px_5px_rgba(15,23,42,0.05)]">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#d6dce6] bg-[#fbfcfe] px-3 py-2">
-            <span className="text-[12px] font-semibold text-[#344054]">
+            <span className="text-[14px] font-semibold text-[#344054]">
               {filteredRequests.length} items pending approval
             </span>
             <div className="flex gap-2">
@@ -199,7 +203,7 @@ const AddProductApproval = () => {
                 type="button"
                 disabled={!selected.length}
                 onClick={() => processSelected("approved")}
-                className="inline-flex h-7 items-center gap-1 rounded-md border border-[#dfe5ed] px-2 text-[10px] text-[#718096] disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#eefaf5]"
+                className="inline-flex h-9 items-center gap-1 rounded-md border border-[#dfe5ed] px-3 text-[14px] text-[#718096] disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#eefaf5]"
               >
                 <Check size={11} /> Bulk Approve
               </button>
@@ -207,7 +211,7 @@ const AddProductApproval = () => {
                 type="button"
                 disabled={!selected.length}
                 onClick={() => processSelected("rejected")}
-                className="inline-flex h-7 items-center gap-1 rounded-md border border-[#dfe5ed] px-2 text-[10px] text-[#718096] disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#fff3f1]"
+                className="inline-flex h-9 items-center gap-1 rounded-md border border-[#dfe5ed] px-3 text-[14px] text-[#718096] disabled:cursor-not-allowed disabled:opacity-50 hover:bg-[#fff3f1]"
               >
                 <X size={11} /> Bulk Reject
               </button>
@@ -215,7 +219,7 @@ const AddProductApproval = () => {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-250 border-collapse text-left">
-              <thead className="bg-[#f1f3f6] text-[10px] font-bold uppercase tracking-[0.04em] text-[#43516a]">
+              <thead className="bg-[#f1f3f6] text-[14px] font-bold uppercase tracking-[0.04em] text-[#43516a]">
                 <tr>
                   {[
                     ["check", ""],
@@ -230,7 +234,7 @@ const AddProductApproval = () => {
                   ].map(([key, heading]) => (
                     <th
                       key={key}
-                      className="h-9 border-b border-[#d9dee7] px-3 font-bold"
+                      className={`h-9 border-b border-[#d9dee7] px-3 font-bold ${key === "action" ? "min-w-55" : ""}`}
                     >
                       {key === "check" ? (
                         <input
@@ -247,7 +251,7 @@ const AddProductApproval = () => {
                   ))}
                 </tr>
               </thead>
-              <tbody className="text-[11px] text-[#344054]">
+              <tbody className="text-[14px] text-[#344054]">
                 {filteredRequests.map((request) => (
                   <tr
                     key={request.id}
@@ -262,7 +266,7 @@ const AddProductApproval = () => {
                         className="accent-[#2949a8]"
                       />
                     </td>
-                    <td className="px-3 text-[10px]">{request.id}</td>
+                    <td className="px-3 text-[14px]">{request.id}</td>
                     <td className="px-3">
                       <button
                         type="button"
@@ -272,41 +276,51 @@ const AddProductApproval = () => {
                         {request.product}
                       </button>
                     </td>
-                    <td className="px-3 text-[10px]">{request.sku}</td>
+                    <td className="px-3 text-[14px]">{request.sku}</td>
                     <td className="px-3">{request.brand}</td>
                     <td className="px-3">{request.category}</td>
                     <td className="px-3">
-                      <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#e9edf2] text-[8px] font-semibold text-[#526079]">
+                      <span className="mr-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#e9edf2] text-[14px] font-semibold text-[#526079]">
                         {request.initials}
                       </span>
                       {request.requestedBy}
                     </td>
                     <td className="px-3">
-                      <span className="rounded-full border border-[#ffcbbd] bg-[#fff0eb] px-2 py-1 text-[9px] font-medium uppercase text-[#c35b42]">
+                      <span className="rounded-full border border-[#ffcbbd] bg-[#fff0eb] px-2 py-1 text-[14px] font-medium uppercase text-[#c35b42]">
                         Pending
                       </span>
                     </td>
-                    <td className="px-3">
-                      <button
-                        type="button"
-                        aria-label={`Open ${request.product}`}
-                        onClick={() => setApprovalRequest(request)}
-                        className="inline-flex h-7 items-center gap-1 rounded-md border border-[#b9c8e6] bg-[#f5f8ff] px-2.5 text-[10px] font-semibold text-[#2949a8] hover:bg-[#e8efff]"
-                      >
-                        <Check size={12} /> Approve
-                      </button>
+                    <td className="min-w-55 px-3">
+                      <div className="flex items-center gap-2 whitespace-nowrap">
+                        <button
+                          type="button"
+                          aria-label={`Approve ${request.product}`}
+                          onClick={() => setApprovalRequest(request)}
+                          className="inline-flex h-9 items-center gap-1 rounded-md border border-[#b9c8e6] bg-[#f5f8ff] px-3 text-[14px] font-semibold text-[#2949a8] hover:bg-[#e8efff]"
+                        >
+                          <Check size={12} /> Approve
+                        </button>
+                        <button
+                          type="button"
+                          aria-label={`Report ${request.product}`}
+                          onClick={() => setReportRequest(request)}
+                          className="inline-flex h-9 items-center gap-1 rounded-md border border-[#d7b7b0] bg-[#fff8f6] px-3 text-[14px] font-semibold text-[#a6361d] hover:bg-[#fff0eb]"
+                        >
+                          <FileText size={13} /> Report
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             {filteredRequests.length === 0 && (
-              <div className="py-10 text-center text-[12px] text-[#718096]">
+              <div className="py-10 text-center text-[14px] text-[#718096]">
                 No pending product approvals found.
               </div>
             )}
           </div>
-          <div className="flex items-center justify-between border-t border-[#d9dee7] bg-[#fbfcfe] px-3 py-2 text-[10px] text-[#536174]">
+          <div className="flex items-center justify-between border-t border-[#d9dee7] bg-[#fbfcfe] px-3 py-2 text-[14px] text-[#536174]">
             <span>
               Showing{" "}
               {filteredRequests.length ? `1-${filteredRequests.length}` : 0} of{" "}
@@ -334,20 +348,37 @@ const AddProductApproval = () => {
           </div>
         </section>
       </div>
-      {approvalRequest && <ApproveProduct productName={approvalRequest.product} onClose={() => setApprovalRequest(null)} onApprove={approveRequest} />}
+      {approvalRequest && (
+        <ApproveProduct
+          productName={approvalRequest.product}
+          onClose={() => setApprovalRequest(null)}
+          onApprove={approveRequest}
+        />
+      )}
+      {reportRequest && (
+        <ReportProduct
+          productName={reportRequest.product}
+          onClose={() => setReportRequest(null)}
+          onSubmit={() => {
+            setReportRequest(null);
+            setMessage("Product report submitted successfully.");
+            window.setTimeout(() => setMessage(""), 2500);
+          }}
+        />
+      )}
     </main>
   );
 };
 
 function FilterSelect({ label, value, options, onChange }) {
   return (
-    <label className="block text-[11px] font-semibold text-[#344054]">
+    <label className="block min-w-0 text-[14px] font-semibold text-[#344054]">
       {label}
       <span className="relative block">
         <select
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className="mt-1.5 h-10 w-full appearance-none rounded-md border border-[#d6dce6] bg-white px-2.5 pr-7 text-[12px] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
+          className="mt-1.5 h-10 w-full min-w-0 appearance-none rounded-md border border-[#d6dce6] bg-white px-2.5 pr-7 text-[14px] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
         >
           {options.map((option) => (
             <option key={option}>{option}</option>
@@ -359,6 +390,73 @@ function FilterSelect({ label, value, options, onChange }) {
         />
       </span>
     </label>
+  );
+}
+
+function ReportProduct({ productName, onClose, onSubmit }) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#172235]/45 p-4"
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="report-product-title"
+        className="w-full max-w-130 overflow-hidden rounded-lg bg-white shadow-2xl"
+      >
+        <div className="px-5 py-5">
+          <div className="flex items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#a6361d] text-white">
+              <FileText size={19} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2
+                id="report-product-title"
+                className="text-[18px] font-semibold text-[#172235]"
+              >
+                Report Product
+              </h2>
+              <p className="mt-1 text-[14px] text-[#526079]">{productName}</p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close report dialog"
+              className="rounded p-1 text-[#526079] hover:bg-[#f1f5f9]"
+            >
+              <X size={19} />
+            </button>
+          </div>
+          <label className="mt-5 block text-[14px] font-semibold text-[#344054]">
+            Report Reason
+            <textarea
+              className="mt-1.5 h-28 w-full resize-none rounded-md border border-[#d6dce6] p-3 text-[14px] font-normal outline-none focus:border-[#a6361d] focus:ring-2 focus:ring-[#ffe0d8]"
+              placeholder="Describe the issue with this product..."
+            />
+          </label>
+        </div>
+        <div className="flex justify-end gap-2 border-t border-[#d9dee7] bg-[#f8fafc] px-5 py-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-10 rounded-sm bg-[#e5e7eb] px-4 text-[14px] font-medium text-[#344054] hover:bg-[#dce0e5]"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onSubmit}
+            className="inline-flex h-10 items-center gap-2 rounded-sm bg-[#a6361d] px-4 text-[14px] font-semibold text-white hover:bg-[#8f2c18]"
+          >
+            <FileText size={15} /> Submit Report
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 

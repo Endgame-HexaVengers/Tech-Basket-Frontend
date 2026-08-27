@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTabs } from "@/context/TabContext";
 
 const products = [
   ["Logitech B175 Mouse", "LOG-B175-WH", "Logitech", "Mouse", "White"],
@@ -11,7 +11,7 @@ const products = [
 ];
 
 export default function ProductClient() {
-  const router = useRouter();
+  const { openTab } = useTabs();
   const [query, setQuery] = useState("");
   const visibleProducts = useMemo(
     () =>
@@ -34,7 +34,7 @@ export default function ProductClient() {
           </div>
           <button
             type="button"
-            onClick={() => router.push("/admin/products/add")}
+            onClick={() => openTab({ path: "/admin/products/add", title: "Add Product", icon: "📦" })}
             className="h-10 rounded-lg bg-[#2949a8] px-4 text-[13px] font-semibold text-white"
           >
             Add Product

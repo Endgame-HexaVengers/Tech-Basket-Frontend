@@ -1,50 +1,51 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useTabs, type Tab } from "@/context/TabContext";
 
 import { FiPlus, FiX } from "react-icons/fi";
 
-import { useTabs, type Tab } from "@/context/TabContext";
 import HeadingInfo from "./Header/HeadingInfo";
 import FadeUp from "./FadeUp";
 
 const TAB_DEFINITIONS: Record<string, Tab> = {
+  "/": {
+    path: "/",
+    title: "Home",
+  },
+
   "/dashboard": {
     path: "/dashboard",
     title: "Dashboard",
-    icon: "⌂",
   },
 
   "/approval": {
     path: "/approval",
     title: "Approval",
-    icon: "✓",
   },
 
   "/purchase": {
     path: "/purchase",
     title: "Purchase",
-    icon: "🛒",
   },
 
   "/admin/users-roles": {
     path: "/admin/users-roles",
     title: "Users & Roles",
-    icon: "⚙",
   },
 
   "/admin/branches-locations": {
     path: "/admin/branches-locations",
     title: "Branches / Locations",
-    icon: "⚙",
   },
 
   "/admin/system-config": {
     path: "/admin/system-config",
     title: "System Config",
-    icon: "⚙",
+  },
+
+  "/search": {
+    path: "/search",
+    title: "Search",
   },
 };
 
@@ -73,96 +74,84 @@ const createTabFromPath = (path: string): Tab => {
   };
 };
 
+const getTabFullPath = (tab: Tab): string => {
+  return tab.query ? `${tab.path}?${tab.query}` : tab.path;
+};
+
 const DefaultHeader = () => {
-  const pathname = usePathname();
-  const router = useRouter();
+  const { tabs, activeTab, openTab, closeTab, setActiveTab } = useTabs();
 
-  const profileMenuRef = useRef<HTMLDivElement>(null);
-
-  const { tabs, openTab, closeTab } = useTabs();
-
-  useEffect(() => {
-    if (pathname && pathname !== "/") {
-      openTab(createTabFromPath(pathname));
-    }
-  }, [openTab, pathname]);
-
-  useEffect(() => {
-    const handlePointerDown = (event: PointerEvent) => {
-      if (
-        profileMenuRef.current &&
-        !profileMenuRef.current.contains(event.target as Node)
-      ) {
-      }
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, []);
-
-  const handleCloseTab = (event: React.MouseEvent, path: string) => {
+  const handleCloseTab = (event: React.MouseEvent, fullPath: string) => {
     event.stopPropagation();
 
-    const currentIndex = tabs.findIndex((tab) => tab.path === path);
+    const currentIndex = tabs.findIndex(
+      (tab) => getTabFullPath(tab) === fullPath,
+    );
 
-    const isCurrentTab = pathname === path;
+    const isCurrentTab = activeTab === fullPath;
 
-    closeTab(path);
+    closeTab(fullPath);
 
     if (isCurrentTab) {
-      const remainingTabs = tabs.filter((tab) => tab.path !== path);
+      const remainingTabs = tabs.filter(
+        (tab) => getTabFullPath(tab) !== fullPath,
+      );
 
       const nextTab =
         remainingTabs[currentIndex - 1] ||
         remainingTabs[currentIndex] ||
         remainingTabs[0];
 
-      router.push(nextTab?.path || "/");
+      if (nextTab) {
+        setActiveTab(getTabFullPath(nextTab));
+      }
     }
   };
 
-  return (
+  const handleNewTab = () => {
+    const homeTab = createTabFromPath("/");
+    openTab(homeTab);
+  };
 
+  return (
     <header className="sticky top-0 z-40 w-full bg-white shadow-sm">
       <FadeUp>
-        {/* HEADER INFO */}
         <HeadingInfo />
 
-        {/* TABS */}
         <div
           role="tablist"
           aria-label="Open pages"
           className="flex h-11 items-end gap-1 overflow-x-auto border-b border-slate-200 bg-slate-100 px-2 pt-1"
         >
           {tabs.map((tab) => {
-            const isActive = pathname === tab.path;
+            const fullPath = getTabFullPath(tab);
+            const isActive = activeTab === fullPath;
 
             return (
               <div
-                key={tab.path}
+                key={fullPath}
                 className={`group flex h-10 min-w-[150px] items-center justify-between gap-1 rounded-t-lg border px-2 text-sm transition-all ${
                   isActive
                     ? "border-slate-200 border-b-white bg-white font-medium text-slate-900"
                     : "border-transparent bg-slate-200/70 text-slate-600 hover:bg-slate-200"
                 }`}
               >
-                {/* Tab Button */}
-                <Link
-                  href={tab.path}
+                <button
+                  type="button"
+                  onClick={() => setActiveTab(fullPath)}
                   role="tab"
                   aria-selected={isActive}
                   className="flex h-full min-w-0 flex-1 items-center gap-2 px-1 text-left"
                 >
-                  <span className="shrink-0">{tab.icon}</span>
-
+                  {isActive && (
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />
+                  )}
                   <span className="truncate">{tab.title}</span>
-                </Link>
+                </button>
 
-                {/* Close Tab */}
                 <button
                   type="button"
-                  onClick={(event) => handleCloseTab(event, tab.path)}
+                  onClick={(event) => handleCloseTab(event, fullPath)}
                   aria-label={`Close ${tab.title}`}
                   className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-500 opacity-0 transition-all duration-200 hover:bg-slate-200 hover:text-slate-700 group-hover:opacity-100"
                 >
@@ -172,14 +161,14 @@ const DefaultHeader = () => {
             );
           })}
 
-          {/* NEW TAB */}
-          <Link
-            href="/"
-            aria-label="New dashboard tab"
+          <button
+            type="button"
+            onClick={handleNewTab}
+            aria-label="New tab"
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-t-lg border border-transparent text-slate-500 transition-all duration-200 hover:bg-slate-200/70 hover:text-slate-700"
           >
             <FiPlus className="h-5 w-5" />
-          </Link>
+          </button>
         </div>
       </FadeUp>
     </header>

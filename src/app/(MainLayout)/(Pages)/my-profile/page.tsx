@@ -2,6 +2,7 @@
 
 import FadeUp from "@/components/FadeUp";
 import { authClient } from "@/lib/auth-client";
+import { useTabs } from "@/context/TabContext";
 import { Spinner } from "@heroui/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -22,6 +23,7 @@ const DEFAULT_AVATAR = "https://images.unsplash.com/photo-1535713875002-d1d0cf37
 const MyProfilePage = () => {
   const { data: session, isPending } = authClient.useSession();
   const router = useRouter();
+  const { tabs, activeTab, setActiveTab } = useTabs();
   const user = session?.user;
 
   // Custom type definitions
@@ -83,7 +85,13 @@ const MyProfilePage = () => {
           <div className="flex items-center gap-4">
             <button
               type="button"
-              onClick={() => router.back()}
+              onClick={() => {
+                const currentIndex = tabs.findIndex((t) => t.path === activeTab);
+                const prevTab = tabs[currentIndex - 1] || tabs[0];
+                if (prevTab) {
+                  setActiveTab(prevTab.path);
+                }
+              }}
               aria-label="Go back"
               className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:bg-slate-100 hover:text-slate-900 active:scale-95"
             >

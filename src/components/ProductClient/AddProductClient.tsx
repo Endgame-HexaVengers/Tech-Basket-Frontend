@@ -1,10 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useTabs } from "@/context/TabContext";
 
 export default function AddProductClient() {
-  const router = useRouter();
+  const { setActiveTab } = useTabs();
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -52,7 +52,7 @@ export default function AddProductClient() {
             <textarea name="description" className="mt-2 h-28 w-full rounded-md border border-[#d6dce6] p-3 text-[13px]" />
           </label>
           <div className="flex flex-wrap justify-end gap-3 border-t border-[#dfe4ec] pt-6 lg:col-span-2">
-            <button type="button" onClick={() => router.push("/admin/products")} className="h-10 px-4 text-[12px] text-[#536174]">Cancel</button>
+            <button type="button" onClick={() => setActiveTab("/admin/products")} className="h-10 px-4 text-[12px] text-[#536174]">Cancel</button>
             <button type="submit" disabled={saving} className="h-10 rounded-md bg-[#2949a8] px-5 text-[12px] font-semibold text-white disabled:opacity-60">{saving ? "Saving..." : "Create Product"}</button>
           </div>
         </form>
