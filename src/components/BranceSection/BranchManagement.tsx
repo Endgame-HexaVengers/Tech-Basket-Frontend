@@ -13,7 +13,6 @@ import FadeUp from '../FadeUp';
 export default function BranchManagement() {
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [totalCount, setTotalCount] = useState<number>(0);
 
   // Backend Fetch Function
   const fetchBranches = useCallback(async (filters?: FilterParams) => {
@@ -30,7 +29,6 @@ export default function BranchManagement() {
       const data = await response.json();
 
       setBranches(data.branches || []);
-      setTotalCount(data.total || 0);
     } catch (error) {
       console.error('Failed to fetch branches:', error);
     } finally {

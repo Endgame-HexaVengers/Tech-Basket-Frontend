@@ -73,7 +73,7 @@ export default function ApprovalPage() {
         const data = await res.json();
         if (data && data.length > 0) setBranches(data);
       }
-    } catch (error) {
+    } catch {
       console.log("Using default branches list.");
     }
   };
