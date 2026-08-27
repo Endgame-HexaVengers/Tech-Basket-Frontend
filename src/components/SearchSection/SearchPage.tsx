@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import FadeUp from "@/components/FadeUp";
 import ResizableTable from "@/components/ResizableTable";
 import SearchCard from "@/components/SearchSection/SearchCard";
@@ -8,10 +8,18 @@ import { useTabs } from "@/context/TabContext";
 import { SEARCH_TABS, RESULTS_MAP } from "@/data/searchResults";
 import type { SearchTab } from "@/types/search";
 
-export default function SearchPage() {
-  const { updateTabTitle } = useTabs();
+const parseTabFromActive = (activeTab: string): SearchTab => {
+  const params = new URLSearchParams(activeTab.split("?")[1] || "");
+  const tab = params.get("tab");
+  if (tab === "rma" || tab === "advance" || tab === "production") {
+    return tab;
+  }
+  return "advance";
+};
 
-  const [searchType, setSearchType] = useState<SearchTab>("advance");
+export default function SearchPage() {
+  const { activeTab, updateTabTitle } = useTabs();
+
   const [serialMap, setSerialMap] = useState<Record<SearchTab, string>>({
     advance: "",
     rma: "",
@@ -24,13 +32,21 @@ export default function SearchPage() {
   });
   const [colWidths, setColWidths] = useState<Record<string, number>>({});
 
+  const searchType = useMemo(
+    () => parseTabFromActive(activeTab),
+    [activeTab],
+  );
+
   const results = RESULTS_MAP[searchType];
 
   const handleTabChange = useCallback(
     (tab: SearchTab) => {
-      setSearchType(tab);
       const label = SEARCH_TABS.find((t) => t.key === tab)?.label ?? "Search";
       updateTabTitle("/search", label);
+
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", tab);
+      window.history.replaceState(null, "", url.toString());
     },
     [updateTabTitle],
   );

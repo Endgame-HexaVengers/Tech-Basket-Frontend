@@ -1,9 +1,7 @@
 "use client";
 
-import { User } from "@/types/user";
-import { Permission, PERMISSIONS } from "@/utils/Permission";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { PERMISSIONS } from "@/utils/Permission";
+import { useTabs } from "@/context/TabContext";
 import { useState, type ReactNode } from "react";
 
 import {
@@ -21,9 +19,17 @@ import {
   FcSettings,
 } from "react-icons/fc";
 
-import { FiTruck, FiUsers } from "react-icons/fi";
+import { FiSearch, FiTruck, FiUsers } from "react-icons/fi";
 
-// RMA Options
+const SearchOptions = [
+  {
+    href: "/search",
+    label: "Advance Search",
+    query: "tab=advance",
+    permission: PERMISSIONS.SEARCH_ADVANCE,
+  },
+];
+
 const RmaOptions = [
   {
     href: "/rma/complain-received",
@@ -46,7 +52,7 @@ const RmaOptions = [
     permission: PERMISSIONS.RMA_REPLACEMENT_IN,
   },
 ];
-// Sales Options
+
 const SalesOptions = [
   {
     href: "/sales/create",
@@ -65,7 +71,6 @@ const SalesOptions = [
   },
 ];
 
-// Purchase Options
 const PurchaseOptions = [
   {
     href: "/purchase/create",
@@ -84,7 +89,6 @@ const PurchaseOptions = [
   },
 ];
 
-// Approval Options
 const ApprovalOptions = [
   {
     href: "/approval/sales",
@@ -138,7 +142,6 @@ const ApprovalOptions = [
   },
 ];
 
-// Inventory Options
 const InventoryOptions = [
   {
     href: "/inventory/current-stock",
@@ -162,182 +165,84 @@ const InventoryOptions = [
   },
 ];
 
-const sampleUser: User = {
-  id: "USR-001",
-  name: "Rahim Ahmed",
-  email: "rahim@techbasket.com",
-  role: "Purchase Executive",
-  permissions: [
-    PERMISSIONS.PRODUCT_CREATE,
-    PERMISSIONS.PRODUCT_VIEW,
-    PERMISSIONS.PRODUCT_UPDATE,
-
-    PERMISSIONS.PURCHASE_CREATE,
-    PERMISSIONS.PURCHASE_INVOICE,
-    PERMISSIONS.PURCHASE_RETURN,
-
-    PERMISSIONS.INVENTORY_CURRENT_VIEW,
-    PERMISSIONS.INVENTORY_RMA_VIEW,
-    PERMISSIONS.INVENTORY_TRANSFER,
-    PERMISSIONS.INVENTORY_TRANSFER_INVOICE,
-
-    PERMISSIONS.RMA_COMPLAINT_RECEIVED,
-    PERMISSIONS.RMA_CUSTOMER_DELIVERY,
-  ],
-};
-
-// const sampleUser = {
-//   id: "USR-001",
-//   name: "Rahim Ahmed",
-//   email: "rahim@techbasket.com",
-
-//   role: "Purchase Executive",
-
-//   permissions: [
-//     PERMISSIONS.PRODUCT_CREATE,
-//     PERMISSIONS.PRODUCT_VIEW,
-//     PERMISSIONS.PRODUCT_UPDATE,
-
-//     PERMISSIONS.PURCHASE_CREATE,
-//     PERMISSIONS.PURCHASE_INVOICE,
-//     PERMISSIONS.PURCHASE_RETURN,
-
-//     PERMISSIONS.INVENTORY_CURRENT_VIEW,
-//     PERMISSIONS.INVENTORY_RMA_VIEW,
-//     PERMISSIONS.INVENTORY_TRANSFER,
-//     PERMISSIONS.INVENTORY_TRANSFER_INVOICE,
-
-//     PERMISSIONS.RMA_COMPLAINT_RECEIVED,
-//     PERMISSIONS.RMA_CUSTOMER_DELIVERY,
-//   ],
-// };
-
 const DefaultSidebar = () => {
-  const pathname = usePathname();
-
-  const hasPermission = (permission: Permission) => {
-    return sampleUser.permissions.includes(permission);
-  };
-
-  const allowedPurchaseOptions = PurchaseOptions.filter((item) =>
-    hasPermission(item.permission),
-  );
-  const allowedSalesOptions = SalesOptions.filter((item) =>
-    hasPermission(item.permission),
-  );
-  const allowedInventoryOptions = InventoryOptions.filter((item) =>
-    hasPermission(item.permission),
-  );
-  const allowedApprovalOptions = ApprovalOptions.filter((item) =>
-    hasPermission(item.permission),
-  );
-  const allowedRmaOptions = RmaOptions.filter((item) =>
-    hasPermission(item.permission),
-  );
+  const { activeTab, openTab } = useTabs();
 
   return (
     <aside className="flex h-screen min-h-0 w-full flex-col overflow-hidden border-r border-slate-200 bg-white">
-      {/* LOGO  */}
       <div className="flex h-16 shrink-0 items-center gap-3 border-b border-slate-200 px-5">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#00175c] text-lg font-bold text-white">
           T
         </div>
-
         <div>
           <h1 className="text-xl font-bold text-slate-900">
             Tech<span className="text-blue-600">Basket</span>
           </h1>
-
           <p className="text-xs text-slate-500">ERP Management</p>
         </div>
       </div>
 
-      {/*  SCROLLABLE NAVIGATION */}
       <nav className="min-h-0 flex-1 overflow-y-scroll overscroll-contain p-3 scrollbar-gutter-stable">
         <div className="space-y-2">
-          {/* DASHBOARD */}
-          {/* <SidebarLink
-            href="/dashboard"
-            label="Dashboard"
-            icon={<FcHome />}
-            pathname={pathname}
-          /> */}
-
-          {/*SETUP  */}
           <SidebarDropdown label="Setup" icon={<FcSettings />}>
             <SidebarLink
               href="/admin/products"
               label="Products"
               icon={<FcPackage />}
-              pathname={pathname}
+              activeTab={activeTab}
+              openTab={openTab}
             />
-
             <SidebarLink
               href="/admin/suppliers"
               label="Suppliers"
               icon={<FiTruck />}
-              pathname={pathname}
+              activeTab={activeTab}
+              openTab={openTab}
             />
-
             <SidebarLink
               href="/admin/branches"
               label="Branches"
               icon={<FcDepartment />}
-              pathname={pathname}
+              activeTab={activeTab}
+              openTab={openTab}
             />
-
             <SidebarLink
               href="/admin/users"
               label="Users"
               icon={<FiUsers />}
-              pathname={pathname}
+              activeTab={activeTab}
+              openTab={openTab}
             />
           </SidebarDropdown>
 
-          {/* ================= TASK ================= */}
+          <SidebarDropdown label="Search" icon={<FiSearch />}>
+            {SearchOptions.map((item) => (
+              <SidebarLink
+                key={`${item.href}-${item.query}`}
+                href={item.href}
+                label={item.label}
+                query={item.query}
+                activeTab={activeTab}
+                openTab={openTab}
+              />
+            ))}
+          </SidebarDropdown>
+
           <SidebarDropdown
             label="Task"
             icon={<BiStore className="text-blue-600" />}
           >
-            {/* ========== PURCHASE ========== */}
-            {/* {allowedPurchaseOptions.length > 0 && (
-              <SidebarDropdown label="Purchase" icon={<BiPurchaseTag />} nested>
-                {allowedPurchaseOptions.map((item) => (
-                  <SidebarLink
-                    key={item.href}
-                    href={item.href}
-                    label={item.label}
-                    pathname={pathname}
-                  />
-                ))}
-              </SidebarDropdown>
-            )} */}
-
             <SidebarDropdown label="Purchase" icon={<BiPurchaseTag />} nested>
               {PurchaseOptions.map((item) => (
                 <SidebarLink
                   key={item.href}
                   href={item.href}
                   label={item.label}
-                  pathname={pathname}
+                  activeTab={activeTab}
+                  openTab={openTab}
                 />
               ))}
             </SidebarDropdown>
-
-            {/* ========== Sales ========== */}
-
-            {/* {allowedSalesOptions.length > 0 && (
-              <SidebarDropdown label="Sales" icon={<BiStore />} nested>
-                {allowedSalesOptions.map((item) => (
-                  <SidebarLink
-                    key={item.href}
-                    href={item.href}
-                    label={item.label}
-                    pathname={pathname}
-                  />
-                ))}
-              </SidebarDropdown>
-            )} */}
 
             <SidebarDropdown label="Sales" icon={<BiStore />} nested>
               {SalesOptions.map((item) => (
@@ -345,24 +250,11 @@ const DefaultSidebar = () => {
                   key={`${item.href}-${item.label}`}
                   href={item.href}
                   label={item.label}
-                  pathname={pathname}
+                  activeTab={activeTab}
+                  openTab={openTab}
                 />
               ))}
             </SidebarDropdown>
-
-            {/* ========== Rma ========== */}
-            {/* {allowedRmaOptions.length > 0 && (
-              <SidebarDropdown label="Rma" icon={<BiUserVoice />} nested>
-                {allowedRmaOptions.map((item) => (
-                  <SidebarLink
-                    key={item.href}
-                    href={item.href}
-                    label={item.label}
-                    pathname={pathname}
-                  />
-                ))}
-              </SidebarDropdown>
-            )} */}
 
             <SidebarDropdown label="Rma" icon={<BiUserVoice />} nested>
               {RmaOptions.map((item) => (
@@ -370,25 +262,11 @@ const DefaultSidebar = () => {
                   key={item.href}
                   href={item.href}
                   label={item.label}
-                  pathname={pathname}
+                  activeTab={activeTab}
+                  openTab={openTab}
                 />
               ))}
             </SidebarDropdown>
-
-            {/* ========== INVENTORY ========== */}
-
-            {/* {allowedInventoryOptions.length > 0 && (
-              <SidebarDropdown label="Inventory" icon={<BiStore />} nested>
-                {allowedInventoryOptions.map((item) => (
-                  <SidebarLink
-                    key={item.href}
-                    href={item.href}
-                    label={item.label}
-                    pathname={pathname}
-                  />
-                ))}
-              </SidebarDropdown>
-            )} */}
 
             <SidebarDropdown label="Inventory" icon={<BiStore />} nested>
               {InventoryOptions.map((item) => (
@@ -396,25 +274,11 @@ const DefaultSidebar = () => {
                   key={item.href}
                   href={item.href}
                   label={item.label}
-                  pathname={pathname}
+                  activeTab={activeTab}
+                  openTab={openTab}
                 />
               ))}
             </SidebarDropdown>
-
-            {/* ========== APPROVAL ========== */}
-
-            {/* {allowedApprovalOptions.length > 0 && (
-              <SidebarDropdown label="Approval" icon={<FcApproval />} nested>
-                {allowedApprovalOptions.map((item) => (
-                  <SidebarLink
-                    key={item.href}
-                    href={item.href}
-                    label={item.label}
-                    pathname={pathname}
-                  />
-                ))}
-              </SidebarDropdown>
-            )} */}
 
             <SidebarDropdown label="Approval" icon={<FcApproval />} nested>
               {ApprovalOptions.map((item) => (
@@ -422,34 +286,15 @@ const DefaultSidebar = () => {
                   key={item.href}
                   href={item.href}
                   label={item.label}
-                  pathname={pathname}
+                  activeTab={activeTab}
+                  openTab={openTab}
                 />
               ))}
             </SidebarDropdown>
-
-            {/* ========== STOCK TRANSFER ========== */}
-            {/* <SidebarDropdown
-              label="Stock Transfer"
-              icon={<BiTransfer />}
-              nested
-            >
-              <SidebarLink
-                href="/stock-transfer/new"
-                label="New Transfer"
-                pathname={pathname}
-              />
-
-              <SidebarLink
-                href="/stock-transfer/list"
-                label="Transfer List"
-                pathname={pathname}
-              />
-            </SidebarDropdown> */}
           </SidebarDropdown>
         </div>
       </nav>
 
-      {/*OPTIONAL BOTTOM MENU*/}
       <div className="shrink-0 border-t border-slate-200 p-3">
         <p className="text-center text-xs text-slate-400">TechBasket ERP</p>
       </div>
@@ -487,10 +332,8 @@ const SidebarDropdown = ({
       >
         <div className="flex min-w-0 items-center gap-3">
           {icon && <span className="shrink-0 text-lg">{icon}</span>}
-
           <span className="truncate">{label}</span>
         </div>
-
         {isOpen ? (
           <BiChevronDown className="shrink-0 text-lg" />
         ) : (
@@ -513,30 +356,35 @@ const SidebarDropdown = ({
   );
 };
 
-//  REUSABLE SIDEBAR LINK
-
 type SidebarLinkProps = {
   href: string;
   label: string;
   icon?: ReactNode;
-  pathname: string;
+  query?: string;
+  activeTab: string;
+  openTab: (tab: { path: string; title: string; icon?: ReactNode; query?: string }) => void;
 };
 
-const SidebarLink = ({ href, label, icon, pathname }: SidebarLinkProps) => {
-  const isActive = pathname === href || pathname.startsWith(`${href}/`);
+const SidebarLink = ({ href, label, icon, query, activeTab, openTab }: SidebarLinkProps) => {
+  const fullPath = query ? `${href}?${query}` : href;
+  const isActive = activeTab === fullPath || activeTab.startsWith(`${href}?`) || activeTab.startsWith(`${href}/`);
+
+  const handleClick = () => {
+    openTab({ path: href, title: label, icon: "•", query });
+  };
 
   return (
-    <Link
-      href={href}
-      className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-all ${
+    <button
+      type="button"
+      onClick={handleClick}
+      className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-all ${
         isActive
           ? "bg-blue-50 font-semibold text-blue-600"
           : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
       }`}
     >
       {icon && <span className="shrink-0 text-base">{icon}</span>}
-
       <span className="truncate">{label}</span>
-    </Link>
+    </button>
   );
 };
