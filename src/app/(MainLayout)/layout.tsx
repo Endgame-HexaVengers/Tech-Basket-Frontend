@@ -33,6 +33,7 @@ import ProductsPage from "@/app/(MainLayout)/(Pages)/admin/products/page";
 import AddProductPage from "@/app/(MainLayout)/(Pages)/admin/products/add/page";
 import BranchesPage from "@/app/(MainLayout)/(Pages)/admin/branches/page";
 import SystemConfigPage from "@/app/(MainLayout)/(Pages)/admin/system-config/page";
+import NotFoundPage from "@/app/(MainLayout)/not-found-page";
 
 const ROUTE_MAP: Record<string, ComponentType> = {
   "/": HomePage,
@@ -99,9 +100,11 @@ const resolveRoute = (
     return pathname === route || pathname.startsWith(`${route}/`);
   });
 
-  const route = matchedRoute || "/";
+  if (matchedRoute) {
+    return { path: matchedRoute, component: routeMap[matchedRoute] };
+  }
 
-  return { path: route, component: routeMap[route] };
+  return { path: pathname, component: NotFoundPage };
 };
 
 const PageRenderer = ({ routeMap }: PageRendererProps) => {
@@ -118,10 +121,8 @@ const PageRenderer = ({ routeMap }: PageRendererProps) => {
 
   useEffect(() => {
     if (activeBasePath && !mountedPages.includes(activeBasePath)) {
-      const component = routeMap[activeBasePath];
-      if (component) {
-        registerPage(activeBasePath, component);
-      }
+      const component = routeMap[activeBasePath] || NotFoundPage;
+      registerPage(activeBasePath, component);
     }
   }, [activeBasePath, mountedPages, registerPage, routeMap]);
 
