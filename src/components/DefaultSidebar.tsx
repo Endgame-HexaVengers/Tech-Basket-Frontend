@@ -182,7 +182,14 @@ const DefaultSidebar = () => {
         </div>
       </div>
 
-      <nav className="min-h-0 flex-1 overflow-y-scroll overscroll-contain p-3 scrollbar-gutter-stable">
+      <nav
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 scrollbar-gutter-stable"
+        onWheel={(event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          event.currentTarget.scrollTop += event.deltaY;
+        }}
+      >
         <div className="space-y-2">
           <SidebarDropdown label="Setup" icon={<FcSettings />}>
             <SidebarLink
