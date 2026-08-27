@@ -77,6 +77,11 @@ const PurchaseOptions = [
     label: "Purchase Invoice",
     permission: PERMISSIONS.PURCHASE_INVOICE,
   },
+  // {
+  //   href: "/purchase/purchase-order",
+  //   label: "Purchase Order",
+  //   permission: PERMISSIONS.PURCHASE_RETURN,
+  // },
   {
     href: "/purchase/return",
     label: "Purchase Return",
@@ -287,14 +292,14 @@ const DefaultSidebar = () => {
             />
 
             <SidebarLink
-              href="/admin/users"
+              href="/admin/users-management"
               label="Users"
               icon={<FiUsers />}
               pathname={pathname}
             />
           </SidebarDropdown>
 
-          {/* ================= TASK ================= */}
+          {/*TASK */}
           <SidebarDropdown
             label="Task"
             icon={<BiStore className="text-blue-600" />}
