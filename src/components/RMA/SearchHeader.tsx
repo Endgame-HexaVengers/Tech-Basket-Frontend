@@ -1,4 +1,3 @@
-"use client";
 
 import React, { useState } from "react";
 import { Button } from "@heroui/react";
@@ -11,7 +10,7 @@ interface SearchHeaderProps {
 }
 
 export const SearchHeader: React.FC<SearchHeaderProps> = ({ onSearch, onClear }) => {
-  const [query, setQuery] = useState("SN-LGT-001928");
+  const [query, setQuery] = useState("");
 
   const handleClear = () => {
     setQuery("");
@@ -38,13 +37,13 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({ onSearch, onClear })
         <div className="flex gap-2 w-full sm:w-auto justify-end">
           <Button 
             onClick={() => onSearch(query)} 
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 rounded-xl shadow-md shadow-blue-500/20 active:scale-95 transition-all"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 rounded shadow-md shadow-blue-500/20 active:scale-95 transition-all"
           >
             <FiSearch className="mr-1" /> Search
           </Button>
           <Button 
             onClick={handleClear}
-            className="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium px-4 rounded-xl active:scale-95 transition-all"
+            className="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium px-4 rounded active:scale-95 transition-all"
           >
             <FiRotateCcw className="mr-1" /> Clear
           </Button>

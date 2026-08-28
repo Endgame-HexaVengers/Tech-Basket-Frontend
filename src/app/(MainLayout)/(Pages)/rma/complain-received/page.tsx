@@ -2,14 +2,12 @@
 
 import React, { useState } from "react";
 import { Button } from "@heroui/react";
-import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import { FiSave, FiPrinter, FiX, FiRefreshCw, FiShield } from "react-icons/fi";
 import { SearchHeader } from "@/components/RMA/SearchHeader";
 import { InfoCard } from "@/components/RMA/InfoCard";
 import { ComplaintForm } from "@/components/RMA/ComplaintForm";
-
-
+import toast from "react-hot-toast";
 
 export default function ComplaintReceviedPage() {
   const [formData, setFormData] = useState({
@@ -24,23 +22,32 @@ export default function ComplaintReceviedPage() {
     remarks: "",
   });
 
+  // Button Loading States
+  const [isDraftLoading, setIsDraftLoading] = useState(false);
+  const [isReportLoading, setIsReportLoading] = useState(false);
+  const [isClearLoading, setIsClearLoading] = useState(false);
+
   const handleSearch = (query: string) => {
     toast.success(`Searching serial: ${query}`);
   };
 
   const handleClear = () => {
-    setFormData({
-      complainerName: "",
-      contact: "",
-      relationship: "",
-      address: "",
-      complaintType: "",
-      physicalCondition: "",
-      accessories: "",
-      problemDescription: "",
-      remarks: "",
-    });
-    toast("Form cleared", { icon: "🧹" });
+    setIsClearLoading(true);
+    setTimeout(() => {
+      setFormData({
+        complainerName: "",
+        contact: "",
+        relationship: "",
+        address: "",
+        complaintType: "",
+        physicalCondition: "",
+        accessories: "",
+        problemDescription: "",
+        remarks: "",
+      });
+      setIsClearLoading(false);
+      toast.success("Form cleared");
+    }, 2500);
   };
 
   const handleSameAsCustomer = () => {
@@ -54,13 +61,24 @@ export default function ComplaintReceviedPage() {
     toast.success("Copied customer details");
   };
 
+
   const handleSaveDraft = () => {
-    toast.success("Draft saved successfully!");
+    setIsDraftLoading(true);
+    setTimeout(() => {
+      setIsDraftLoading(false);
+      toast.success("Draft saved successfully!");
+    }, 2500); // 2.5 seconds loading delay
   };
 
   const handleGenerateReport = () => {
+    setIsReportLoading(true);
     toast.promise(
-      new Promise((resolve) => setTimeout(resolve, 1500)),
+      new Promise((resolve) => {
+        setTimeout(() => {
+          setIsReportLoading(false);
+          resolve("success");
+        }, 2500); // 2.5 seconds loading delay
+      }),
       {
         loading: "Generating Report & Saving...",
         success: "Report Generated and Saved Successfully!",
@@ -71,12 +89,11 @@ export default function ComplaintReceviedPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8 text-slate-800 font-sans">
-      <Toaster position="top-right" />
-      <div className="max-w-6xl mx-auto space-y-6">
-        
+      <div className="space-y-6">
+
         {/* Page Title */}
-        <motion.h1 
-          initial={{ opacity: 0, x: -20 }} 
+        <motion.h1
+          initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="text-2xl font-bold text-slate-800 tracking-tight"
         >
@@ -125,7 +142,7 @@ export default function ComplaintReceviedPage() {
             />
           </div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl flex flex-col justify-between"
@@ -146,10 +163,10 @@ export default function ComplaintReceviedPage() {
         </div>
 
         {/* Form Sections */}
-        <ComplaintForm 
-          formData={formData} 
-          setFormData={setFormData} 
-          onSameAsCustomer={handleSameAsCustomer} 
+        <ComplaintForm
+          formData={formData}
+          setFormData={setFormData}
+          onSameAsCustomer={handleSameAsCustomer}
         />
 
         {/* RMA Tracking Info */}
@@ -164,34 +181,43 @@ export default function ComplaintReceviedPage() {
         />
 
         {/* Footer Action Buttons */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-slate-200"
         >
-          <Button 
+          <Button
             onClick={handleClear}
-            className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-4 py-2 rounded-xl transition-all"
+            className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-4 py-2 rounded transition-all"
           >
             <FiX className="mr-1" /> Cancel
           </Button>
-          <Button 
+
+          {/* Clear Button */}
+          <Button
+            isPending={isClearLoading}
             onClick={handleClear}
-            className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-4 py-2 rounded-xl transition-all"
+            className="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-4 py-2 rounded transition-all"
           >
-            <FiRefreshCw className="mr-1" /> Clear
+            {!isClearLoading && <FiRefreshCw className="mr-1" />} Clear
           </Button>
-          <Button 
+
+          {/* Save Draft Button */}
+          <Button
+            isPending={isDraftLoading}
             onClick={handleSaveDraft}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2 rounded-xl shadow-md shadow-blue-500/20 transition-all active:scale-95"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2 rounded shadow-md shadow-blue-500/20 transition-all active:scale-95"
           >
-            <FiSave className="mr-1" /> Save Draft
+            {!isDraftLoading && <FiSave className="mr-1" />} Save Draft
           </Button>
-          <Button 
+
+          {/* Generate Report Button */}
+          <Button
+            isPending={isReportLoading}
             onClick={handleGenerateReport}
-            className="bg-slate-900 hover:bg-black text-white font-medium px-5 py-2 rounded-xl shadow-md transition-all active:scale-95"
+            className="bg-slate-900 hover:bg-black text-white font-medium px-5 py-2 rounded shadow-md transition-all active:scale-95"
           >
-            <FiPrinter className="mr-1" /> Generate Report & Save
+            {!isReportLoading && <FiPrinter className="mr-1" />} Generate Report & Save
           </Button>
         </motion.div>
 

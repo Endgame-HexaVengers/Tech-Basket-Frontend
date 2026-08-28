@@ -33,6 +33,7 @@ import AddProductPage from "@/app/(MainLayout)/(Pages)/admin/products/add/page";
 import BranchesPage from "@/app/(MainLayout)/(Pages)/admin/branches/page";
 import SystemConfigPage from "@/app/(MainLayout)/(Pages)/admin/system-config/page";
 import NotFoundPage from "@/app/(MainLayout)/not-found-page";
+import ComplaintReceviedPage from "./(Pages)/rma/complain-received/page";
 
 const ROUTE_MAP: Record<string, ComponentType> = {
   "/": HomePage,
@@ -52,6 +53,7 @@ const ROUTE_MAP: Record<string, ComponentType> = {
   "/purchase/History": PurchaseHistoryPage,
   "/purchase/invoice": PurchaseFinalInvoicePage,
   "/rma/replacement-in": RmaReplacementInPage,
+  "/rma/complain-received": ComplaintReceviedPage,
   "/approval": ApprovalPage,
   "/approval/sales": SalesApprovalPage,
   "/approval/sales-return": SalesReturnApprovalPage,
