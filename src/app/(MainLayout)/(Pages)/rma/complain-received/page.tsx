@@ -4,13 +4,14 @@ import React, { useState } from "react";
 import { Button } from "@heroui/react";
 import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
-import { FiSave, FiPrinter, FiX, FiRefreshCw, FiShieldCheck } from "react-icons/fi";
+import { FiSave, FiPrinter, FiX, FiRefreshCw, FiShield } from "react-icons/fi";
+import { SearchHeader } from "@/components/RMA/SearchHeader";
+import { InfoCard } from "@/components/RMA/InfoCard";
+import { ComplaintForm } from "@/components/RMA/ComplaintForm";
 
-import { SearchHeader } from "@/components/SearchHeader";
-import { InfoCard } from "@/components/InfoCard";
-import { ComplaintForm } from "@/components/ComplaintForm";
 
-export default function RMAComplaintPage() {
+
+export default function ComplaintReceviedPage() {
   const [formData, setFormData] = useState({
     complainerName: "",
     contact: "",
@@ -131,7 +132,7 @@ export default function RMAComplaintPage() {
           >
             <div>
               <div className="flex items-center gap-2 text-emerald-700 font-semibold mb-2">
-                <FiShieldCheck className="text-xl" /> Warranty Status
+                <FiShield className="text-xl" /> Warranty Status
               </div>
               <span className="inline-block px-3 py-1 rounded-full bg-emerald-600 text-white font-semibold text-xs tracking-wide">
                 IN WARRANTY
