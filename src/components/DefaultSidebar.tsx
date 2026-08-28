@@ -82,11 +82,6 @@ const PurchaseOptions = [
     label: "Purchase Invoice",
     permission: PERMISSIONS.PURCHASE_INVOICE,
   },
-  // {
-  //   href: "/purchase/purchase-order",
-  //   label: "Purchase Order",
-  //   permission: PERMISSIONS.PURCHASE_RETURN,
-  // },
   {
     href: "/purchase/return",
     label: "Purchase Return",
