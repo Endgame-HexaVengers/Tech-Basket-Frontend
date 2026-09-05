@@ -19,7 +19,7 @@ import {
   FcSettings,
 } from "react-icons/fc";
 
-import { FiSearch, FiTruck, FiUsers } from "react-icons/fi";
+import { FiCpu, FiSearch, FiTruck, FiUsers } from "react-icons/fi";
 
 const SearchOptions = [
   {
@@ -82,11 +82,6 @@ const PurchaseOptions = [
     label: "Purchase Invoice",
     permission: PERMISSIONS.PURCHASE_INVOICE,
   },
-  // {
-  //   href: "/purchase/purchase-order",
-  //   label: "Purchase Order",
-  //   permission: PERMISSIONS.PURCHASE_RETURN,
-  // },
   {
     href: "/purchase/return",
     label: "Purchase Return",
@@ -242,9 +237,16 @@ const DefaultSidebar = () => {
 
           <SidebarDropdown
             label="Task"
-            icon={<BiStore className="text-blue-600" />}
-          >
+            icon={<BiStore className="text-blue-600" />}>
+            <SidebarLink
+              href="/ai-insights"
+              label="AI Insights"
+              icon={<FiCpu />}
+              activeTab={activeTab}
+              openTab={openTab}
+            />
             <SidebarDropdown label="Purchase" icon={<BiPurchaseTag />} nested>
+
               {PurchaseOptions.map((item) => (
                 <SidebarLink
                   key={item.href}
@@ -336,11 +338,10 @@ const SidebarDropdown = ({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex w-full items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition-all ${
-          nested
-            ? "text-slate-600 hover:bg-slate-100"
-            : "text-slate-700 hover:bg-slate-100"
-        }`}
+        className={`flex w-full items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition-all ${nested
+          ? "text-slate-600 hover:bg-slate-100"
+          : "text-slate-700 hover:bg-slate-100"
+          }`}
       >
         <div className="flex min-w-0 items-center gap-3">
           {icon && <span className="shrink-0 text-lg">{icon}</span>}
@@ -389,11 +390,10 @@ const SidebarLink = ({ href, label, icon, query, activeTab, openTab }: SidebarLi
     <button
       type="button"
       onClick={handleClick}
-      className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-all ${
-        isActive
-          ? "bg-blue-50 font-semibold text-blue-600"
-          : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-      }`}
+      className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-all ${isActive
+        ? "bg-blue-50 font-semibold text-blue-600"
+        : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+        }`}
     >
       {icon && <span className="shrink-0 text-base">{icon}</span>}
       <span className="truncate">{label}</span>
