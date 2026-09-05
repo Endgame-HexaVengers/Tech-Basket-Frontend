@@ -67,7 +67,7 @@ export default function ComplaintReceviedPage() {
     setTimeout(() => {
       setIsDraftLoading(false);
       toast.success("Draft saved successfully!");
-    }, 2500); // 2.5 seconds loading delay
+    }, 2500); 
   };
 
   const handleGenerateReport = () => {
@@ -77,7 +77,7 @@ export default function ComplaintReceviedPage() {
         setTimeout(() => {
           setIsReportLoading(false);
           resolve("success");
-        }, 2500); // 2.5 seconds loading delay
+        }, 2500);
       }),
       {
         loading: "Generating Report & Saving...",

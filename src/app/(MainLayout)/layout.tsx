@@ -34,6 +34,8 @@ import BranchesPage from "@/app/(MainLayout)/(Pages)/admin/branches/page";
 import SystemConfigPage from "@/app/(MainLayout)/(Pages)/admin/system-config/page";
 import NotFoundPage from "@/app/(MainLayout)/not-found-page";
 import ComplaintReceviedPage from "./(Pages)/rma/complain-received/page";
+import AIInsightsPage from "@/app/(MainLayout)/(Pages)/ai-insights/page";
+import AIChatbot from "@/components/ai/AIChatbot";
 
 const ROUTE_MAP: Record<string, ComponentType> = {
   "/": HomePage,
@@ -66,12 +68,16 @@ const ROUTE_MAP: Record<string, ComponentType> = {
   "/admin/branches": BranchesPage,
   "/admin/branches-locations": BranchesPage,
   "/admin/system-config": SystemConfigPage,
+  "/ai-insights": AIInsightsPage,
+
+
 };
 
 const MainLayout = () => {
   return (
     <TabProvider>
       <div className="min-h-screen w-full bg-slate-50 flex">
+
         <aside className="fixed left-0 top-0 z-50 flex h-screen min-h-0 w-64 flex-col border-r border-slate-200 bg-white">
           <DefaultSidebar />
         </aside>
@@ -80,6 +86,10 @@ const MainLayout = () => {
           <DefaultHeader />
           <PageRenderer routeMap={ROUTE_MAP} />
         </div>
+
+        {/* AI Chatbot */}
+        <AIChatbot />
+
       </div>
     </TabProvider>
   );
