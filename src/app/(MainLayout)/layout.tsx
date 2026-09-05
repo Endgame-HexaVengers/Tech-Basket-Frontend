@@ -34,6 +34,7 @@ import BranchesPage from "@/app/(MainLayout)/(Pages)/admin/branches/page";
 import SystemConfigPage from "@/app/(MainLayout)/(Pages)/admin/system-config/page";
 import NotFoundPage from "@/app/(MainLayout)/not-found-page";
 import ComplaintReceviedPage from "./(Pages)/rma/complain-received/page";
+import AIInsightsPage from "@/app/(MainLayout)/(Pages)/ai-insights/page";
 
 const ROUTE_MAP: Record<string, ComponentType> = {
   "/": HomePage,
@@ -66,6 +67,7 @@ const ROUTE_MAP: Record<string, ComponentType> = {
   "/admin/branches": BranchesPage,
   "/admin/branches-locations": BranchesPage,
   "/admin/system-config": SystemConfigPage,
+  "/ai-insights": AIInsightsPage,
 };
 
 const MainLayout = () => {
