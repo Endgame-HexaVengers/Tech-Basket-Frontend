@@ -195,7 +195,7 @@ const RegisterPage = () => {
                     </InputGroup.Prefix>
                     <InputGroup.Input 
                       name="name" 
-                      placeholder="John Doe" 
+                      placeholder="Enter your full name" 
                       className="w-full py-2.5 px-3 text-sm text-gray-800 bg-transparent outline-none"
                     />
                   </InputGroup>
@@ -225,7 +225,7 @@ const RegisterPage = () => {
                     <InputGroup.Input
                       name="email"
                       type="email"
-                      placeholder="name@company.com"
+                      placeholder="Enter your email address"
                       className="w-full py-2.5 px-3 text-sm text-gray-800 bg-transparent outline-none"
                     />
                   </InputGroup>
@@ -260,7 +260,7 @@ const RegisterPage = () => {
                     <InputGroup.Input
                       name="password"
                       type={isVisible ? "text" : "password"}
-                      placeholder="••••••••"
+                      placeholder="Enter your password"
                       className="w-full py-2.5 px-3 text-sm text-gray-800 bg-transparent outline-none"
                     />
                     <InputGroup.Suffix className="pr-2">
@@ -304,7 +304,7 @@ const RegisterPage = () => {
                     <InputGroup.Input
                       name="confirmPassword"
                       type={isConfirmVisible ? "text" : "password"}
-                      placeholder="••••••••"
+                      placeholder="Confirm your password"
                       className="w-full py-2.5 px-3 text-sm text-gray-800 bg-transparent outline-none"
                     />
                     <InputGroup.Suffix className="pr-2">
