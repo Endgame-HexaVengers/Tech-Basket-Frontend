@@ -224,7 +224,7 @@ export default function LoginPage() {
                                         </InputGroup.Prefix>
                                         <InputGroup.Input
                                             name="userIdOrEmail"
-                                            placeholder="admin@techbasket.com"
+                                            placeholder="Enter your user ID or email"
                                             className="w-full py-2.5 px-3 text-sm text-gray-800 bg-transparent outline-none"
                                         />
                                     </InputGroup>
@@ -261,7 +261,7 @@ export default function LoginPage() {
                                         <InputGroup.Input
                                             name="password"
                                             type={isVisible ? "text" : "password"}
-                                            placeholder="••••••••"
+                                            placeholder="Enter your password"
                                             className="w-full py-2.5 px-3 text-sm text-gray-800 bg-transparent outline-none"
                                         />
                                         <InputGroup.Suffix className="pr-2">
