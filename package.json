@@ -23,7 +23,8 @@
     "react-dom": "19.2.8",
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.7.0",
-    "sonner": "^2.0.8"
+    "sonner": "^2.0.8",
+    "sweetalert2": "^11.26.25"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

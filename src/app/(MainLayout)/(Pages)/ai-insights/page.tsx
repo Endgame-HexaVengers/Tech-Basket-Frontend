@@ -21,7 +21,7 @@ import { analyzeRMA } from "@/lib/ai/rmaAnalysis";
 export default function AIInsightsPage() {
   const inventoryRisks = analyzeInventory(AI_PRODUCTS);
   const reorderRecommendations =
-    getReorderRecommendations(AI_PRODUCTS);
+   getReorderRecommendations(AI_PRODUCTS);
   const rmaInsights = analyzeRMA(AI_PRODUCTS);
 
   const critical = inventoryRisks.filter(

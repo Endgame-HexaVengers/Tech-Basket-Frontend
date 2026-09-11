@@ -101,10 +101,8 @@ type PageRendererProps = {
 
 const resolveRoute = (
   routeMap: Record<string, ComponentType>,
+  pathname: string,
 ): { path: string; component: ComponentType } => {
-  const pathname =
-    typeof window !== "undefined" ? window.location.pathname : "/";
-
   const matchedRoute = Object.keys(routeMap).find((route) => {
     if (route === "/") return pathname === "/";
     return pathname === route || pathname.startsWith(`${route}/`);
@@ -119,7 +117,7 @@ const resolveRoute = (
 
 const PageRenderer = ({ routeMap }: PageRendererProps) => {
   const { activeTab, mountedPages, registerPage } = useTabs();
-  const [initialRoute] = useState(() => resolveRoute(routeMap));
+  const [initialRoute] = useState(() => resolveRoute(routeMap, "/"));
 
   const activeBasePath = activeTab.split("?")[0];
 
