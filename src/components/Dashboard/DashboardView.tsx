@@ -12,6 +12,7 @@ import FadeUp from "@/components/FadeUp";
 import { FiHeadphones, FiMessageCircle, FiPhoneCall, FiX } from "react-icons/fi";
 
 export default function DashboardView() {
+  
   const { data: session } = authClient.useSession();
   const { openTab } = useTabs();
   const [supportOpen, setSupportOpen] = useState(false);

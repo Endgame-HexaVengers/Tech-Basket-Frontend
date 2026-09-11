@@ -31,7 +31,7 @@ export default function NotFoundPage() {
         </h1>
 
         <p className="text-sm text-gray-500">
-          This page is currently being built and is not available yet.
+          This page is currently being built and is not available yet,
           Our team is working hard to bring this feature to you soon.
         </p>
 

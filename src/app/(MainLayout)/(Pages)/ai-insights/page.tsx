@@ -49,7 +49,7 @@ export default function AIInsightsPage() {
 
   return (
     <div className="min-h-screen space-y-6 bg-slate-50/50 p-1">
-      {/* ================= HEADER ================= */}
+      {/* Header */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 p-6 text-white shadow-xl">
         {/* Decorative background */}
         <div className="absolute -right-10 -top-20 h-60 w-60 rounded-full bg-indigo-500/20 blur-3xl" />
