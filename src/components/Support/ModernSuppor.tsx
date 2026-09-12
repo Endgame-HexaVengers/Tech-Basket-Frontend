@@ -5,7 +5,8 @@ import { MessageCircle, Phone, ChevronRight, X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ModernSupportWidget = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  // অটো ওপেন বন্ধ করতে ডিফল্ট স্টেট false করে দেওয়া হলো
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="fixed bottom-5 right-5 z-[100] flex flex-col items-end gap-3 font-sans">
@@ -27,7 +28,7 @@ const ModernSupportWidget = () => {
                 <div>
                   <div className="flex items-center gap-1.5">
                     <h3 className="text-base font-bold tracking-tight text-white">
-                     TechBasket
+                      TechBasket
                     </h3>
                     <Sparkles className="h-3.5 w-3.5 text-amber-300 animate-pulse" />
                   </div>
