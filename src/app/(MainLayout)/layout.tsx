@@ -35,7 +35,11 @@ import SystemConfigPage from "@/app/(MainLayout)/(Pages)/admin/system-config/pag
 import NotFoundPage from "@/app/(MainLayout)/not-found-page";
 import ComplaintReceviedPage from "./(Pages)/rma/complain-received/page";
 import AIInsightsPage from "@/app/(MainLayout)/(Pages)/ai-insights/page";
-import AIChatbot from "@/components/Support/AIChatbot";
+import AIChatbot from "@/components/Support/ModernSuppor";
+import PlansPage from "./(Pages)/admin/Plans/page";
+
+
+
 
 const ROUTE_MAP: Record<string, ComponentType> = {
   "/": HomePage,
@@ -69,6 +73,7 @@ const ROUTE_MAP: Record<string, ComponentType> = {
   "/admin/branches-locations": BranchesPage,
   "/admin/system-config": SystemConfigPage,
   "/ai-insights": AIInsightsPage,
+  "/admin/Plans": PlansPage,
 
 
 };
