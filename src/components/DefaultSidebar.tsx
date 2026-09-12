@@ -20,6 +20,8 @@ import {
 } from "react-icons/fc";
 
 import { FiCpu, FiSearch, FiTruck, FiUsers } from "react-icons/fi";
+import { IoDiamondSharp } from "react-icons/io5";
+import { GiDropletSplash } from "react-icons/gi";
 
 const SearchOptions = [
   {
@@ -214,12 +216,13 @@ const DefaultSidebar = () => {
               openTab={openTab}
             />
           </SidebarDropdown>
-           <SidebarLink
-              href="/admin/users"
-              label="Users & Permissions"
-              icon={<FiUsers />}
-              activeTab={activeTab}
-              openTab={openTab}/>
+
+          <SidebarLink
+            href="/admin/users"
+            label="Users & Permissions"
+            icon={<FiUsers />}
+            activeTab={activeTab}
+            openTab={openTab} />
 
           <SidebarDropdown label="Search" icon={<FiSearch />}>
             {SearchOptions.map((item) => (
@@ -304,6 +307,31 @@ const DefaultSidebar = () => {
                 />
               ))}
             </SidebarDropdown>
+          </SidebarDropdown>
+
+              {/* Subscription Dropdown */}
+          <SidebarDropdown label="Subscription" icon={<IoDiamondSharp  />}>
+            <SidebarLink
+              href="/admin/Plans"
+              label="Plans"
+              icon={<GiDropletSplash />}
+              activeTab={activeTab}
+              openTab={openTab}
+            />
+            {/* <SidebarLink
+              href="/admin/suppliers"
+              label="Suppliers"
+              icon={<FiTruck />}
+              activeTab={activeTab}
+              openTab={openTab}
+            />
+            <SidebarLink
+              href="/admin/branches"
+              label="Branches"
+              icon={<FcDepartment />}
+              activeTab={activeTab}
+              openTab={openTab}
+            /> */}
           </SidebarDropdown>
         </div>
       </nav>
