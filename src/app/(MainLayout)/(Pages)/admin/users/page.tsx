@@ -1,37 +1,89 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FadeUp from "@/components/FadeUp";
-import UserBreadcrumb from "@/components/UserManagement/UserBreadcrumb";
 import UserFilters from "@/components/UserManagement/UserFilters";
 import UserPagination from "@/components/UserManagement/UserPagination";
 import UserStats from "@/components/UserManagement/UserStats";
 import UserTable from "@/components/UserManagement/UserTable";
-import CreateUserDrawer, {UserType,} from "@/components/UserManagement/CreateUserDrawer";
-import { Plus } from "lucide-react";
+import CreateUserDrawer, {
+  UserType,
+} from "@/components/UserManagement/CreateUserDrawer";
+import { Plus, Loader2 } from "lucide-react";
 
-
-const INITIAL_USERS: UserType[] = [
-  {
-    id: "1",
-    fullName: "Jane Doe",
-    username: "janedoe",
-    email: "jane@techbasket.com",
-    phone: "+1 (555) 000-0000",
-    systemRole: "Store Manager",
-    assignedBranch: "MPL Shop 1316",
-    status: "Active",
-    createdAt: "2026-08-25",
-  },
-];
+// Local Backend API URL
+const API_BASE_URL = "http://localhost:5000/api/users";
 
 const UserManagementPage = () => {
-  const [users, setUsers] = useState<UserType[]>(INITIAL_USERS);
+  const [users, setUsers] = useState<UserType[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAddUser = (newUser: UserType) => {
-    setUsers((prevUsers) => [newUser, ...prevUsers]);
-    console.log("Current Static Users Array:", [newUser, ...users]);
+
+  const fetchUsers = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(API_BASE_URL, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch users from backend");
+      }
+
+      const data = await response.json();
+      
+
+      setUsers(Array.isArray(data) ? data : data.users || []);
+    } catch (err: unknown) {
+      console.error("Error fetching users:", err);
+      setError((err as Error).message || "Something went wrong while fetching users.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchUsers();
+  }, []);
+
+  // 2. Add User to Local Backend and Update UI
+  const handleAddUser = async (newUser: UserType) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(API_BASE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify(newUser),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save user in backend");
+      }
+
+      const createdUser = await response.json();
+
+      setUsers((prevUsers) => [createdUser.user || createdUser, ...prevUsers]);
+    } catch (err: unknown) {
+      console.error("Error creating user:", err);
+     
+      setUsers((prevUsers) => [newUser, ...prevUsers]);
+    }
   };
 
   return (
@@ -39,11 +91,10 @@ const UserManagementPage = () => {
       {/* Header */}
       <FadeUp className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <UserBreadcrumb />
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">
             User Management
           </h1>
-          <p className="mt-1 text-sm text-gray-500 font-medium">
+          <p className="mt-1 text-sm font-medium text-gray-500">
             Manage users, roles, branches and account access.
           </p>
         </div>
@@ -51,8 +102,7 @@ const UserManagementPage = () => {
         <button
           type="button"
           onClick={() => setIsDrawerOpen(true)}
-          className="inline-flex h-10 items-center cursor-pointer justify-center gap-2 rounded
-           bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98]"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98] cursor-pointer"
         >
           <Plus size={17} />
           Create User
@@ -65,7 +115,29 @@ const UserManagementPage = () => {
       {/* Table Section */}
       <section className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <UserFilters />
-        <UserTable users={users} />
+
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex h-64 flex-col items-center justify-center gap-3 text-gray-500">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            <p className="text-sm font-medium">Loading users from server...</p>
+          </div>
+        ) : error ? (
+          /* Error State */
+          <div className="flex h-64 flex-col items-center justify-center gap-2 text-red-500">
+            <p className="font-semibold">{error}</p>
+            <button
+              onClick={fetchUsers}
+              className="mt-2 rounded bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-200"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : (
+          /* User Table */
+          <UserTable users={users} />
+        )}
+
         <UserPagination />
       </section>
 
