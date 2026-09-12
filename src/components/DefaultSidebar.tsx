@@ -213,14 +213,13 @@ const DefaultSidebar = () => {
               activeTab={activeTab}
               openTab={openTab}
             />
-            <SidebarLink
+          </SidebarDropdown>
+           <SidebarLink
               href="/admin/users"
-              label="Users"
+              label="Users & Permissions"
               icon={<FiUsers />}
               activeTab={activeTab}
-              openTab={openTab}
-            />
-          </SidebarDropdown>
+              openTab={openTab}/>
 
           <SidebarDropdown label="Search" icon={<FiSearch />}>
             {SearchOptions.map((item) => (
