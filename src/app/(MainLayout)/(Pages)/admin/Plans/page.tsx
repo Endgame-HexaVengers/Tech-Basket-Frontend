@@ -5,6 +5,7 @@ import { Button, Card, Chip } from "@heroui/react";
 import { FiCheck, FiArrowDown } from "react-icons/fi";
 import { HiSparkles } from "react-icons/hi2";
 import { motion, AnimatePresence } from "framer-motion";
+import CompareFeatures from "@/components/Subscription/CompareFeatures";
 
 type BillingCycle = "monthly" | "sixMonths" | "yearly";
 
@@ -325,6 +326,7 @@ export default function PlansPage() {
           );
         })}
       </motion.div>
+      <CompareFeatures />
     </div>
   );
 }
