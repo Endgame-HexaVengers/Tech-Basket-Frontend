@@ -1,7 +1,7 @@
 "use client";
 
-import { PERMISSIONS } from "@/utils/Permission";
 import { useTabs } from "@/context/TabContext";
+import { PERMISSIONS } from "@/utils/Permission";
 import { useState, type ReactNode } from "react";
 
 import {
@@ -170,20 +170,36 @@ const InventoryOptions = [
 const DefaultSidebar = () => {
   const { activeTab, openTab } = useTabs();
 
+  const handleLogoClick = () => {
+    openTab({
+      path: "/",
+      title: "Home",
+      icon: "•",
+    });
+  };
+
   return (
     <aside className="flex h-screen min-h-0 w-full flex-col overflow-hidden border-r border-slate-200 bg-white">
-      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-slate-200 px-5">
+      {/* TechBasket Logo */}
+      <button
+        type="button"
+        onClick={handleLogoClick}
+        className="flex h-16 w-full cursor-pointer shrink-0 items-center gap-3 border-b border-slate-200 px-5 text-left transition-colors hover:bg-slate-50"
+      >
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#00175c] text-lg font-bold text-white">
           T
         </div>
+
         <div>
           <h1 className="text-xl font-bold text-slate-900">
             Tech<span className="text-blue-600">Basket</span>
           </h1>
+
           <p className="text-xs text-slate-500">ERP Management</p>
         </div>
-      </div>
+      </button>
 
+      {/* Sidebar Navigation */}
       <nav
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 scrollbar-gutter-stable"
         onWheel={(event) => {
@@ -193,6 +209,7 @@ const DefaultSidebar = () => {
         }}
       >
         <div className="space-y-2">
+          {/* Setup */}
           <SidebarDropdown label="Setup" icon={<FcSettings />}>
             <SidebarLink
               href="/admin/products"
@@ -201,6 +218,7 @@ const DefaultSidebar = () => {
               activeTab={activeTab}
               openTab={openTab}
             />
+
             <SidebarLink
               href="/admin/suppliers"
               label="Suppliers"
@@ -208,6 +226,7 @@ const DefaultSidebar = () => {
               activeTab={activeTab}
               openTab={openTab}
             />
+
             <SidebarLink
               href="/admin/branches"
               label="Branches"
@@ -217,13 +236,16 @@ const DefaultSidebar = () => {
             />
           </SidebarDropdown>
 
+          {/* Users */}
           <SidebarLink
             href="/admin/users"
             label="Users & Permissions"
             icon={<FiUsers />}
             activeTab={activeTab}
-            openTab={openTab} />
+            openTab={openTab}
+          />
 
+          {/* Search */}
           <SidebarDropdown label="Search" icon={<FiSearch />}>
             {SearchOptions.map((item) => (
               <SidebarLink
@@ -237,9 +259,12 @@ const DefaultSidebar = () => {
             ))}
           </SidebarDropdown>
 
+          {/* Task */}
           <SidebarDropdown
             label="Task"
-            icon={<BiStore className="text-blue-600" />}>
+            icon={<BiStore className="text-blue-600" />}
+          >
+            {/* AI Insights */}
             <SidebarLink
               href="/ai-insights"
               label="AI Insights"
@@ -247,8 +272,13 @@ const DefaultSidebar = () => {
               activeTab={activeTab}
               openTab={openTab}
             />
-            <SidebarDropdown label="Purchase" icon={<BiPurchaseTag />} nested>
 
+            {/* Purchase */}
+            <SidebarDropdown
+              label="Purchase"
+              icon={<BiPurchaseTag />}
+              nested
+            >
               {PurchaseOptions.map((item) => (
                 <SidebarLink
                   key={item.href}
@@ -260,6 +290,7 @@ const DefaultSidebar = () => {
               ))}
             </SidebarDropdown>
 
+            {/* Sales */}
             <SidebarDropdown label="Sales" icon={<BiStore />} nested>
               {SalesOptions.map((item) => (
                 <SidebarLink
@@ -272,6 +303,7 @@ const DefaultSidebar = () => {
               ))}
             </SidebarDropdown>
 
+            {/* RMA */}
             <SidebarDropdown label="Rma" icon={<BiUserVoice />} nested>
               {RmaOptions.map((item) => (
                 <SidebarLink
@@ -284,6 +316,7 @@ const DefaultSidebar = () => {
               ))}
             </SidebarDropdown>
 
+            {/* Inventory */}
             <SidebarDropdown label="Inventory" icon={<BiStore />} nested>
               {InventoryOptions.map((item) => (
                 <SidebarLink
@@ -296,6 +329,7 @@ const DefaultSidebar = () => {
               ))}
             </SidebarDropdown>
 
+            {/* Approval */}
             <SidebarDropdown label="Approval" icon={<FcApproval />} nested>
               {ApprovalOptions.map((item) => (
                 <SidebarLink
@@ -309,8 +343,11 @@ const DefaultSidebar = () => {
             </SidebarDropdown>
           </SidebarDropdown>
 
-              {/* Subscription Dropdown */}
-          <SidebarDropdown label="Subscription" icon={<IoDiamondSharp  />}>
+          {/* Subscription */}
+          <SidebarDropdown
+            label="Subscription"
+            icon={<IoDiamondSharp />}
+          >
             <SidebarLink
               href="/admin/Plans"
               label="Plans"
@@ -318,32 +355,25 @@ const DefaultSidebar = () => {
               activeTab={activeTab}
               openTab={openTab}
             />
-            {/* <SidebarLink
-              href="/admin/suppliers"
-              label="Suppliers"
-              icon={<FiTruck />}
-              activeTab={activeTab}
-              openTab={openTab}
-            />
-            <SidebarLink
-              href="/admin/branches"
-              label="Branches"
-              icon={<FcDepartment />}
-              activeTab={activeTab}
-              openTab={openTab}
-            /> */}
           </SidebarDropdown>
         </div>
       </nav>
 
+      {/* Footer */}
       <div className="shrink-0 border-t border-slate-200 p-3">
-        <p className="text-center text-xs text-slate-400">TechBasket ERP</p>
+        <p className="text-center text-xs text-slate-400">
+          TechBasket ERP
+        </p>
       </div>
     </aside>
   );
 };
 
 export default DefaultSidebar;
+
+/* =========================================================
+   Sidebar Dropdown
+========================================================= */
 
 type SidebarDropdownProps = {
   label: string;
@@ -365,15 +395,22 @@ const SidebarDropdown = ({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex w-full items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition-all ${nested
-          ? "text-slate-600 hover:bg-slate-100"
-          : "text-slate-700 hover:bg-slate-100"
-          }`}
+        className={`flex w-full items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition-all ${
+          nested
+            ? "text-slate-600 hover:bg-slate-100"
+            : "text-slate-700 hover:bg-slate-100"
+        }`}
       >
         <div className="flex min-w-0 items-center gap-3">
-          {icon && <span className="shrink-0 text-lg">{icon}</span>}
+          {icon && (
+            <span className="shrink-0 text-lg">
+              {icon}
+            </span>
+          )}
+
           <span className="truncate">{label}</span>
         </div>
+
         {isOpen ? (
           <BiChevronDown className="shrink-0 text-lg" />
         ) : (
@@ -396,33 +433,63 @@ const SidebarDropdown = ({
   );
 };
 
+
+  //  Sidebar Link
+
+
 type SidebarLinkProps = {
   href: string;
   label: string;
   icon?: ReactNode;
   query?: string;
   activeTab: string;
-  openTab: (tab: { path: string; title: string; icon?: ReactNode; query?: string }) => void;
+  openTab: (tab: {
+    path: string;
+    title: string;
+    icon?: ReactNode;
+    query?: string;
+  }) => void;
 };
 
-const SidebarLink = ({ href, label, icon, query, activeTab, openTab }: SidebarLinkProps) => {
+const SidebarLink = ({
+  href,
+  label,
+  icon,
+  query,
+  activeTab,
+  openTab,
+}: SidebarLinkProps) => {
   const fullPath = query ? `${href}?${query}` : href;
-  const isActive = activeTab === fullPath || (query && activeTab.startsWith(`${href}?`));
+
+  const isActive =
+    activeTab === fullPath ||
+    (query && activeTab.startsWith(`${href}?`));
 
   const handleClick = () => {
-    openTab({ path: href, title: label, icon: "•", query });
+    openTab({
+      path: href,
+      title: label,
+      icon: "•",
+      query,
+    });
   };
 
   return (
     <button
       type="button"
       onClick={handleClick}
-      className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-all ${isActive
-        ? "bg-blue-50 font-semibold text-blue-600"
-        : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-        }`}
+      className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-all ${
+        isActive
+          ? "bg-blue-50 font-semibold text-blue-600"
+          : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+      }`}
     >
-      {icon && <span className="shrink-0 text-base">{icon}</span>}
+      {icon && (
+        <span className="shrink-0 text-base">
+          {icon}
+        </span>
+      )}
+
       <span className="truncate">{label}</span>
     </button>
   );

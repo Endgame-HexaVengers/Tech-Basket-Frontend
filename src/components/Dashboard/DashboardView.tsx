@@ -9,7 +9,7 @@ import DashboardStats from "./DashboardStats";
 import DashboardAnalytics from "./DashboardAnalytics";
 import DashboardQuickActions from "./DashboardQuickActions";
 import FadeUp from "@/components/FadeUp";
-import { FiHeadphones, FiMessageCircle, FiPhoneCall, FiX } from "react-icons/fi";
+
 
 export default function DashboardView() {
   
@@ -59,7 +59,7 @@ export default function DashboardView() {
       </FadeUp>
 
       {/* 6. FLOATING SUPPORT BUTTON (Matching the headphone icon in the screenshot) */}
-      <div className="fixed bottom-6 right-6 z-40">
+      {/* <div className="fixed bottom-6 right-6 z-40">
         {supportOpen && (
           <div className="mb-3 w-72 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -114,7 +114,7 @@ export default function DashboardView() {
             <span className="relative inline-flex h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500" />
           </span>
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
