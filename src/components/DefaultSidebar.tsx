@@ -19,9 +19,13 @@ import {
   FcSettings,
 } from "react-icons/fc";
 
-import { FiCpu, FiSearch, FiTruck, FiUsers } from "react-icons/fi";
+import { FiCpu, FiRefreshCcw, FiSearch, FiTruck, FiUsers } from "react-icons/fi";
 import { IoDiamondSharp } from "react-icons/io5";
 import { GiDropletSplash } from "react-icons/gi";
+import { LuChartColumnDecreasing } from "react-icons/lu";
+import { GrEdit } from "react-icons/gr";
+import { FaBarsStaggered } from "react-icons/fa6";
+import { MdAppRegistration } from "react-icons/md";
 
 const SearchOptions = [
   {
@@ -179,189 +183,222 @@ const DefaultSidebar = () => {
   };
 
   return (
-    <aside className="flex h-screen min-h-0 w-full flex-col overflow-hidden border-r border-slate-200 bg-white">
+    <aside className="flex h-screen min-h-0 w-full flex-col overflow-hidden border-r border-slate-200/80 bg-slate-50/50">
       {/* TechBasket Logo */}
       <button
         type="button"
         onClick={handleLogoClick}
-        className="flex h-16 w-full cursor-pointer shrink-0 items-center gap-3 border-b border-slate-200 px-5 text-left transition-colors hover:bg-slate-50"
+        className="group flex h-16 w-full cursor-pointer shrink-0 items-center gap-3 border-b border-slate-200/80 bg-white px-5 text-left transition-all duration-200 hover:bg-slate-50"
       >
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#00175c] text-lg font-bold text-white">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-[#00175c] to-blue-600 font-bold text-white shadow-md shadow-blue-900/10 transition-transform duration-200 group-hover:scale-105">
           T
         </div>
 
         <div>
-          <h1 className="text-xl font-bold text-slate-900">
+          <h1 className="text-lg font-bold tracking-tight text-slate-900">
             Tech<span className="text-blue-600">Basket</span>
           </h1>
 
-          <p className="text-xs text-slate-500">ERP Management</p>
+          <p className="text-[11px] font-medium tracking-wide text-slate-400">ERP Management</p>
         </div>
       </button>
 
       {/* Sidebar Navigation */}
       <nav
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 scrollbar-gutter-stable"
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 space-y-1 scrollbar-gutter-stable"
         onWheel={(event) => {
           event.stopPropagation();
           event.preventDefault();
           event.currentTarget.scrollTop += event.deltaY;
         }}
       >
-        <div className="space-y-2">
-          {/* Setup */}
-          <SidebarDropdown label="Setup" icon={<FcSettings />}>
-            <SidebarLink
-              href="/admin/products"
-              label="Products"
-              icon={<FcPackage />}
-              activeTab={activeTab}
-              openTab={openTab}
-            />
-
-            <SidebarLink
-              href="/admin/suppliers"
-              label="Suppliers"
-              icon={<FiTruck />}
-              activeTab={activeTab}
-              openTab={openTab}
-            />
-
-            <SidebarLink
-              href="/admin/branches"
-              label="Branches"
-              icon={<FcDepartment />}
-              activeTab={activeTab}
-              openTab={openTab}
-            />
-          </SidebarDropdown>
-
-          {/* Users */}
+        {/* Setup */}
+        <SidebarDropdown label="Setup" icon={<FcSettings />}>
           <SidebarLink
-            href="/admin/users"
-            label="Users & Permissions"
-            icon={<FiUsers />}
+            href="/admin/products"
+            label="Products"
+            icon={<FcPackage />}
             activeTab={activeTab}
             openTab={openTab}
           />
 
-          {/* Search */}
-          <SidebarDropdown label="Search" icon={<FiSearch />}>
-            {SearchOptions.map((item) => (
-              <SidebarLink
-                key={`${item.href}-${item.query}`}
-                href={item.href}
-                label={item.label}
-                query={item.query}
-                activeTab={activeTab}
-                openTab={openTab}
-              />
-            ))}
-          </SidebarDropdown>
+          <SidebarLink
+            href="/admin/suppliers"
+            label="Suppliers"
+            icon={<FiTruck className="text-slate-600" />}
+            activeTab={activeTab}
+            openTab={openTab}
+          />
 
-          {/* Task */}
-          <SidebarDropdown
-            label="Task"
-            icon={<BiStore className="text-blue-600" />}
-          >
-            {/* AI Insights */}
+          <SidebarLink
+            href="/admin/branches"
+            label="Branches"
+            icon={<FcDepartment />}
+            activeTab={activeTab}
+            openTab={openTab}
+          />
+        </SidebarDropdown>
+
+        {/* Users */}
+        <SidebarLink
+          href="/admin/users"
+          label="Users & Permissions"
+          icon={<FiUsers className="text-slate-500" />}
+          activeTab={activeTab}
+          openTab={openTab}
+        />
+
+        {/* Search */}
+        <SidebarDropdown label="Search" icon={<FiSearch className="text-slate-500" />}>
+          {SearchOptions.map((item) => (
             <SidebarLink
-              href="/ai-insights"
-              label="AI Insights"
-              icon={<FiCpu />}
+              key={`${item.href}-${item.query}`}
+              href={item.href}
+              label={item.label}
+              query={item.query}
               activeTab={activeTab}
               openTab={openTab}
             />
+          ))}
+        </SidebarDropdown>
 
-            {/* Purchase */}
-            <SidebarDropdown
-              label="Purchase"
-              icon={<BiPurchaseTag />}
-              nested
-            >
-              {PurchaseOptions.map((item) => (
-                <SidebarLink
-                  key={item.href}
-                  href={item.href}
-                  label={item.label}
-                  activeTab={activeTab}
-                  openTab={openTab}
-                />
-              ))}
-            </SidebarDropdown>
+        {/* AI Insights */}
+        <SidebarLink
+          href="/ai-insights"
+          label="AI Insights"
+          icon={<FiCpu className="text-indigo-500" />}
+          activeTab={activeTab}
+          openTab={openTab}
+        />
 
-            {/* Sales */}
-            <SidebarDropdown label="Sales" icon={<BiStore />} nested>
-              {SalesOptions.map((item) => (
-                <SidebarLink
-                  key={`${item.href}-${item.label}`}
-                  href={item.href}
-                  label={item.label}
-                  activeTab={activeTab}
-                  openTab={openTab}
-                />
-              ))}
-            </SidebarDropdown>
+        {/* Task */}
+        {/* <SidebarDropdown
+          label="Task"
+          icon={<BiStore className="text-blue-600" />}> */}
 
-            {/* RMA */}
-            <SidebarDropdown label="Rma" icon={<BiUserVoice />} nested>
-              {RmaOptions.map((item) => (
-                <SidebarLink
-                  key={item.href}
-                  href={item.href}
-                  label={item.label}
-                  activeTab={activeTab}
-                  openTab={openTab}
-                />
-              ))}
-            </SidebarDropdown>
-
-            {/* Inventory */}
-            <SidebarDropdown label="Inventory" icon={<BiStore />} nested>
-              {InventoryOptions.map((item) => (
-                <SidebarLink
-                  key={item.href}
-                  href={item.href}
-                  label={item.label}
-                  activeTab={activeTab}
-                  openTab={openTab}
-                />
-              ))}
-            </SidebarDropdown>
-
-            {/* Approval */}
-            <SidebarDropdown label="Approval" icon={<FcApproval />} nested>
-              {ApprovalOptions.map((item) => (
-                <SidebarLink
-                  key={item.href}
-                  href={item.href}
-                  label={item.label}
-                  activeTab={activeTab}
-                  openTab={openTab}
-                />
-              ))}
-            </SidebarDropdown>
-          </SidebarDropdown>
-
-          {/* Subscription */}
-          <SidebarDropdown
-            label="Subscription"
-            icon={<IoDiamondSharp />}
-          >
+        {/* Purchase */}
+        <SidebarDropdown
+          label="Purchase"
+          icon={<BiPurchaseTag className="text-amber-500" />}
+        >
+          {PurchaseOptions.map((item) => (
             <SidebarLink
-              href="/admin/Plans"
-              label="Plans"
-              icon={<GiDropletSplash />}
+              key={item.href}
+              href={item.href}
+              label={item.label}
               activeTab={activeTab}
               openTab={openTab}
             />
-          </SidebarDropdown>
-        </div>
+          ))}
+        </SidebarDropdown>
+
+        {/* Sales */}
+        <SidebarDropdown label="Sales" icon={<BiStore className="text-emerald-500" />}>
+          {SalesOptions.map((item) => (
+            <SidebarLink
+              key={`${item.href}-${item.label}`}
+              href={item.href}
+              label={item.label}
+              activeTab={activeTab}
+              openTab={openTab}
+            />
+          ))}
+        </SidebarDropdown>
+
+        {/* RMA */}
+        <SidebarDropdown label="Rma" icon={<BiUserVoice className="text-rose-500" />}>
+          {RmaOptions.map((item) => (
+            <SidebarLink
+              key={item.href}
+              href={item.href}
+              label={item.label}
+              activeTab={activeTab}
+              openTab={openTab}
+            />
+          ))}
+        </SidebarDropdown>
+
+        {/* Inventory */}
+        <SidebarDropdown label="Inventory" icon={<BiStore className="text-cyan-500" />}>
+          {InventoryOptions.map((item) => (
+            <SidebarLink
+              key={item.href}
+              href={item.href}
+              label={item.label}
+              activeTab={activeTab}
+              openTab={openTab}
+            />
+          ))}
+        </SidebarDropdown>
+
+        {/* Approval */}
+        <SidebarDropdown label="Approval" icon={<FcApproval />}>
+          {ApprovalOptions.map((item) => (
+            <SidebarLink
+              key={item.href}
+              href={item.href}
+              label={item.label}
+              activeTab={activeTab}
+              openTab={openTab}
+            />
+          ))}
+        </SidebarDropdown>
+
+        {/* </SidebarDropdown> */}
+
+        {/* Resell */}
+        <SidebarDropdown
+          label="Resell"
+          icon={<FiRefreshCcw className="text-purple-500" />}
+        >
+          <SidebarLink
+            href="/admin/Dashboard"
+            label="Dashboard"
+            icon={<LuChartColumnDecreasing />}
+            activeTab={activeTab}
+            openTab={openTab}
+          />
+          <SidebarLink
+            href="/admin/Browse-Catalog"
+            label="Browse Catalog"
+            icon={<FaBarsStaggered />}
+            activeTab={activeTab}
+            openTab={openTab}
+          />
+          <SidebarLink
+            href="/admin/My-Listings"
+            label="My Listings"
+            icon={<GrEdit />}
+            activeTab={activeTab}
+            openTab={openTab}
+          />
+        </SidebarDropdown>
+
+        {/* Subscription */}
+        <SidebarDropdown
+          label="Subscription"
+          icon={<IoDiamondSharp className="text-blue-500" />}
+        >
+          <SidebarLink
+            href="/admin/Plans"
+            label="Plans"
+            icon={<GiDropletSplash />}
+            activeTab={activeTab}
+            openTab={openTab}
+          />
+          <SidebarLink
+            href="/admin/Manage-Plan"
+            label="Manage Plan"
+            icon={<MdAppRegistration />}
+            activeTab={activeTab}
+            openTab={openTab}
+          />
+        </SidebarDropdown>
       </nav>
 
       {/* Footer */}
-      <div className="shrink-0 border-t border-slate-200 p-3">
-        <p className="text-center text-xs text-slate-400">
+      <div className="shrink-0 border-t border-slate-200/80 bg-white p-3">
+        <p className="text-center text-[11px] font-medium text-slate-400">
           TechBasket ERP
         </p>
       </div>
@@ -371,9 +408,7 @@ const DefaultSidebar = () => {
 
 export default DefaultSidebar;
 
-/* =========================================================
-   Sidebar Dropdown
-========================================================= */
+// Sidebar Dropdown
 
 type SidebarDropdownProps = {
   label: string;
@@ -386,24 +421,23 @@ const SidebarDropdown = ({
   label,
   icon,
   children,
-  nested = false,
 }: SidebarDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className={nested ? "ml-3" : ""}>
+    <div className="w-full">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex w-full items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition-all ${
-          nested
-            ? "text-slate-600 hover:bg-slate-100"
-            : "text-slate-700 hover:bg-slate-100"
+        className={`group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+          isOpen
+            ? "bg-white text-slate-900 shadow-sm"
+            : "text-slate-600 hover:bg-white hover:text-slate-900"
         }`}
       >
         <div className="flex min-w-0 items-center gap-3">
           {icon && (
-            <span className="shrink-0 text-lg">
+            <span className="shrink-0 text-lg transition-transform duration-200 group-hover:scale-105">
               {icon}
             </span>
           )}
@@ -411,21 +445,17 @@ const SidebarDropdown = ({
           <span className="truncate">{label}</span>
         </div>
 
-        {isOpen ? (
-          <BiChevronDown className="shrink-0 text-lg" />
-        ) : (
-          <BiChevronRight className="shrink-0 text-lg" />
-        )}
+        <div className="shrink-0 text-slate-400 transition-transform duration-200 group-hover:text-slate-600">
+          {isOpen ? (
+            <BiChevronDown className="text-lg" />
+          ) : (
+            <BiChevronRight className="text-lg" />
+          )}
+        </div>
       </button>
 
       {isOpen && (
-        <div
-          className={
-            nested
-              ? "ml-5 mt-1 space-y-1 border-l border-slate-200 pl-3"
-              : "ml-4 mt-1 space-y-1 border-l border-slate-200 pl-3"
-          }
-        >
+        <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-200/70 pl-2">
           {children}
         </div>
       )}
@@ -433,9 +463,7 @@ const SidebarDropdown = ({
   );
 };
 
-
-  //  Sidebar Link
-
+// Sidebar Link
 
 type SidebarLinkProps = {
   href: string;
@@ -478,16 +506,23 @@ const SidebarLink = ({
     <button
       type="button"
       onClick={handleClick}
-      className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-all ${
+      className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 ${
         isActive
-          ? "bg-blue-50 font-semibold text-blue-600"
-          : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+          ? "bg-blue-50/80 font-semibold text-blue-600 shadow-xs"
+          : "text-slate-600 hover:bg-white hover:text-slate-900"
       }`}
     >
-      {icon && (
-        <span className="shrink-0 text-base">
+      {/* Active Left Line Indicator */}
+      {isActive && (
+        <span className="absolute left-0 top-1/2 h-4 w-1 -translate-y-1/2 rounded-r-full bg-blue-600" />
+      )}
+
+      {icon ? (
+        <span className={`shrink-0 text-base ${isActive ? "text-blue-600" : "text-slate-400"}`}>
           {icon}
         </span>
+      ) : (
+        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${isActive ? "bg-blue-600" : "bg-slate-300"}`} />
       )}
 
       <span className="truncate">{label}</span>

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import FadeUp from "@/components/FadeUp";
 import UserFilters from "@/components/UserManagement/UserFilters";
 import UserPagination from "@/components/UserManagement/UserPagination";
-import UserStats from "@/components/UserManagement/UserStats";
 import UserTable from "@/components/UserManagement/UserTable";
 import CreateUserDrawer, {
   UserType,
@@ -92,7 +91,7 @@ const UserManagementPage = () => {
       <FadeUp className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-            User Management
+            Manage Users & Permissions
           </h1>
           <p className="mt-1 text-sm font-medium text-gray-500">
             Manage users, roles, branches and account access.
@@ -108,9 +107,6 @@ const UserManagementPage = () => {
           Create User
         </button>
       </FadeUp>
-
-      {/* Stats */}
-      <UserStats />
 
       {/* Table Section */}
       <section className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
