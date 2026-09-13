@@ -3,20 +3,7 @@ import FadeUp from "../FadeUp";
 
 const UserPagination = () => {
     return (
-        <FadeUp className="flex flex-col gap-3 border-t border-gray-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-
-            <p className="text-xs text-gray-500">
-                Showing{" "}
-                <span className="font-medium text-gray-700">
-                    1 to 3
-                </span>{" "}
-                of{" "}
-                <span className="font-medium text-gray-700">
-                    48
-                </span>{" "}
-                users
-            </p>
-
+        <FadeUp className="flex flex-col gap-3 border-t border-gray-200 px-4 py-3 sm:flex-row sm:items-center sm:justify-end">
             {/* Pagination */}
             <div className="flex items-center gap-2">
                 <Button

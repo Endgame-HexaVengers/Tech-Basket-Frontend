@@ -88,7 +88,7 @@ const MainLayout = () => {
           <DefaultSidebar />
         </aside>
 
-        <div className="ml-64 flex-1 min-h-screen flex flex-col overflow-x-hidden">
+        <div className="ml-64 flex-1 min-h-screen flex flex-col">
           <DefaultHeader />
           <PageRenderer routeMap={ROUTE_MAP} />
         </div>
