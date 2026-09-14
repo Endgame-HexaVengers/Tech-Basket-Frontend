@@ -47,7 +47,7 @@ export default function DashboardGreeting({
     <div className="flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-2xs sm:flex-row sm:items-center sm:justify-between sm:p-5">
       {/* Left side: Icon & Dynamic greeting */}
       <div className="flex items-center gap-3.5">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-purple-500 text-white shadow-md shadow-purple-500/20">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-gradient-to-tr from-purple-600 via-indigo-600 to-purple-500 text-white shadow-md shadow-purple-500/20">
           <TbShoppingBagCheck className="h-6 w-6" />
         </div>
 
@@ -57,7 +57,7 @@ export default function DashboardGreeting({
           </h1>
           <p className="flex items-center gap-1.5 text-xs font-medium text-slate-500 sm:text-sm">
             <span>You&apos;re building something amazing!</span>
-            <span role="img" aria-label="party">🎉</span>
+            <span role="img" aria-label="party"></span>
           </p>
         </div>
       </div>

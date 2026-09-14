@@ -405,7 +405,7 @@ const DefaultSidebar = () => {
 
       {/* Footer */}
       <div className="shrink-0 border-t border-slate-200/80 bg-white p-3">
-        <p className="text-center text-[11px] font-medium text-slate-400">
+        <p className="text-center text-[11px] font-medium text-slate-600">
           TechBasket ERP
         </p>
       </div>
