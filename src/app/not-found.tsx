@@ -27,6 +27,7 @@ export default function NotFound() {
         <p className="text-sm text-gray-500">
           This page is currently being built and is not available yet.
           Our team is working hard to bring this feature to you soon.
+          This page is under development and will be available in the near future. We appreciate your patience and understanding as we work to improve our website.
         </p>
 
         <div className="pt-1">
