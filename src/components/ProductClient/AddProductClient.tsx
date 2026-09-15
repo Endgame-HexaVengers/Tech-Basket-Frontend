@@ -390,7 +390,7 @@ export default function AddProductClient({ onClose, onProductAdded }: AddProduct
 
               <div>
                 <label className="mb-2 block text-[13px] font-medium text-[#111827]">
-                  Parent Category
+                  Parent Category to Update
                 </label>
                 <select
                   value={newCategory.parentCategory}

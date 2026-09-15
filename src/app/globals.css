@@ -34,3 +34,159 @@ html.lenis, html.lenis body {
 *::-webkit-scrollbar-thumb:hover {
   background-color: #cbd5e1;
 }
+
+html.dark {
+  color-scheme: dark;
+  --theme-page: #0f172a;
+  --theme-surface: #1e293b;
+  --theme-surface-raised: #263449;
+  --theme-surface-muted: #334155;
+  --theme-border: #475569;
+  --theme-text: #f8fafc;
+  --theme-text-muted: #cbd5e1;
+  --theme-text-subtle: #94a3b8;
+  background: var(--theme-page);
+}
+
+html.dark body {
+  background: var(--theme-page);
+  color: var(--theme-text-muted);
+}
+
+html.dark [class~="bg-white"],
+html.dark [class~="bg-white/80"],
+html.dark [class~="bg-white/90"],
+html.dark [class~="bg-white/95"] {
+  background-color: var(--theme-surface);
+}
+
+html.dark [class~="bg-slate-50"],
+html.dark [class~="bg-slate-50/50"],
+html.dark [class~="bg-slate-50/70"],
+html.dark [class~="bg-slate-50/80"] {
+  background-color: var(--theme-page);
+}
+
+html.dark [class~="bg-slate-100"] {
+  background-color: var(--theme-surface-raised);
+}
+
+html.dark [class~="bg-slate-200"],
+html.dark [class~="bg-slate-200/70"],
+html.dark [class~="bg-gray-100"],
+html.dark [class~="bg-gray-200"] {
+  background-color: var(--theme-surface-muted);
+}
+
+html.dark [class~="text-slate-900"],
+html.dark [class~="text-slate-800"],
+html.dark [class~="text-gray-900"],
+html.dark [class~="text-gray-800"],
+html.dark [class~="text-blue-950"] {
+  color: var(--theme-text);
+}
+
+html.dark [class~="text-slate-700"],
+html.dark [class~="text-gray-700"] {
+  color: var(--theme-text-muted);
+}
+
+html.dark [class~="text-slate-600"],
+html.dark [class~="text-slate-500"],
+html.dark [class~="text-gray-600"],
+html.dark [class~="text-gray-500"] {
+  color: var(--theme-text-subtle);
+}
+
+html.dark [class~="border-slate-200"],
+html.dark [class~="border-slate-200/80"],
+html.dark [class~="border-slate-100"],
+html.dark [class~="border-gray-200"],
+html.dark [class~="border-gray-100"] {
+  border-color: var(--theme-border);
+}
+
+html.dark [class~="hover:bg-slate-50"]:hover,
+html.dark [class~="hover:bg-slate-100"]:hover,
+html.dark [class~="hover:bg-gray-50"]:hover,
+html.dark [class~="hover:bg-gray-100"]:hover {
+  background-color: var(--theme-surface-muted);
+}
+
+html.dark [class~="hover:bg-slate-200"]:hover,
+html.dark [class~="hover:bg-slate-200/70"]:hover {
+  background-color: #475569;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  color: var(--theme-text);
+  background-color: var(--theme-surface-raised);
+  border-color: var(--theme-border);
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--theme-text-subtle);
+}
+
+html.dark [class~="divide-slate-100"] > :not([hidden]) ~ :not([hidden]),
+html.dark [class~="divide-gray-200"] > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--theme-border);
+}
+
+html.dark [class~="bg-[#f5f7f9]"],
+html.dark [class~="bg-[#f6f8fa]"] {
+  background-color: var(--theme-page);
+}
+
+html.dark [class*="bg-[#f"],
+html.dark [class*="bg-[#e"] {
+  background-color: var(--theme-surface-raised) !important;
+}
+
+html.dark [class*="text-[#"] {
+  color: var(--theme-text-muted) !important;
+}
+
+html.dark [class*="border-[#"] {
+  border-color: var(--theme-border) !important;
+}
+
+html.dark [class~="text-[#159447]"],
+html.dark [class~="text-[#1a7a52]"] {
+  color: #86efac !important;
+}
+
+html.dark [class~="text-[#b86e1d]"] {
+  color: #fbbf24 !important;
+}
+
+html.dark [class~="text-[#c35b42]"] {
+  color: #fca5a5 !important;
+}
+
+html.dark [class~="text-[#d33b46]"] {
+  color: #fda4af !important;
+}
+
+html.dark [class~="border-[#d3dbe7]"],
+html.dark [class~="border-[#d5d9e1]"],
+html.dark [class~="border-[#d6dbe3]"],
+html.dark [class~="border-[#d6dce6]"],
+html.dark [class~="border-[#d8dee8]"] {
+  border-color: var(--theme-border);
+}
+
+html.dark * {
+  scrollbar-color: #475569 transparent;
+}
+
+html.dark *::-webkit-scrollbar-thumb {
+  background-color: #475569;
+}
+
+html.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: #64748b;
+}
