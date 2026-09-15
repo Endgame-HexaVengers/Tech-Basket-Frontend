@@ -101,7 +101,8 @@ const UserManagementPage = () => {
         <button
           type="button"
           onClick={() => setIsDrawerOpen(true)}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98] cursor-pointer"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded bg-blue-600 px-4 text-sm font-semibold
+           text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98] cursor-pointer"
         >
           <Plus size={17} />
           Create User
