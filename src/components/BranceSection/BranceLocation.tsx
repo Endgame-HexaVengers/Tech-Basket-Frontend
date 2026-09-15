@@ -263,7 +263,7 @@ export default function BranchesPage() {
         {cards.map((card) => (
           <div
             key={card.title}
-            className="rounded border border-dashed border-slate-300 bg-white px-4 py-4 shadow-sm"
+            className="rounded border border-dashed border-slate-400 px-4 py-4 shadow-sm"
           >
             <div className="flex items-start justify-between">
 
@@ -284,7 +284,7 @@ export default function BranchesPage() {
               {loading ? (
                 <div className="h-9 w-12 animate-pulse rounded bg-slate-200" />
               ) : (
-                <p className="text-3xl font-bold text-slate-950">
+                <p className="text-3xl font-bold text-slate-950 dark:!text-white">
                   {card.value}
                 </p>
               )}
