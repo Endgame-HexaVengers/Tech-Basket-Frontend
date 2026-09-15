@@ -47,9 +47,18 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as { type?: CatalogType; name?: string };
+    const body = await request.json() as {
+      type?: CatalogType;
+      name?: string;
+      website?: string;
+      parentCategory?: string;
+      description?: string;
+    };
     const type = body.type;
     const name = body.name?.trim() || "";
+    const website = body.website?.trim() || "";
+    const parentCategory = body.parentCategory?.trim() || "";
+    const description = body.description?.trim() || "";
 
     if (type !== "brand" && type !== "category") {
       return NextResponse.json({ error: "Catalog type must be brand or category." }, { status: 400 });
@@ -60,7 +69,15 @@ export async function POST(request: NextRequest) {
 
     await prepareCatalog();
     const normalizedName = name.toLowerCase();
-    const result = await collection().insertOne({ type, name, normalizedName, createdAt: new Date() });
+    const result = await collection().insertOne({
+      type,
+      name,
+      normalizedName,
+      website: type === "brand" ? website : undefined,
+      parentCategory: type === "category" ? (parentCategory || undefined) : undefined,
+      description,
+      createdAt: new Date(),
+    });
     return NextResponse.json({ id: result.insertedId.toString(), type, name }, { status: 201 });
   } catch (error) {
     if (error && typeof error === "object" && "code" in error && error.code === 11000) {

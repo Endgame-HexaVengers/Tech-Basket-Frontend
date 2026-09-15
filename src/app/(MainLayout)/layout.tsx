@@ -35,7 +35,12 @@ import SystemConfigPage from "@/app/(MainLayout)/(Pages)/admin/system-config/pag
 import NotFoundPage from "@/app/(MainLayout)/not-found-page";
 import ComplaintReceviedPage from "./(Pages)/rma/complain-received/page";
 import AIInsightsPage from "@/app/(MainLayout)/(Pages)/ai-insights/page";
-import AIChatbot from "@/components/ai/AIChatbot";
+
+import PlansPage from "./(Pages)/admin/Plans/page";
+import ModernSupportWidget from "@/components/Support/ModernSupport";
+
+
+
 
 const ROUTE_MAP: Record<string, ComponentType> = {
   "/": HomePage,
@@ -69,6 +74,7 @@ const ROUTE_MAP: Record<string, ComponentType> = {
   "/admin/branches-locations": BranchesPage,
   "/admin/system-config": SystemConfigPage,
   "/ai-insights": AIInsightsPage,
+  "/admin/Plans": PlansPage,
 
 
 };
@@ -82,13 +88,13 @@ const MainLayout = () => {
           <DefaultSidebar />
         </aside>
 
-        <div className="ml-64 flex-1 min-h-screen flex flex-col overflow-x-hidden">
+        <div className="ml-64 flex-1 min-h-screen flex flex-col">
           <DefaultHeader />
           <PageRenderer routeMap={ROUTE_MAP} />
         </div>
 
-        {/* AI Chatbot */}
-        <AIChatbot />
+        {/* support widget */}
+        <ModernSupportWidget />
 
       </div>
     </TabProvider>
@@ -101,10 +107,8 @@ type PageRendererProps = {
 
 const resolveRoute = (
   routeMap: Record<string, ComponentType>,
+  pathname: string,
 ): { path: string; component: ComponentType } => {
-  const pathname =
-    typeof window !== "undefined" ? window.location.pathname : "/";
-
   const matchedRoute = Object.keys(routeMap).find((route) => {
     if (route === "/") return pathname === "/";
     return pathname === route || pathname.startsWith(`${route}/`);
@@ -119,7 +123,7 @@ const resolveRoute = (
 
 const PageRenderer = ({ routeMap }: PageRendererProps) => {
   const { activeTab, mountedPages, registerPage } = useTabs();
-  const [initialRoute] = useState(() => resolveRoute(routeMap));
+  const [initialRoute] = useState(() => resolveRoute(routeMap, "/"));
 
   const activeBasePath = activeTab.split("?")[0];
 

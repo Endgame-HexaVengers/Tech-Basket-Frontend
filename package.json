@@ -13,6 +13,7 @@
     "@gravity-ui/icons": "^2.21.0",
     "@heroui/react": "^3.2.4",
     "@heroui/styles": "^3.2.4",
+    "bcryptjs": "^3.0.3",
     "better-auth": "^1.7.1",
     "framer-motion": "^13.1.1",
     "lenis": "^1.3.26",
@@ -23,7 +24,8 @@
     "react-dom": "19.2.8",
     "react-hot-toast": "^2.6.0",
     "react-icons": "^5.7.0",
-    "sonner": "^2.0.8"
+    "sonner": "^2.0.8",
+    "sweetalert2": "^11.26.25"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

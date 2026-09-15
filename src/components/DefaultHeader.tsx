@@ -114,7 +114,7 @@ const DefaultHeader = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-white shadow-sm">
+    <header className="sticky top-0 z-50 w-full shrink-0 bg-white shadow-sm">
       <FadeUp>
         <HeadingInfo />
 

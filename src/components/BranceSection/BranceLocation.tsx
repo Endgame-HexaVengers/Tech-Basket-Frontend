@@ -88,11 +88,20 @@ export default function BranchesPage() {
   const fetchBranches = useCallback(async () => {
     try {
       setLoading(true);
+      setError("");
 
       const response = await fetch(`${API_URL}/api/branches`);
 
       if (!response.ok) {
-        throw new Error("Failed to fetch branches");
+        throw new Error(`Server responded with status ${response.status}`);
+      }
+
+      // Guard: ensure the response is actually JSON before parsing
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        throw new Error(
+          "Server returned an unexpected response (not JSON). The /api/branches endpoint may not exist on the backend."
+        );
       }
 
       const data = await response.json();
@@ -104,8 +113,15 @@ export default function BranchesPage() {
       setBranches(branchList);
 
       calculateStats(branchList);
-    } catch (error) {
-      console.error("Error fetching branches:", error);
+    } catch (err) {
+      const message =
+        err instanceof TypeError && err.message === "Failed to fetch"
+          ? "Backend server is offline. Please start the backend server to load branches."
+          : err instanceof Error
+            ? err.message
+            : "Could not load branches.";
+      console.error("Error fetching branches:", message);
+      setError(message);
     } finally {
       setLoading(false);
     }

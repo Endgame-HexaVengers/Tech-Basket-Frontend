@@ -24,10 +24,20 @@ export default function BranchManagement() {
       if (filters?.type) queryParams.append('type', filters.type);
       if (filters?.location) queryParams.append('location', filters.location);
 
-      // Your API Endpoint
-      const response = await fetch(`/api/branches?${queryParams.toString()}`);
-      const data = await response.json();
+      const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+      const response = await fetch(`${API_URL}/api/branches?${queryParams.toString()}`);
 
+      if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+      }
+
+      // Guard: ensure response is JSON before parsing
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        throw new Error("Server returned a non-JSON response.");
+      }
+
+      const data = await response.json();
       setBranches(data.branches || []);
     } catch (error) {
       console.error('Failed to fetch branches:', error);
