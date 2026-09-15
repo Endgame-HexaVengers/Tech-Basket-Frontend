@@ -24,9 +24,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       data-theme="light"
       className={`${geistSans.variable} ${geistMono.variable} light h-full antialiased`}
     >
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `(() => {
+            const theme = localStorage.getItem("techbasket-theme");
+            const isDark = theme === "dark";
+            document.documentElement.classList.toggle("dark", isDark);
+            document.documentElement.classList.toggle("light", !isDark);
+            document.documentElement.dataset.theme = isDark ? "dark" : "light";
+          })();`,
+        }}
+      />
       <body className="min-h-full flex flex-col">
         <SmoothScroll>
           {children}
