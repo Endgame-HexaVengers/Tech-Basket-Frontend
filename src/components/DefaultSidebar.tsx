@@ -23,7 +23,7 @@ import { FiCpu, FiRefreshCcw, FiSearch, FiTruck, FiUsers } from "react-icons/fi"
 import { IoDiamondSharp } from "react-icons/io5";
 import { GiDropletSplash } from "react-icons/gi";
 import { LuChartColumnDecreasing } from "react-icons/lu";
-import { GrEdit } from "react-icons/gr";
+import { GrEdit, GrSettingsOption } from "react-icons/gr";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { MdAppRegistration } from "react-icons/md";
 
@@ -394,11 +394,18 @@ const DefaultSidebar = () => {
             openTab={openTab}
           />
         </SidebarDropdown>
+        <SidebarLink
+          href="/Setting"
+          label="Setting"
+          icon={<GrSettingsOption />}
+          activeTab={activeTab}
+          openTab={openTab}
+        />
       </nav>
 
       {/* Footer */}
       <div className="shrink-0 border-t border-slate-200/80 bg-white p-3">
-        <p className="text-center text-[11px] font-medium text-slate-400">
+        <p className="text-center text-[11px] font-medium text-slate-600">
           TechBasket ERP
         </p>
       </div>
@@ -429,11 +436,10 @@ const SidebarDropdown = ({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-          isOpen
+        className={`group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isOpen
             ? "bg-white text-slate-900 shadow-sm"
             : "text-slate-600 hover:bg-white hover:text-slate-900"
-        }`}
+          }`}
       >
         <div className="flex min-w-0 items-center gap-3">
           {icon && (
@@ -506,11 +512,10 @@ const SidebarLink = ({
     <button
       type="button"
       onClick={handleClick}
-      className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 ${
-        isActive
+      className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 ${isActive
           ? "bg-blue-50/80 font-semibold text-blue-600 shadow-xs"
           : "text-slate-600 hover:bg-white hover:text-slate-900"
-      }`}
+        }`}
     >
       {/* Active Left Line Indicator */}
       {isActive && (
