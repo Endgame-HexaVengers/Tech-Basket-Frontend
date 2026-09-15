@@ -13,7 +13,7 @@ interface SlideData {
   brandColor: string;
   tags: string[];
   bgGradient: string;
-  type: "theme" | "inventory" | "pos" | "analytics";
+  type: "theme" | "inventory" | "pos" | "analytics" | "rma";
 }
 
 const SLIDES: SlideData[] = [
@@ -21,7 +21,7 @@ const SLIDES: SlideData[] = [
     id: 1,
     tagline: "এসে গেল নতুন থিম !",
     brandName: "Sellorá",
-    brandColor: "text-[#d94a4a]",
+    brandColor: "#d94a4a",
     tags: ["Fashion", "Boutiques", "Clothing", "E-commerce", "Attire"],
     bgGradient: "from-[#f8f9fb] via-[#f1f3f7] to-[#e8edf4]",
     type: "theme",
@@ -104,7 +104,7 @@ export default function DashboardSlider() {
 
   return (
     <div
-      className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-r shadow-xs transition-all"
+      className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-all"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{ minHeight: "340px" }}
@@ -131,14 +131,14 @@ export default function DashboardSlider() {
                     <span className="h-2 w-2 rounded-full bg-red-400" />
                     <span className="h-2 w-2 rounded-full bg-amber-400" />
                     <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                    <span className="ml-2 text-[9px] font-medium text-slate-400">
+                    <span className="ml-2 text-[9px] font-medium !text-slate-400">
                       Best Sellers
                     </span>
                   </div>
 
                   <div className="mt-2 space-y-1.5">
                     <div className="flex h-20 w-full flex-col justify-end rounded-md bg-gradient-to-tr from-rose-100 via-amber-50 to-pink-100 p-2">
-                      <span className="text-[10px] font-bold text-slate-800">
+                      <span className="text-[10px] font-bold !text-slate-800">
                         Summer Drop
                       </span>
                       <span className="text-[8px] font-semibold text-rose-600">
@@ -157,28 +157,28 @@ export default function DashboardSlider() {
                     <span className="h-2 w-2 rounded-full bg-red-400" />
                     <span className="h-2 w-2 rounded-full bg-amber-400" />
                     <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                    <span className="ml-2 text-[9px] font-medium text-slate-400">
+                    <span className="ml-2 text-[9px] font-medium !text-slate-400">
                       New Arrival Sale
                     </span>
                   </div>
 
                   <div className="mt-2 space-y-2">
                     <div className="flex h-24 w-full flex-col justify-between rounded-md bg-gradient-to-br from-amber-100 via-orange-50 to-yellow-100 p-2">
-                      <span className="w-fit rounded bg-black/70 px-1.5 py-0.5 text-[8px] font-bold text-white">
+                      <span className="w-fit rounded bg-black/70 px-1.5 py-0.5 text-[8px] font-bold !text-white">
                         20% OFF
                       </span>
 
-                      <span className="text-[9px] font-bold text-slate-800">
+                      <span className="text-[9px] font-bold !text-slate-800">
                         Boutique Collection
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between px-1">
-                      <span className="text-[9px] font-bold text-slate-700">
+                      <span className="text-[9px] font-bold !text-slate-700">
                         ৳ 2,890
                       </span>
 
-                      <span className="text-[8px] text-slate-400">
+                      <span className="text-[8px] !text-slate-400">
                         In stock
                       </span>
                     </div>
@@ -194,7 +194,7 @@ export default function DashboardSlider() {
                   <div className="relative overflow-hidden rounded-lg bg-white p-3 shadow-inner">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-extrabold tracking-tight text-slate-900">
+                        <span className="text-xs font-extrabold tracking-tight text-slate-900 dark:!text-white">
                           Sellora
                         </span>
 
@@ -203,8 +203,8 @@ export default function DashboardSlider() {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-2 text-[9px] text-slate-500">
-                        <span className="font-semibold text-slate-800">
+                      <div className="flex items-center gap-2 text-[9px] !text-slate-500">
+                        <span className="font-semibold !text-slate-800">
                           Home
                         </span>
                         <span>Shop</span>
@@ -218,17 +218,17 @@ export default function DashboardSlider() {
                           Fashion Edition
                         </span>
 
-                        <h4 className="mt-1 text-xs font-black text-slate-900 sm:text-sm">
+                        <h4 className="mt-1 text-xs font-black !text-slate-900 sm:text-sm">
                           Summer Style 2026
                         </h4>
 
-                        <p className="text-[9px] text-slate-500">
+                        <p className="text-[9px] !text-slate-500">
                           Curated elegant attire for modern lifestyles
                         </p>
 
                         <button
                           type="button"
-                          className="mt-2 inline-flex items-center gap-1 rounded bg-slate-900 px-2 py-1 text-[9px] font-medium text-white shadow-2xs"
+                          className="mt-2 inline-flex items-center gap-1 rounded bg-slate-900 px-2 py-1 text-[9px] font-medium !text-white shadow-2xs"
                         >
                           View Collection
                         </button>
@@ -252,7 +252,7 @@ export default function DashboardSlider() {
                         <div className="flex h-6 w-full items-center justify-center rounded bg-rose-100/60 text-[10px]">
                           ✨
                         </div>
-                        <p className="mt-1 truncate text-[8px] font-semibold text-slate-700">
+                        <p className="mt-1 truncate text-[8px] font-semibold text-slate-700 dark:!text-white">
                           Silk Kurti
                         </p>
                         <p className="text-[7px] font-bold text-rose-600">
@@ -264,7 +264,7 @@ export default function DashboardSlider() {
                         <div className="flex h-6 w-full items-center justify-center rounded bg-amber-100/60 text-[10px]">
                           🌿
                         </div>
-                        <p className="mt-1 truncate text-[8px] font-semibold text-slate-700">
+                        <p className="mt-1 truncate text-[8px] font-semibold text-slate-700 dark:!text-white">
                           Linen Co-ord
                         </p>
                         <p className="text-[7px] font-bold text-amber-600">
@@ -276,7 +276,7 @@ export default function DashboardSlider() {
                         <div className="flex h-6 w-full items-center justify-center rounded bg-indigo-100/60 text-[10px]">
                           🌸
                         </div>
-                        <p className="mt-1 truncate text-[8px] font-semibold text-slate-700">
+                        <p className="mt-1 truncate text-[8px] font-semibold text-slate-700 dark:!text-white">
                           Cotton Tunic
                         </p>
                         <p className="text-[7px] font-bold text-indigo-600">
@@ -301,11 +301,11 @@ export default function DashboardSlider() {
                     </span>
 
                     <div>
-                      <h4 className="text-xs font-bold text-slate-900">
+                      <h4 className="text-xs font-bold text-slate-900 dark:!text-white">
                         Inventory Health
                       </h4>
 
-                      <p className="text-[9px] text-slate-400">
+                      <p className="text-[9px] !text-slate-400">
                         Real-time smart analysis
                       </p>
                     </div>
@@ -318,7 +318,7 @@ export default function DashboardSlider() {
 
                 <div className="mt-3 space-y-2">
                   <div className="flex items-center justify-between rounded-lg bg-slate-50 p-2">
-                    <span className="text-xs font-medium text-slate-700">
+                    <span className="text-xs font-medium text-slate-700 dark:!text-white">
                       Stock Reorder Alerts
                     </span>
 
@@ -328,7 +328,7 @@ export default function DashboardSlider() {
                   </div>
 
                   <div className="flex items-center justify-between rounded-lg bg-slate-50 p-2">
-                    <span className="text-xs font-medium text-slate-700">
+                    <span className="text-xs font-medium text-slate-700 dark:!text-white">
                       RMA Warranty Claims
                     </span>
 
@@ -338,7 +338,7 @@ export default function DashboardSlider() {
                   </div>
 
                   <div className="flex items-center justify-between rounded-lg bg-slate-50 p-2">
-                    <span className="text-xs font-medium text-slate-700">
+                    <span className="text-xs font-medium text-slate-700 dark:!text-white">
                       Automated Barcode Sync
                     </span>
 
@@ -360,11 +360,11 @@ export default function DashboardSlider() {
                     </span>
 
                     <div>
-                      <h4 className="text-xs font-bold text-slate-900">
+                      <h4 className="text-xs font-bold !text-slate-900 dark:!text-white">
                         Fast Sales Terminal
                       </h4>
 
-                      <p className="text-[9px] text-slate-400">
+                      <p className="text-[9px] !text-slate-400 dark:!text-slate-400">
                         Multi-branch checkout
                       </p>
                     </div>
@@ -377,17 +377,17 @@ export default function DashboardSlider() {
 
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <div className="rounded-xl border border-slate-100 bg-slate-50 p-2.5 text-center">
-                    <p className="text-[10px] font-medium text-slate-500">
+                    <p className="text-[10px] font-medium  dark:!text-slate-300">
                       Daily Invoices
                     </p>
 
-                    <p className="text-base font-bold text-slate-900">
+                    <p className="text-base font-bold dark:!text-slate-300">
                       42 Orders
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-slate-100 bg-slate-50 p-2.5 text-center">
-                    <p className="text-[10px] font-medium text-slate-500">
+                    <p className="text-[10px] font-medium dark:!text-slate-300">
                       Dispatch Time
                     </p>
 
@@ -413,11 +413,11 @@ export default function DashboardSlider() {
                     </span>
 
                     <div>
-                      <h4 className="text-xs font-bold text-slate-900">
+                      <h4 className="text-xs font-bold dark:!text-white">
                         Business Analytics
                       </h4>
 
-                      <p className="text-[9px] text-slate-400">
+                      <p className="text-[9px] !text-slate-400">
                         Smart business overview
                       </p>
                     </div>
@@ -430,11 +430,11 @@ export default function DashboardSlider() {
 
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <div className="rounded-xl border border-slate-100 bg-slate-50 p-2.5">
-                    <p className="text-[10px] font-medium text-slate-500">
+                    <p className="text-[10px] font-medium dark:!text-slate-300">
                       Revenue
                     </p>
 
-                    <p className="mt-0.5 text-base font-bold text-slate-900">
+                    <p className="mt-0.5 text-base font-bold dark:!text-slate-300">
                       ৳ 24.8K
                     </p>
 
@@ -444,11 +444,11 @@ export default function DashboardSlider() {
                   </div>
 
                   <div className="rounded-xl border border-slate-100 bg-slate-50 p-2.5">
-                    <p className="text-[10px] font-medium text-slate-500">
+                    <p className="text-[10px] font-medium dark:!text-slate-300">
                       Orders
                     </p>
 
-                    <p className="mt-0.5 text-base font-bold text-slate-900">
+                    <p className="mt-0.5 text-base font-bold dark:!text-slate-300">
                       186
                     </p>
 
@@ -476,21 +476,21 @@ export default function DashboardSlider() {
 
                 <div className="mt-2.5 grid grid-cols-3 gap-1.5">
                   <div className="rounded-lg bg-emerald-50 p-2 text-center">
-                    <p className="text-[8px] text-slate-500">Profit</p>
+                    <p className="text-[8px] !text-slate-500">Profit</p>
                     <p className="text-[10px] font-bold text-emerald-700">
                       +24%
                     </p>
                   </div>
 
                   <div className="rounded-lg bg-amber-50 p-2 text-center">
-                    <p className="text-[8px] text-slate-500">Stock</p>
+                    <p className="text-[8px] !text-slate-500">Stock</p>
                     <p className="text-[10px] font-bold text-amber-700">
                       91%
                     </p>
                   </div>
 
                   <div className="rounded-lg bg-blue-50 p-2 text-center">
-                    <p className="text-[8px] text-slate-500">Growth</p>
+                    <p className="text-[8px] !text-slate-500">Growth</p>
                     <p className="text-[10px] font-bold text-blue-700">
                       +16%
                     </p>
@@ -503,19 +503,23 @@ export default function DashboardSlider() {
           {/* RIGHT SIDE */}
           <div className="relative z-10 flex w-full flex-col items-center text-center sm:w-1/2 sm:items-start sm:pl-6 sm:text-left lg:w-5/12">
             {slide.badge && (
-              <span className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-slate-700 shadow-2xs backdrop-blur-xs">
+              <span
+                className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1
+    text-xs font-bold text-slate-700 dark:!text-white shadow-2xs backdrop-blur-xs"
+              >
                 <HiSparkles className="text-amber-500" />
                 {slide.badge}
               </span>
             )}
 
-            <h2 className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
+            {/* FIXED BANNER TITLE */}
+            <h2 className="!text-slate-900 text-2xl font-black tracking-tight sm:text-3xl lg:text-4xl">
               {slide.tagline}
             </h2>
 
             <div className="mt-1 flex items-center justify-center gap-2 sm:justify-start">
               <span
-                className={`text-3xl font-extrabold italic tracking-tight sm:text-4xl lg:text-5xl ${slide.brandColor}`}
+                className={`text-3xl font-extrabold italic tracking-tight sm:text-4xl lg:text-5xl ${slide.brandColor} dark:!text-black`}
                 style={{
                   fontFamily: "cursive, system-ui, sans-serif",
                 }}
@@ -523,7 +527,7 @@ export default function DashboardSlider() {
                 {slide.brandName}
               </span>
 
-              <span className="select-none text-2xl font-black text-red-500 sm:text-3xl">
+              <span className="select-none text-2xl font-black !text-red-500 sm:text-3xl">
                 ✓
               </span>
             </div>
@@ -533,7 +537,10 @@ export default function DashboardSlider() {
               {slide.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-slate-200/90 bg-white/90 px-3.5 py-1 text-xs font-semibold text-slate-700 shadow-2xs backdrop-blur-xs transition hover:border-slate-300 hover:bg-white"
+                  className="rounded-full border border-slate-200/90 bg-white/90 px-3.5
+    py-1 text-xs font-semibold text-slate-700 dark:!text-white
+    shadow-2xs backdrop-blur-xs transition
+    hover:border-slate-300 hover:bg-white"
                 >
                   {tag}
                 </span>
@@ -548,7 +555,10 @@ export default function DashboardSlider() {
         type="button"
         onClick={prevSlide}
         aria-label="Previous Slide"
-        className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-slate-200/80 bg-white/90 p-2 text-slate-700 opacity-0 shadow-md backdrop-blur-xs transition group-hover:opacity-100 hover:scale-110 hover:bg-white active:scale-95"
+        className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border
+    border-slate-200/80 bg-white/90 p-2 text-slate-700 dark:!text-white
+    opacity-0 shadow-md backdrop-blur-xs transition
+    group-hover:opacity-100 hover:scale-110 hover:bg-white active:scale-95"
       >
         <FiChevronLeft className="h-5 w-5" />
       </button>
@@ -558,7 +568,7 @@ export default function DashboardSlider() {
         type="button"
         onClick={nextSlide}
         aria-label="Next Slide"
-        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-slate-200/80 bg-white/90 p-2 text-slate-700 opacity-0 shadow-md backdrop-blur-xs transition group-hover:opacity-100 hover:scale-110 hover:bg-white active:scale-95"
+        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-slate-200/80 bg-white/90 p-2 text-slate-700 dark:!text-white opacity-0 shadow-md backdrop-blur-xs transition group-hover:opacity-100 hover:scale-110 hover:bg-white active:scale-95"
       >
         <FiChevronRight className="h-5 w-5" />
       </button>
@@ -571,11 +581,10 @@ export default function DashboardSlider() {
             type="button"
             onClick={() => setCurrentSlide(index)}
             aria-label={`Go to slide ${index + 1}`}
-            className={`transition-all duration-300 ${
-              currentSlide === index
-                ? "h-2 w-6 rounded-full bg-slate-700"
-                : "h-2 w-2 rounded-full bg-slate-300 hover:bg-slate-400"
-            }`}
+            className={`transition-all duration-300 ${currentSlide === index
+              ? "h-2 w-6 rounded-full bg-slate-700"
+              : "h-2 w-2 rounded-full bg-slate-300 hover:bg-slate-400"
+              }`}
           />
         ))}
       </div>
