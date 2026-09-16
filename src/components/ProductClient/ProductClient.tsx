@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import FadeUp from "../FadeUp";
 
 type ProductRow = {
   _id?: string;
@@ -301,8 +302,8 @@ export default function ProductClient() {
 
   return (
     <>
-      <section className="min-h-[calc(100vh-108px)] bg-[#f8fafc] px-5 py-5 text-[#172235] sm:px-7 lg:px-9">
-        <div className="mx-auto max-w-360">
+      <section className="min-h-[calc(100vh-108px)] px-5 py-5 text-[#172235] sm:px-7 lg:px-9">
+        <FadeUp className="mx-auto max-w-360">
           {/* Header */}
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
@@ -625,12 +626,12 @@ export default function ProductClient() {
               </>
             )}
           </div>
-        </div>
+        </FadeUp>
       </section>
 
       {/* Add Product Modal */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
+        <FadeUp className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
           <div
             className="relative max-h-[90vh] w-full max-w-5xl overflow-y-auto overscroll-contain rounded-2xl bg-white shadow-2xl"
             onWheel={(event) => event.stopPropagation()}
@@ -653,7 +654,7 @@ export default function ProductClient() {
               }
             />
           </div>
-        </div>
+        </FadeUp>
       )}
     </>
   );

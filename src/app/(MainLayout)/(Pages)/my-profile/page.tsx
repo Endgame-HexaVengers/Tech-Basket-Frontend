@@ -217,7 +217,7 @@ const MyProfilePage = () => {
                   <FiMapPin className="h-4 w-4 text-indigo-600" />
                   {branch}
                 </p>
-                <p className="mt-1 text-xs text-slate-500">Primary Assigned Branch</p>
+                <p className="mt-1 text-xs dark:!text-slate-100">Primary Assigned Branch</p>
               </div>
 
               <button
