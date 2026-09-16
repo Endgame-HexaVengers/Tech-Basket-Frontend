@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FiBell, FiMoon, FiSun } from "react-icons/fi";
 import { MdOutlineLocalGroceryStore } from "react-icons/md";
 import UserInfo from "./UserInfo";
+import { Button } from "@heroui/react";
 
 interface NotificationItem {
   id: string | number;
@@ -70,14 +71,8 @@ const HeadingInfo = () => {
   ).length;
 
   return (
-    <header className="flex h-20 w-full items-center justify-between border-b border-slate-200 bg-white px-6 dark:border-slate-700 dark:bg-slate-900">
-      {/* Brand */}
-      <div>
-        <h2 className="font-semibold text-slate-900 dark:text-white">
-          TechBasket ERP
-        </h2>
-      </div>
-
+    <header className="flex h-20 w-full items-center justify-end border-b border-slate-200 bg-white px-6 dark:border-slate-700 dark:bg-slate-900">
+  
       {/* Header Right Actions */}
       <div className="flex items-center gap-1.5 sm:gap-3">
 
@@ -122,23 +117,20 @@ const HeadingInfo = () => {
         />
 
         {/* Theme Toggle */}
-        <button
+        <Button
+          isIconOnly
           type="button"
-          onClick={toggleTheme}
-          className="flex h-10 w-10 items-center justify-center rounded-full text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
-          aria-label={
-            isDark ? "Switch to light mode" : "Switch to dark mode"
-          }
-          title={
-            isDark ? "Switch to light mode" : "Switch to dark mode"
-          }
+          onPress={toggleTheme}
+          variant="ghost"
+          className="h-10 w-10 min-w-10 rounded-full text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
         >
           {isDark ? (
             <FiSun className="h-5 w-5" />
           ) : (
             <FiMoon className="h-5 w-5" />
           )}
-        </button>
+        </Button>
 
         {/* User Profile */}
         <UserInfo />
