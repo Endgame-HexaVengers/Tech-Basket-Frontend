@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button, Card, Chip } from "@heroui/react";
 import { FiCheck, FiArrowDown } from "react-icons/fi";
 import { HiSparkles } from "react-icons/hi2";
 import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
 import CompareFeatures from "@/components/Subscription/CompareFeatures";
 
 type BillingCycle = "monthly" | "sixMonths" | "yearly";
@@ -122,6 +123,38 @@ const PLANS_DATA: Plan[] = [
 export default function PlansPage() {
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
 
+  // Ref variables for tabs
+  const sixMonthsTabRef = useRef<HTMLButtonElement>(null);
+  const yearlyTabRef = useRef<HTMLButtonElement>(null);
+
+  // Function to fire confetti right above the clicked tab
+  const handleTabChange = (
+    selectedCycle: BillingCycle,
+    elementRef?: React.RefObject<HTMLButtonElement | null>
+  ) => {
+    setCycle(selectedCycle);
+
+    if (
+      (selectedCycle === "sixMonths" || selectedCycle === "yearly") &&
+      elementRef?.current
+    ) {
+      const rect = elementRef.current.getBoundingClientRect();
+      
+      // Calculate exact center-top coordinates relative to viewport
+      const x = (rect.left + rect.width / 2) / window.innerWidth;
+      const y = rect.top / window.innerHeight;
+
+      confetti({
+        particleCount: 60,
+        spread: 80,
+        startVelocity: 25,
+        gravity: 0.8,
+        origin: { x, y: Math.max(0, y - 0.02) }, // Tab-er thik upor theke
+        colors: ["#a855f7", "#ec4899", "#3b82f6", "#10b981", "#f59e0b", "#ffffff"],
+      });
+    }
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto py-10 px-4">
       {/* Header with Fade-in Animation */}
@@ -147,9 +180,11 @@ export default function PlansPage() {
         <div className="inline-flex items-center bg-slate-100 dark:bg-slate-800 p-1.5 rounded-full border border-slate-200 dark:border-slate-700">
           <button
             type="button"
-            onClick={() => setCycle("monthly")}
+            onClick={() => handleTabChange("monthly")}
             className={`relative px-5 py-2 text-sm font-semibold rounded-full transition-colors ${
-              cycle === "monthly" ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+              cycle === "monthly"
+                ? "text-slate-900 dark:text-white"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
             }`}
           >
             {cycle === "monthly" && (
@@ -163,10 +198,13 @@ export default function PlansPage() {
           </button>
 
           <button
+            ref={sixMonthsTabRef}
             type="button"
-            onClick={() => setCycle("sixMonths")}
+            onClick={() => handleTabChange("sixMonths", sixMonthsTabRef)}
             className={`relative px-5 py-2 text-sm font-semibold rounded-full transition-colors flex items-center gap-2 ${
-              cycle === "sixMonths" ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+              cycle === "sixMonths"
+                ? "text-slate-900 dark:text-white"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
             }`}
           >
             {cycle === "sixMonths" && (
@@ -185,10 +223,13 @@ export default function PlansPage() {
           </button>
 
           <button
+            ref={yearlyTabRef}
             type="button"
-            onClick={() => setCycle("yearly")}
+            onClick={() => handleTabChange("yearly", yearlyTabRef)}
             className={`relative px-5 py-2 text-sm font-semibold rounded-full transition-colors flex items-center gap-2 ${
-              cycle === "yearly" ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+              cycle === "yearly"
+                ? "text-slate-900 dark:text-white"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
             }`}
           >
             {cycle === "yearly" && (
@@ -210,7 +251,10 @@ export default function PlansPage() {
 
       {/* Compare features link */}
       <div className="flex justify-center mb-10">
-        <button type="button" className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-medium transition-transform hover:translate-y-0.5">
+        <button
+          type="button"
+          className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-medium transition-transform hover:translate-y-0.5"
+        >
           Compare all features <FiArrowDown />
         </button>
       </div>
@@ -260,9 +304,15 @@ export default function PlansPage() {
                 {/* Header Section */}
                 <div className="flex flex-col items-start px-6 pt-6 pb-2 space-y-1">
                   <div className="flex items-center justify-between w-full">
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">{plan.name}</h3>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                      {plan.name}
+                    </h3>
                     {plan.badge && (
-                      <Chip size="sm" variant="soft" color={plan.id === "free" ? "success" : "accent"}>
+                      <Chip
+                        size="sm"
+                        variant="soft"
+                        color={plan.id === "free" ? "success" : "accent"}
+                      >
                         {plan.badge}
                       </Chip>
                     )}
@@ -283,16 +333,27 @@ export default function PlansPage() {
                         transition={{ duration: 0.2 }}
                         className="text-3xl font-extrabold text-slate-900 dark:text-white"
                       >
-                        ৳{currentPrice.toLocaleString("en-BD", { minimumFractionDigits: 2 })}
+                        ৳
+                        {currentPrice.toLocaleString("en-BD", {
+                          minimumFractionDigits: 2,
+                        })}
                       </motion.span>
                     </AnimatePresence>
-                    <span className="text-xs text-slate-500 font-medium ml-1"> / month</span>
+                    <span className="text-xs text-slate-500 font-medium ml-1">
+                      {" "}
+                      / month
+                    </span>
                   </div>
 
                   {/* Action Button */}
                   <div className="my-6">
                     {plan.id === "free" ? (
-                      <Button fullWidth variant="outline" isDisabled className="font-semibold text-slate-500">
+                      <Button
+                        fullWidth
+                        variant="outline"
+                        isDisabled
+                        className="font-semibold text-slate-500"
+                      >
                         Current plan
                       </Button>
                     ) : (
@@ -319,7 +380,9 @@ export default function PlansPage() {
 
                 {/* Footer Section */}
                 <div className="px-6 pb-6 pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <p className="text-[11px] text-slate-400 font-medium">{plan.fees}</p>
+                  <p className="text-[11px] text-slate-400 font-medium">
+                    {plan.fees}
+                  </p>
                 </div>
               </Card>
             </motion.div>

@@ -14,12 +14,9 @@ import Link from "next/link";
 import { TiArrowRight } from "react-icons/ti";
 
 const BRANCHES = [
-    "MPL Shop 1316",
     "Uttora Branch",
-    "Progati Shoroni Branch",
     "Mirpur Branch",
     "Tangail Branch",
-    "Chattogram Branch",
 ];
 
 export default function LoginPage() {
@@ -178,7 +175,7 @@ export default function LoginPage() {
                                         htmlFor="branch"
                                         className="text-xs font-semibold uppercase tracking-wider text-gray-700 block"
                                     >
-                                        Branch / Location
+                                        Branch
                                     </label>
                                     <div className="relative">
                                         <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">

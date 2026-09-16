@@ -35,8 +35,7 @@ export interface UserType {
 interface CreateUserDrawerProps {
     isOpen: boolean;
     onClose: () => void;
-    // Static array modifier callback
-    onAddUser: (newUser: UserType) => void;
+    onAddUser: (newUser: UserType, password: string, actionType: "draft" | "create") => Promise<void>;
 }
 
 const BRANCHES = [
@@ -127,11 +126,8 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
         }
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-
-            // Create user object
             const newUserObj: UserType = {
-                id: Date.now().toString(),
+                id: "",
                 fullName: formData.fullName.trim(),
                 username: formData.username.trim(),
                 email: formData.email.trim(),
@@ -143,7 +139,7 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
             };
 
 
-            onAddUser(newUserObj);
+            await onAddUser(newUserObj, formData.password, actionType);
 
             // Toast
             if (actionType === "draft") {
@@ -166,8 +162,8 @@ const CreateUserDrawer: React.FC<CreateUserDrawerProps> = ({
 
             onClose();
         } catch (error) {
-            console.error("Error creating static user", error);
-            toast.error("Something went wrong!");
+            console.error("Error creating user", error);
+            toast.error(error instanceof Error ? error.message : "Something went wrong!");
         } finally {
             setIsSavingDraft(false);
             setIsCreatingUser(false);
