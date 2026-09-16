@@ -11,7 +11,7 @@ const UserTable: React.FC<UserTableProps> = ({ users = [] }) => {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-left text-sm text-gray-500">
-        <thead className="bg-gray-50 text-xs uppercase text-gray-700">
+        <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:!text-gray-700">
           <tr>
             <th className="px-6 py-3">Full Name</th>
             <th className="px-6 py-3">Username</th>
@@ -22,8 +22,11 @@ const UserTable: React.FC<UserTableProps> = ({ users = [] }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
-          {users.map((user) => (
-            <tr key={user.id} className="hover:bg-gray-50">
+          {users.map((user, index) => (
+            <tr
+              key={`${user.id || user.email || user.username || "user"}-${index}`}
+              className="hover:bg-gray-50"
+            >
               <td className="px-6 py-4 font-medium text-gray-900">
                 {user.fullName}
               </td>

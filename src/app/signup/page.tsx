@@ -180,8 +180,8 @@ const RegisterPage = () => {
                   name="name"
                   className="w-full"
                   validate={(value) => {
-                    if (value.length < 3) {
-                      return "Name must be at least 3 characters";
+                    if (value.length < 2) {
+                      return "Name must be at least 2 characters";
                     }
                     return null;
                   }}
