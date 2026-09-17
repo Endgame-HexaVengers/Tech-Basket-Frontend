@@ -78,7 +78,7 @@ const getTabFullPath = (tab: Tab): string => {
 };
 
 const DefaultHeader = () => {
-  const { tabs, activeTab, openTab, closeTab, setActiveTab } = useTabs();
+  const { tabs, activeTab, openNewTab, closeTab, setActiveTab } = useTabs();
 
   const handleCloseTab = (event: React.MouseEvent, fullPath: string) => {
     event.stopPropagation();
@@ -109,7 +109,7 @@ const DefaultHeader = () => {
 
   const handleNewTab = () => {
     const homeTab = createTabFromPath("/");
-    openTab(homeTab);
+    openNewTab(homeTab);
   };
 
   return (
