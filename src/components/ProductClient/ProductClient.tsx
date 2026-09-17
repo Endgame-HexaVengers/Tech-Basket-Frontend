@@ -43,33 +43,21 @@ type PaginationMeta = {
   totalPages: number;
 };
 
-const getDisplayName = (p: ProductRow, index: number) => {
-  return (
-    p.productTitle ||
-    p.title ||
-    p.productName ||
-    p.name ||
-    `Product ${index + 1}`
-  );
-};
+const getDisplayName = (p: ProductRow, index: number) =>
+  p.productTitle || p.title || p.productName || p.name || `Product ${index + 1}`;
 
-const getDisplaySku = (p: ProductRow) => {
-  return p.sku || p.productId || "-";
-};
+const getDisplaySku = (p: ProductRow) => p.sku || p.productId || "-";
 
 const getDisplayBrand = (p: ProductRow) => {
   if (typeof p.brand === "object" && p.brand !== null) {
     return p.brand.name || "-";
   }
-
   if (p.brand) return p.brand;
-
   if (p.brandId) {
     return p.brandId.startsWith("BRAND_")
       ? p.brandId.replace(/^BRAND_/, "").replace(/_/g, " ")
       : p.brandId;
   }
-
   return "-";
 };
 
@@ -77,15 +65,12 @@ const getDisplayCategory = (p: ProductRow) => {
   if (typeof p.category === "object" && p.category !== null) {
     return p.category.name || "-";
   }
-
   if (p.category) return p.category;
-
   if (p.categoryId) {
     return p.categoryId.startsWith("CAT_")
       ? p.categoryId.replace(/^CAT_/, "").replace(/_/g, " ")
       : p.categoryId;
   }
-
   return "-";
 };
 
@@ -332,68 +317,42 @@ export default function ProductClient() {
                 </p>
               </div>
             ) : error ? (
-              /* Error */
-              <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-rose-200 bg-rose-50 text-rose-600 shadow-sm">
-                  <ServerOff className="h-7 w-7" />
-                </div>
-
-                <div className="mb-2.5 flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-100/80 px-2.5 py-0.5 text-[11px] font-semibold text-rose-700">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-rose-500" />
-                    Server Offline
-                  </span>
-
-                  <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-medium text-slate-600">
-                    localhost:5000
-                  </span>
-                </div>
-
-                <h3 className="text-base font-bold text-[#111827]">
-                  Backend Server is Unreachable
-                </h3>
-
-                <p className="mt-1.5 max-w-lg text-xs leading-relaxed text-[#536174] sm:text-sm">
-                  We cannot retrieve product data because the backend API server
-                  is offline at{" "}
-                  <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-rose-600">
-                    http://localhost:5000
-                  </code>
-                  . Please start your backend server to load and manage
-                  products.
-                </p>
-
-                <div className="mt-4 flex max-w-lg items-center gap-2 rounded-lg border border-amber-200 bg-amber-50/80 px-3.5 py-2 text-left text-xs text-amber-900">
-                  <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" />
-
-                  <span>
-                    <strong>How to fix:</strong> Run{" "}
-                    <code className="rounded bg-amber-100/90 px-1 py-0.5 font-mono font-semibold text-amber-950">
-                      npm run dev
-                    </code>{" "}
-                    in your backend directory (
-                    <code className="rounded bg-amber-100/90 px-1 py-0.5 font-mono text-amber-950">
-                      Tech-Basket-Backend
-                    </code>
-                    ).
-                  </span>
-                </div>
-
-                <div className="mt-5 flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={handleRetry}
-                    disabled={isRetrying}
-                    className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[#2949a8] px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-[#203a86] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    <RefreshCw
-                      className={`h-3.5 w-3.5 ${
-                        isRetrying ? "animate-spin" : ""
-                      }`}
-                    />
-
-                    {isRetrying ? "Checking Connection..." : "Retry Connection"}
-                  </button>
+              <div className="px-5 py-12 sm:px-10 sm:py-16">
+                <div className="mx-auto flex max-w-2xl flex-col items-center rounded-2xl border border-[#e2e7f0] bg-[#f8faff] px-5 py-8 text-center shadow-[0_12px_35px_rgba(41,73,168,0.06)] sm:px-10">
+                  <div className="relative mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#e8edff] text-[#2949a8]">
+                    <span className="absolute inset-0 animate-ping rounded-2xl bg-[#dbe4ff] opacity-40" />
+                    <ServerOff className="relative h-7 w-7" strokeWidth={1.8} />
+                  </div>
+                  <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#f4c7cf] bg-white px-3 py-1 text-[11px] font-semibold text-[#b4233c] shadow-sm">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#d33b46]" />
+                    Connection unavailable
+                  </div>
+                  <h3 className="text-lg font-bold tracking-tight text-[#172235]">
+                    Product catalog is taking a break
+                  </h3>
+                  <p className="mt-2 max-w-md text-[13px] leading-6 text-[#61708a]">
+                    We could not connect to the catalog service right now. Start
+                    the backend service, then try again to load your products.
+                  </p>
+                  <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-[11px] text-[#61708a]">
+                    <span className="rounded-md border border-[#dfe5f1] bg-white px-2.5 py-1.5 shadow-sm">Endpoint</span>
+                    <code className="rounded-md bg-[#edf1fa] px-2.5 py-1.5 font-mono text-[#2949a8]">localhost:5000</code>
+                  </div>
+                  <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={handleRetry}
+                      disabled={isRetrying}
+                      className="inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#2949a8] px-5 text-xs font-semibold text-white shadow-[0_5px_12px_rgba(41,73,168,0.2)] transition hover:bg-[#203a86] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <RefreshCw className={`h-3.5 w-3.5 ${isRetrying ? "animate-spin" : ""}`} />
+                      {isRetrying ? "Checking connection..." : "Try again"}
+                    </button>
+                    <span className="inline-flex items-center gap-1.5 text-[11px] text-[#7a879b]">
+                      <AlertCircle className="h-3.5 w-3.5" />
+                      Run <code className="font-semibold text-[#536174]">npm run dev</code> in the backend
+                    </span>
+                  </div>
                 </div>
               </div>
             ) : (

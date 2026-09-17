@@ -4,7 +4,7 @@ import { buildProductDocument } from "@/lib/productDoc";
 
 export const runtime = "nodejs";
 
-const BACKEND_PRODUCTS_URL = "http://localhost:5000/api/v1/products";
+const BACKEND_PRODUCTS_URL = process.env.BACKEND_PRODUCTS_URL + "/api/v1/products";
 
 async function getProductsCollection() {
   const collections = await catalogDatabase.listCollections().toArray();
@@ -117,7 +117,7 @@ export async function GET(request: NextRequest) {
     console.error("Backend & MongoDB fallback both failed:", fallbackError);
     return NextResponse.json(
       {
-        error: "Backend server (http://localhost:5000) is unreachable. Please ensure the backend server is running.",
+        error: "Backend server is unreachable. Please ensure the backend server is running.",
         details: String(fallbackError),
       },
       { status: 503 }
