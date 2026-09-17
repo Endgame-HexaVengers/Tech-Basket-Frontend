@@ -213,6 +213,14 @@ const DefaultSidebar = () => {
           event.currentTarget.scrollTop += event.deltaY;
         }}
       >
+        <SidebarLink
+          href="/"
+          label="Dashboard"
+          icon={<LuChartColumnDecreasing className="text-blue-600" />}
+          activeTab={activeTab}
+          openTab={openTab}
+        />
+
         {/* Setup */}
         <SidebarDropdown label="Setup" icon={<FcSettings />}>
           <SidebarLink

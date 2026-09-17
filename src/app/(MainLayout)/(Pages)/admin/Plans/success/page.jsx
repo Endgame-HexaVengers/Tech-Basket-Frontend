@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 
-import { stripe } from '../../lib/stripe'
+import { stripe } from '@/lib/stripe'
+import PaymentReceipt from '@/components/Subscription/PaymentReceipt'
 
 export default async function Success({ searchParams }) {
   const { session_id } = await searchParams
@@ -10,7 +11,12 @@ export default async function Success({ searchParams }) {
 
   const {
     status,
-    customer_details: { email: customerEmail }
+    customer_details: { email: customerEmail },
+    amount_total: amountTotal,
+    currency,
+    id: sessionId,
+    payment_status: paymentStatus,
+    line_items: { data: lineItems },
   } = await stripe.checkout.sessions.retrieve(session_id, {
     expand: ['line_items', 'payment_intent']
   })
@@ -20,14 +26,21 @@ export default async function Success({ searchParams }) {
   }
 
   if (status === 'complete') {
+    const lineItem = lineItems?.[0]
+    const productName = lineItem?.description || 'TechBasket subscription'
+    const amount = new Intl.NumberFormat('en-BD', {
+      style: 'currency',
+      currency: currency || 'bdt',
+    }).format((amountTotal || 0) / 100)
+
     return (
-      <section id="success">
-        <p>
-          We appreciate your business! A confirmation email will be sent to{' '}
-          {customerEmail}. If you have any questions, please email{' '}
-          <a href="mailto:orders@example.com">orders@example.com</a>.
-        </p>
-      </section>
+      <PaymentReceipt
+        amount={amount}
+        customerEmail={customerEmail || 'Not provided'}
+        paymentStatus={paymentStatus || 'paid'}
+        productName={productName}
+        sessionId={sessionId}
+      />
     )
   }
 }
