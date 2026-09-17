@@ -29,12 +29,26 @@ export default function LoginPage() {
         setIsLoading(true);
 
         const formData = new FormData(e.currentTarget);
-        const userData = Object.fromEntries(formData.entries());
+        const userData = Object.fromEntries(formData.entries()) as {
+            userIdOrEmail: string;
+            password: string;
+            branch: string;
+        };
+
+        const email = (userData.userIdOrEmail || "").trim();
+        const branch = (userData.branch || "").trim();
+        const password = (userData.password || "").trim();
+
+        if (!email || !password || !branch) {
+            toast.error("Please fill in your email, password, and branch.");
+            setIsLoading(false);
+            return;
+        }
 
         try {
             const { data, error } = await authClient.signIn.email({
-                email: userData.userIdOrEmail as string,
-                password: userData.password as string,
+                email,
+                password,
                 rememberMe: true,
                 callbackURL: "/",
             });

@@ -253,6 +253,12 @@ export default function PlansPage() {
       <div className="flex justify-center mb-10">
         <button
           type="button"
+          onClick={() => {
+            document.getElementById("compare-features")?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }}
           className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-medium transition-transform hover:translate-y-0.5"
         >
           Compare all features <FiArrowDown />
