@@ -30,6 +30,7 @@ import PurchaseReturnApprovalPage from "@/app/(MainLayout)/(Pages)/approval/purc
 import UserManagementPage from "@/app/(MainLayout)/(Pages)/admin/users/page";
 import ProductsPage from "@/app/(MainLayout)/(Pages)/admin/products/page";
 import AddProductPage from "@/app/(MainLayout)/(Pages)/admin/products/add/page";
+import SuppliersPage from "@/app/(MainLayout)/(Pages)/admin/suppliers/page";
 import BranchesPage from "@/app/(MainLayout)/(Pages)/admin/branches/page";
 import SystemConfigPage from "@/app/(MainLayout)/(Pages)/admin/system-config/page";
 import NotFoundPage from "@/app/(MainLayout)/not-found-page";
@@ -70,6 +71,7 @@ const ROUTE_MAP: Record<string, ComponentType> = {
   "/admin/users": UserManagementPage,
   "/admin/products": ProductsPage,
   "/admin/products/add": AddProductPage,
+  "/admin/suppliers": SuppliersPage,
   "/admin/branches": BranchesPage,
   "/admin/branches-locations": BranchesPage,
   "/admin/system-config": SystemConfigPage,
