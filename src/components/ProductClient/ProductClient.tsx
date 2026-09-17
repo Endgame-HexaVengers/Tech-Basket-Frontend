@@ -6,6 +6,7 @@ import {
   ChevronLeft,
   ChevronRight,
   PackageSearch,
+  Plus,
   RefreshCw,
   ServerOff,
   X,
@@ -27,6 +28,11 @@ type ProductRow = {
   category?: string | { name?: string; _id?: string };
   categoryId?: string;
   color?: string;
+  image?: string;
+  imageUrl?: string;
+  imageURL?: string;
+  thumbnail?: string;
+  photo?: string;
   [key: string]: unknown;
 };
 
@@ -87,6 +93,11 @@ const getDisplayColor = (p: ProductRow) => {
   return p.color || "-";
 };
 
+const getProductImage = (p: ProductRow) => {
+  const image = p.image || p.imageUrl || p.imageURL || p.thumbnail || p.photo;
+  return typeof image === "string" && image.trim() ? image : null;
+};
+
 export default function ProductClient() {
   const [query, setQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -129,75 +140,40 @@ export default function ProductClient() {
           ? `&search=${encodeURIComponent(query.trim())}`
           : "";
 
-        // 1. Try direct fetch from backend server
-        try {
-          const backendRes = await fetch(
-            `http://localhost:5000/api/v1/products?page=${currentPage}&limit=10${queryParam}`,
-            {
-              headers: {
-                Accept: "application/json",
-              },
+        const response = await fetch(
+          `/api/products?page=${currentPage}&limit=10${queryParam}`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
             },
+          },
+        );
+
+        if (!response.ok) {
+          const errorJson = await response.json().catch(() => null);
+
+          throw new Error(
+            errorJson?.error ||
+              `Could not load products (status ${response.status}).`,
           );
-
-          if (backendRes.ok) {
-            const json = await backendRes.json();
-
-            list = Array.isArray(json?.data)
-              ? json.data
-              : Array.isArray(json)
-                ? json
-                : [];
-
-            if (json?.pagination) {
-              meta = json.pagination;
-            } else {
-              meta.total = list.length;
-              meta.totalPages = Math.ceil(list.length / 10) || 1;
-            }
-          }
-        } catch {
-          // Direct backend request failed.
-          // Fallback to internal /api/products route.
         }
 
-        // 2. Fallback to /api/products route
-        if (list.length === 0) {
-          const response = await fetch(
-            `/api/products?page=${currentPage}&limit=10${queryParam}`,
-            {
-              method: "GET",
-              headers: {
-                Accept: "application/json",
-              },
-            },
-          );
+        const payload = await response.json();
 
-          if (!response.ok) {
-            const errorJson = await response.json().catch(() => null);
+        list = Array.isArray(payload?.data)
+          ? payload.data
+          : Array.isArray(payload)
+            ? payload
+            : Array.isArray(payload?.products)
+              ? payload.products
+              : [];
 
-            throw new Error(
-              errorJson?.error ||
-                `Backend server (http://localhost:5000) is offline (status ${response.status}).`,
-            );
-          }
-
-          const payload = await response.json();
-
-          list = Array.isArray(payload?.data)
-            ? payload.data
-            : Array.isArray(payload)
-              ? payload
-              : Array.isArray(payload?.products)
-                ? payload.products
-                : [];
-
-          if (payload?.pagination) {
-            meta = payload.pagination;
-          } else {
-            meta.total = list.length;
-            meta.totalPages = Math.ceil(list.length / 10) || 1;
-          }
+        if (payload?.pagination) {
+          meta = payload.pagination;
+        } else {
+          meta.total = list.length;
+          meta.totalPages = Math.ceil(list.length / 10) || 1;
         }
 
         setProducts(list);
@@ -220,9 +196,7 @@ export default function ProductClient() {
   // Handle Lenis when Add Product modal opens
   useEffect(() => {
     const lenis =
-      typeof window !== "undefined"
-        ? window.__techBasketLenis
-        : undefined;
+      typeof window !== "undefined" ? window.__techBasketLenis : undefined;
 
     if (!isAddModalOpen) {
       document.body.style.overflow = "";
@@ -251,9 +225,7 @@ export default function ProductClient() {
     };
   }, [isAddModalOpen]);
 
-  const handleSearchChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
     setCurrentPage(1);
   };
@@ -291,14 +263,9 @@ export default function ProductClient() {
   };
 
   const startItem =
-    pagination.total === 0
-      ? 0
-      : (currentPage - 1) * pagination.limit + 1;
+    pagination.total === 0 ? 0 : (currentPage - 1) * pagination.limit + 1;
 
-  const endItem = Math.min(
-    currentPage * pagination.limit,
-    pagination.total,
-  );
+  const endItem = Math.min(currentPage * pagination.limit, pagination.total);
 
   return (
     <>
@@ -318,16 +285,20 @@ export default function ProductClient() {
               </div>
 
               <p className="text-[13px] text-[#536174]">
-                Manage product information, SKU, brand, category and
-                warranty details.
+                Manage product information, SKU, brand, category and warranty
+                details.
               </p>
             </div>
 
             <button
               type="button"
-              onClick={() => setIsAddModalOpen(true)}
-              className="h-10 cursor-pointer rounded-lg bg-[#2949a8] px-4 text-[13px] font-semibold text-white transition hover:bg-[#203a86]"
+              onClick={() => {
+                setQuery("");
+                setIsAddModalOpen(true);
+              }}
+              className="flex items-center gap-2 h-10 cursor-pointer rounded-lg bg-[#2949a8] px-4 text-[13px] font-semibold text-white transition hover:bg-[#203a86]"
             >
+              <Plus className="h-4 w-4" />
               Add Product
             </button>
           </div>
@@ -335,8 +306,11 @@ export default function ProductClient() {
           {/* Table Container */}
           <div className="overflow-x-auto rounded-[7px] border border-[#d8dee8] bg-white shadow-xs">
             {/* Search */}
-            <div className="border-b border-[#edf0f4] p-4">
+            <div className="flex items-center justify-between gap-3 border-b border-[#edf0f4] p-4">
               <input
+                type="search"
+                name="product-search"
+                autoComplete="off"
                 value={query}
                 onChange={handleSearchChange}
                 placeholder="Search by product title or SKU..."
@@ -380,8 +354,8 @@ export default function ProductClient() {
                 </h3>
 
                 <p className="mt-1.5 max-w-lg text-xs leading-relaxed text-[#536174] sm:text-sm">
-                  We cannot retrieve product data because the backend API
-                  server is offline at{" "}
+                  We cannot retrieve product data because the backend API server
+                  is offline at{" "}
                   <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-rose-600">
                     http://localhost:5000
                   </code>
@@ -418,9 +392,7 @@ export default function ProductClient() {
                       }`}
                     />
 
-                    {isRetrying
-                      ? "Checking Connection..."
-                      : "Retry Connection"}
+                    {isRetrying ? "Checking Connection..." : "Retry Connection"}
                   </button>
                 </div>
               </div>
@@ -431,16 +403,14 @@ export default function ProductClient() {
                   <thead className="bg-[#f1f3f6] text-[10px] uppercase text-[#43516a]">
                     <tr>
                       {[
+                        "Image",
                         "Product",
                         "SKU",
                         "Brand",
                         "Category",
                         "Color",
                       ].map((heading) => (
-                        <th
-                          key={heading}
-                          className="h-10 px-4"
-                        >
+                        <th key={heading} className="h-10 px-4">
                           {heading}
                         </th>
                       ))}
@@ -449,15 +419,13 @@ export default function ProductClient() {
 
                   <tbody>
                     {products.map((product, index) => {
-                      const productName = getDisplayName(
-                        product,
-                        index,
-                      );
+                      const productName = getDisplayName(product, index);
 
                       const sku = getDisplaySku(product);
                       const brand = getDisplayBrand(product);
                       const category = getDisplayCategory(product);
                       const color = getDisplayColor(product);
+                      const image = getProductImage(product);
 
                       return (
                         <tr
@@ -468,25 +436,28 @@ export default function ProductClient() {
                           }
                           className="h-14 border-t border-[#edf0f4] transition hover:bg-[#fbfcfd]"
                         >
-                          <td className="px-4 font-medium">
-                            {productName}
+                          <td className="w-18 px-4">
+                            {image ? (
+                              <img
+                                src={image}
+                                alt={productName}
+                                className="h-10 w-10 rounded-lg border border-[#e2e8f0] object-cover"
+                              />
+                            ) : (
+                              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
+                                <PackageSearch className="h-4 w-4" />
+                              </div>
+                            )}
                           </td>
+                          <td className="px-4 font-medium">{productName}</td>
 
-                          <td className="px-4 text-[#536174]">
-                            {sku}
-                          </td>
+                          <td className="px-4 text-[#536174]">{sku}</td>
 
-                          <td className="px-4 text-[#536174]">
-                            {brand}
-                          </td>
+                          <td className="px-4 text-[#536174]">{brand}</td>
 
-                          <td className="px-4 text-[#536174]">
-                            {category}
-                          </td>
+                          <td className="px-4 text-[#536174]">{category}</td>
 
-                          <td className="px-4 text-[#94a3b8]">
-                            {color}
-                          </td>
+                          <td className="px-4 text-[#94a3b8]">{color}</td>
                         </tr>
                       );
                     })}
@@ -559,13 +530,9 @@ export default function ProductClient() {
                       <button
                         type="button"
                         onClick={() =>
-                          setCurrentPage((p) =>
-                            Math.max(1, p - 1),
-                          )
+                          setCurrentPage((p) => Math.max(1, p - 1))
                         }
-                        disabled={
-                          currentPage === 1 || loading
-                        }
+                        disabled={currentPage === 1 || loading}
                         className="inline-flex h-8 cursor-pointer items-center gap-1 rounded-lg border border-[#d6dce6] bg-white px-2.5 text-[12px] font-medium text-[#43516a] transition hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         <ChevronLeft className="h-3.5 w-3.5" />
@@ -578,9 +545,7 @@ export default function ProductClient() {
                           <button
                             key={idx}
                             type="button"
-                            onClick={() =>
-                              setCurrentPage(item)
-                            }
+                            onClick={() => setCurrentPage(item)}
                             disabled={loading}
                             className={`h-8 min-w-8 cursor-pointer rounded-lg px-2 text-[12px] font-semibold transition ${
                               currentPage === item
@@ -605,15 +570,11 @@ export default function ProductClient() {
                         type="button"
                         onClick={() =>
                           setCurrentPage((p) =>
-                            Math.min(
-                              pagination.totalPages,
-                              p + 1,
-                            ),
+                            Math.min(pagination.totalPages, p + 1),
                           )
                         }
                         disabled={
-                          currentPage >=
-                            pagination.totalPages || loading
+                          currentPage >= pagination.totalPages || loading
                         }
                         className="inline-flex h-8 cursor-pointer items-center gap-1 rounded-lg border border-[#d6dce6] bg-white px-2.5 text-[12px] font-medium text-[#43516a] transition hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-40"
                       >
@@ -649,9 +610,11 @@ export default function ProductClient() {
 
             <AddProductClient
               onClose={() => setIsAddModalOpen(false)}
-              onProductAdded={() =>
-                setRefreshKey((current) => current + 1)
-              }
+              onProductAdded={() => {
+                setQuery("");
+                setCurrentPage(1);
+                setRefreshKey((current) => current + 1);
+              }}
             />
           </div>
         </FadeUp>

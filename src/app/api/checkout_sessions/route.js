@@ -1,26 +1,54 @@
 import { NextResponse } from 'next/server'
-import { headers } from 'next/headers'
 
-import { stripe } from '../../../lib/stripe'
+import { PRICE_IDS, stripe } from '../../../lib/stripe'
+import { auth } from '../../../lib/auth'
 
-export async function POST() {
+
+export async function POST(request) {
   try {
-    const headersList = await headers()
-    const origin = headersList.get('origin')
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json(
+        { error: 'Stripe is not configured on the server.' },
+        { status: 500 },
+      )
+    }
 
-    // Create Checkout Sessions from body params.
+    const userSession = await auth.api.getSession({ headers: request.headers })
+    const customerEmail = userSession?.user?.email
+
+    if (!customerEmail) {
+      return NextResponse.json(
+        { error: 'You must be logged in before starting checkout.' },
+        { status: 401 },
+      )
+    }
+
+    const formData = await request.formData()
+    const plan = String(formData.get('plan') || '')
+    const billingCycle = String(formData.get('billingCycle') || 'monthly')
+    const priceKey = plan === 'custom' ? 'Agency_Reseller' : plan
+    const price = PRICE_IDS[`${priceKey}_${billingCycle}`]
+
+    if (!price) {
+      return NextResponse.json(
+        { error: 'This plan is not configured for checkout.' },
+        { status: 400 },
+      )
+    }
+
+    const origin = new URL(request.url).origin
+
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
-          // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-          price: 'price_1UGbjZ0nyT4Qws2DMtU3GRM4',
+          price,
           quantity: 1,
         },
       ],
       mode: 'subscription',
-      success_url: `${origin}/Plans/success?session_id={CHECKOUT_SESSION_ID}`,
-      // Provide a name (for example, hosted_web_0001) to label this Checkout integration and measure its conversion independently
-      integration_identifier: 'tech_basket_checkout',
+      customer_email: customerEmail,
+      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/admin/Plans`,
     });
     return NextResponse.redirect(session.url, 303)
   } catch (err) {

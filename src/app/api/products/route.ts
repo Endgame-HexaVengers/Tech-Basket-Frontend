@@ -139,6 +139,7 @@ export async function POST(request: NextRequest) {
       warrantyPeriod?: number;
       warrantyUnit?: string;
       description?: string;
+      image?: string;
       status?: "active" | "inactive" | string;
     };
 

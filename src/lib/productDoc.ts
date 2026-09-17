@@ -7,6 +7,7 @@ export type ProductInput = {
   warrantyPeriod?: number;
   warrantyUnit?: string;
   description?: string;
+  image?: string;
   status?: "active" | "inactive" | "ACTIVE" | "INACTIVE" | string;
 };
 
@@ -43,6 +44,7 @@ export function buildProductDocument(input: ProductInput) {
     warrantyPeriod: Number(input.warrantyPeriod) || 0,
     warrantyUnit,
     description,
+    image: input.image?.trim() || "",
     status,
     approvalStatus: "PENDING",
     createdBy: "USER-001",
