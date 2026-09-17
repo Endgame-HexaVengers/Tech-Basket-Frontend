@@ -5,7 +5,6 @@ import { Button, Card, Chip } from "@heroui/react";
 import { FiCheck, FiArrowDown } from "react-icons/fi";
 import { HiSparkles } from "react-icons/hi2";
 import { motion, AnimatePresence } from "framer-motion";
-import confetti from "canvas-confetti";
 import CompareFeatures from "@/components/Subscription/CompareFeatures";
 
 type BillingCycle = "monthly" | "sixMonths" | "yearly";
@@ -120,6 +119,42 @@ const PLANS_DATA: Plan[] = [
   },
 ];
 
+const fireConfetti = (origin: { x: number; y: number }) => {
+  const canvas = document.createElement("canvas");
+  canvas.style.cssText = "position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999";
+  document.body.appendChild(canvas);
+  const context = canvas.getContext("2d");
+  if (!context) return;
+
+  const scale = window.devicePixelRatio || 1;
+  canvas.width = window.innerWidth * scale;
+  canvas.height = window.innerHeight * scale;
+  context.scale(scale, scale);
+  const colors = ["#a855f7", "#ec4899", "#3b82f6", "#10b981", "#f59e0b", "#ffffff"];
+  const particles = Array.from({ length: 60 }, () => ({
+    x: origin.x * window.innerWidth,
+    y: origin.y * window.innerHeight,
+    vx: (Math.random() - 0.5) * 10,
+    vy: -Math.random() * 8 - 4,
+    size: Math.random() * 5 + 2,
+    color: colors[Math.floor(Math.random() * colors.length)],
+  }));
+  let frame = 0;
+  const animate = () => {
+    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    particles.forEach((particle) => {
+      particle.x += particle.vx;
+      particle.vy += 0.25;
+      particle.y += particle.vy;
+      context.fillStyle = particle.color;
+      context.fillRect(particle.x, particle.y, particle.size, particle.size);
+    });
+    if (++frame < 90) requestAnimationFrame(animate);
+    else canvas.remove();
+  };
+  requestAnimationFrame(animate);
+};
+
 export default function PlansPage() {
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
 
@@ -144,14 +179,7 @@ export default function PlansPage() {
       const x = (rect.left + rect.width / 2) / window.innerWidth;
       const y = rect.top / window.innerHeight;
 
-      confetti({
-        particleCount: 60,
-        spread: 80,
-        startVelocity: 25,
-        gravity: 0.8,
-        origin: { x, y: Math.max(0, y - 0.02) }, // Tab-er thik upor theke
-        colors: ["#a855f7", "#ec4899", "#3b82f6", "#10b981", "#f59e0b", "#ffffff"],
-      });
+      fireConfetti({ x, y: Math.max(0, y - 0.02) });
     }
   };
 
@@ -363,13 +391,18 @@ export default function PlansPage() {
                         Current plan
                       </Button>
                     ) : (
-                      <Button
-                        fullWidth
-                        variant={plan.isPopular ? "primary" : "outline"}
-                        className="font-semibold"
-                      >
-                        Upgrade
-                      </Button>
+                      <form action="/api/checkout_sessions" method="POST">
+                        <input type="hidden" name="plan" value={plan.id} />
+                        <input type="hidden" name="billingCycle" value={cycle} />
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant={plan.isPopular ? "primary" : "outline"}
+                          className="font-semibold"
+                        >
+                          Upgrade
+                        </Button>
+                      </form>
                     )}
                   </div>
 
