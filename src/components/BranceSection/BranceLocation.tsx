@@ -29,7 +29,7 @@ type BranchStats = {
   assignedUsers: number;
 };
 
-const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+const API_URL = process.env.BACKEND_PRODUCTS_URL;
 
 export default function BranchesPage() {
   const [branches, setBranches] = useState<Branch[]>([]);

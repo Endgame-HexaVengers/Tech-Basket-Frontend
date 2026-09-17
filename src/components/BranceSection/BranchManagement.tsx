@@ -24,7 +24,7 @@ export default function BranchManagement() {
       if (filters?.type) queryParams.append('type', filters.type);
       if (filters?.location) queryParams.append('location', filters.location);
 
-      const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+      const API_URL = process.env.BACKEND_PRODUCTS_URL;
       const response = await fetch(`${API_URL}/api/branches?${queryParams.toString()}`);
 
       if (!response.ok) {
