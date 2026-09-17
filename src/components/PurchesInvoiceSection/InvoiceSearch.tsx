@@ -6,19 +6,21 @@ import { FiRefreshCw } from "react-icons/fi";
 
 interface Props {
   onSearch: (invoiceNum: string) => void;
+  initialValue?: string;
 }
 
-export const InvoiceSearch: React.FC<Props> = ({ onSearch }) => {
-  const [invoice, setInvoice] = useState("INV-2026-000125");
+export const InvoiceSearch: React.FC<Props> = ({ onSearch, initialValue = "" }) => {
+  const [invoice, setInvoice] = useState(initialValue);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLoadClick = () => {
-    setIsLoading(true);
+  React.useEffect(() => {
+    if (initialValue) {
+      setInvoice(initialValue);
+    }
+  }, [initialValue]);
 
-    setTimeout(() => {
-      onSearch(invoice);
-      setIsLoading(false);
-    }, 2500);
+  const handleLoadClick = () => {
+    onSearch(invoice);
   };
 
   return (

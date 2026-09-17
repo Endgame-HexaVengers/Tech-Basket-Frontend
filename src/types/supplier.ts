@@ -46,6 +46,7 @@ export interface SupplierRMAItem {
 
 export interface Supplier {
   id: string;
+  _id?: string;
   supplierCode: string;
   name: string;
   companyName: string;
@@ -77,7 +78,7 @@ export interface Supplier {
   bkashNumber?: string;
 
   // Brands & Operational
-  brands: string[];
+  brands?: string[];
   status: SupplierStatus;
   rating: number; // 1 to 5
   pendingRmaCount: number;

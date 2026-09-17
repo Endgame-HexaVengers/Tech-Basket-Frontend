@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Supplier, INITIAL_SUPPLIERS } from "@/types/supplier";
 import SupplierStats from "./SupplierStats";
 import SupplierFilters, { SupplierFilterValues } from "./SupplierFilters";
@@ -9,10 +9,15 @@ import AddSupplierModal from "./AddSupplierModal";
 import SupplierDetailsDrawer from "./SupplierDetailsDrawer";
 import FadeUp from "../FadeUp";
 import { useTabs } from "@/context/TabContext";
+import { RotateCw } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function SuppliersPageClient() {
   const { openTab } = useTabs();
-  const [suppliers, setSuppliers] = useState<Supplier[]>(INITIAL_SUPPLIERS);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
   const [filters, setFilters] = useState<SupplierFilterValues>({
     search: "",
     type: "all",
@@ -28,19 +33,53 @@ export default function SuppliersPageClient() {
   const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
   const [drawerTab, setDrawerTab] = useState<"overview" | "purchases" | "ledger" | "rma">("overview");
 
+  // Fetch suppliers from backend database
+  const fetchSuppliers = useCallback(async (showRefreshing = false) => {
+    if (showRefreshing) setIsRefreshing(true);
+    try {
+      const res = await fetch("/api/suppliers", {
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        throw new Error(`Server returned ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (data.success && Array.isArray(data.suppliers)) {
+        setSuppliers(data.suppliers);
+      } else {
+        // Fallback to initial suppliers if database query was empty
+        setSuppliers(INITIAL_SUPPLIERS);
+      }
+    } catch (err) {
+      console.error("Failed to load suppliers from backend:", err);
+      // If server is offline or fails, keep initial data so UI is never broken
+      setSuppliers((prev) => (prev.length > 0 ? prev : INITIAL_SUPPLIERS));
+      toast.error("Could not sync with backend database. Showing cached records.");
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSuppliers();
+  }, [fetchSuppliers]);
+
   // Filtered suppliers
   const filteredSuppliers = useMemo(() => {
     return suppliers.filter((item) => {
       // Search check
       if (filters.search.trim()) {
         const query = filters.search.toLowerCase().trim();
-        const matchesName = item.name.toLowerCase().includes(query);
-        const matchesCode = item.supplierCode.toLowerCase().includes(query);
-        const matchesPerson = item.contactPerson.toLowerCase().includes(query);
-        const matchesPhone = item.phone.toLowerCase().includes(query);
-        const matchesEmail = item.email.toLowerCase().includes(query);
-        const matchesCity = item.city.toLowerCase().includes(query);
-        const matchesBrand = item.brands.some((b) => b.toLowerCase().includes(query));
+        const matchesName = item.name?.toLowerCase().includes(query);
+        const matchesCode = item.supplierCode?.toLowerCase().includes(query);
+        const matchesPerson = item.contactPerson?.toLowerCase().includes(query);
+        const matchesPhone = item.phone?.toLowerCase().includes(query);
+        const matchesEmail = item.email?.toLowerCase().includes(query);
+        const matchesCity = item.city?.toLowerCase().includes(query);
+        const matchesBrand = Array.isArray(item.brands) && item.brands.some((b) => b.toLowerCase().includes(query));
 
         if (
           !matchesName &&
@@ -66,10 +105,10 @@ export default function SuppliersPageClient() {
       }
 
       // Due balance filter
-      if (filters.dueFilter === "due" && item.currentBalance <= 0) {
+      if (filters.dueFilter === "due" && (item.currentBalance || 0) <= 0) {
         return false;
       }
-      if (filters.dueFilter === "clear" && item.currentBalance > 0) {
+      if (filters.dueFilter === "clear" && (item.currentBalance || 0) > 0) {
         return false;
       }
 
@@ -101,7 +140,7 @@ export default function SuppliersPageClient() {
     handleViewDetails(supplier, "ledger");
   };
 
-  const handleCreatePurchase = (supplier: Supplier) => {
+  const handleCreatePurchase = (_supplier: Supplier) => {
     openTab({
       path: "/purchase/create",
       title: "Purchase Entry",
@@ -109,68 +148,53 @@ export default function SuppliersPageClient() {
     });
   };
 
-  const handleSaveSupplier = (data: Partial<Supplier>) => {
-    if (editingSupplier) {
-      // Edit mode
-      setSuppliers((prev) =>
-        prev.map((s) => (s.id === editingSupplier.id ? ({ ...s, ...data } as Supplier) : s))
-      );
-      if (selectedSupplier?.id === editingSupplier.id) {
-        setSelectedSupplier((prev) => (prev ? ({ ...prev, ...data } as Supplier) : null));
-      }
-    } else {
-      // Create mode
-      const nextId = `sup-${Date.now()}`;
-      const nextCodeNumber = String(suppliers.length + 101).padStart(3, "0");
-      const newSupplier: Supplier = {
-        id: nextId,
-        supplierCode: `SUP-00${nextCodeNumber}`,
-        name: data.name || "Unnamed Supplier",
-        companyName: data.companyName || data.name || "Unnamed Supplier",
-        type: data.type || "Distributor",
-        tradeLicense: data.tradeLicense || "",
-        binNumber: data.binNumber || "",
-        contactPerson: data.contactPerson || "",
-        designation: data.designation || "Executive",
-        phone: data.phone || "",
-        alternatePhone: data.alternatePhone || "",
-        email: data.email || "",
-        address: data.address || "",
-        city: data.city || "Dhaka",
-        paymentTerms: data.paymentTerms || "Net 30",
-        creditLimit: data.creditLimit || 500000,
-        currentBalance: data.currentBalance || 0,
-        totalPurchased: 0,
-        totalOrders: 0,
-        bankName: data.bankName || "",
-        accountNumber: data.accountNumber || "",
-        routingNumber: data.routingNumber || "",
-        branchName: data.branchName || "",
-        bkashNumber: data.bkashNumber || "",
-        brands: data.brands || [],
-        status: data.status || "Active",
-        rating: 5.0,
-        pendingRmaCount: 0,
-        createdAt: new Date().toISOString().split("T")[0],
-        purchases: [],
-        ledger:
-          data.currentBalance && data.currentBalance > 0
-            ? [
-                {
-                  id: `led-${Date.now()}`,
-                  date: new Date().toISOString().split("T")[0],
-                  referenceNo: "OB-NEW",
-                  type: "Opening Balance",
-                  debit: 0,
-                  credit: data.currentBalance,
-                  balance: data.currentBalance,
-                },
-              ]
-            : [],
-        rmaItems: [],
-      };
+  // Save (Create or Update) Supplier to Backend
+  const handleSaveSupplier = async (data: Partial<Supplier>) => {
+    const toastId = toast.loading(editingSupplier ? "Updating supplier..." : "Saving new supplier...");
+    try {
+      if (editingSupplier) {
+        // Edit mode (PATCH)
+        const targetId = editingSupplier.id || editingSupplier._id;
+        const res = await fetch(`/api/suppliers/${targetId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
 
-      setSuppliers((prev) => [newSupplier, ...prev]);
+        const result = await res.json();
+        if (!res.ok || !result.success) {
+          throw new Error(result.error || "Failed to update supplier.");
+        }
+
+        toast.success("Supplier updated successfully in database!", { id: toastId });
+
+        // Update selected supplier in drawer if open
+        if (selectedSupplier?.id === editingSupplier.id || selectedSupplier?._id === editingSupplier._id) {
+          setSelectedSupplier(result.supplier);
+        }
+      } else {
+        // Create mode (POST)
+        const res = await fetch("/api/suppliers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const result = await res.json();
+        if (!res.ok || !result.success) {
+          throw new Error(result.error || "Failed to create supplier.");
+        }
+
+        toast.success("New supplier saved successfully to database!", { id: toastId });
+      }
+
+      setIsAddModalOpen(false);
+      setEditingSupplier(null);
+      // Refresh list to update all live amounts, dues, and statistics
+      await fetchSuppliers();
+    } catch (err: any) {
+      console.error("Save supplier error:", err);
+      toast.error(err.message || "Something went wrong while saving.", { id: toastId });
     }
   };
 
@@ -191,15 +215,15 @@ export default function SuppliersPageClient() {
 
     const rows = filteredSuppliers.map((s) => [
       s.supplierCode,
-      `"${s.name.replace(/"/g, '""')}"`,
+      `"${(s.name || "").replace(/"/g, '""')}"`,
       s.type,
-      `"${s.contactPerson.replace(/"/g, '""')}"`,
+      `"${(s.contactPerson || "").replace(/"/g, '""')}"`,
       s.phone,
       s.email,
       s.city,
-      s.totalPurchased,
-      s.currentBalance,
-      s.creditLimit,
+      s.totalPurchased || 0,
+      s.currentBalance || 0,
+      s.creditLimit || 0,
       s.status,
     ]);
 
@@ -219,18 +243,28 @@ export default function SuppliersPageClient() {
   return (
     <FadeUp className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Supplier Management
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              Supplier Management
+            </h1>
+            <button
+              onClick={() => fetchSuppliers(true)}
+              title="Refresh suppliers from database"
+              disabled={isRefreshing || isLoading}
+              className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-1.5 text-slate-500 shadow-xs hover:bg-slate-50 hover:text-slate-700 disabled:opacity-50 transition-colors"
+            >
+              <RotateCw className={`h-4 w-4 ${isRefreshing || isLoading ? "animate-spin text-blue-600" : ""}`} />
+            </button>
+          </div>
           <p className="text-xs text-slate-500 mt-1">
-            Manage hardware distributors, credit lines, accounts payable, and RMA claims.
+            Manage hardware distributors, procurement volumes, accounts payable, and RMA warranties.
           </p>
         </div>
       </div>
 
-      {/* 1. KPI Stats Cards */}
+      {/* 1. KPI Stats Cards (Automatically calculated from backend suppliers data) */}
       <SupplierStats suppliers={suppliers} />
 
       {/* 2. Filters & Actions Bar */}
@@ -244,6 +278,7 @@ export default function SuppliersPageClient() {
       {/* 3. Suppliers Directory Table */}
       <SupplierTable
         suppliers={filteredSuppliers}
+        isLoading={isLoading}
         onViewDetails={handleViewDetails}
         onEdit={handleEditSupplier}
         onOpenLedger={handleOpenLedger}

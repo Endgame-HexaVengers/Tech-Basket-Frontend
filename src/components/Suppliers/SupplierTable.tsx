@@ -18,6 +18,7 @@ import { useState } from "react";
 
 interface SupplierTableProps {
   suppliers: Supplier[];
+  isLoading?: boolean;
   onViewDetails: (supplier: Supplier) => void;
   onEdit: (supplier: Supplier) => void;
   onOpenLedger: (supplier: Supplier) => void;
@@ -26,6 +27,7 @@ interface SupplierTableProps {
 
 export default function SupplierTable({
   suppliers,
+  isLoading = false,
   onViewDetails,
   onEdit,
   onOpenLedger,
@@ -85,6 +87,67 @@ export default function SupplierTable({
     );
   };
 
+  if (isLoading) {
+    return (
+      <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-200/80 bg-slate-50/75 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-3.5">Supplier / Company</th>
+                <th className="px-5 py-3.5">Contact Person</th>
+                <th className="px-5 py-3.5">Brands / Products</th>
+                <th className="px-5 py-3.5">Purchases</th>
+                <th className="px-5 py-3.5">Due / Outstanding</th>
+                <th className="px-5 py-3.5">Status</th>
+                <th className="px-5 py-3.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {[1, 2, 3, 4, 5].map((idx) => (
+                <tr key={idx} className="animate-pulse">
+                  <td className="px-5 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-slate-200" />
+                      <div className="space-y-1.5">
+                        <div className="h-4 w-36 rounded-md bg-slate-200" />
+                        <div className="h-3 w-20 rounded-md bg-slate-100" />
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="space-y-1.5">
+                      <div className="h-3.5 w-28 rounded-md bg-slate-200" />
+                      <div className="h-3 w-24 rounded-md bg-slate-100" />
+                    </div>
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="flex gap-1.5">
+                      <div className="h-5 w-12 rounded-md bg-slate-200" />
+                      <div className="h-5 w-12 rounded-md bg-slate-200" />
+                    </div>
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="h-4 w-20 rounded-md bg-slate-200" />
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="h-4 w-20 rounded-md bg-slate-200" />
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="h-6 w-16 rounded-full bg-slate-200" />
+                  </td>
+                  <td className="px-5 py-4 text-right">
+                    <div className="ml-auto h-8 w-8 rounded-lg bg-slate-200" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
+
   if (suppliers.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white p-12 text-center shadow-xs">
@@ -116,10 +179,12 @@ export default function SupplierTable({
           </thead>
           <tbody className="divide-y divide-slate-200/70">
             {suppliers.map((supplier) => {
-              const hasDue = supplier.currentBalance > 0;
+              const currentBalance = Number(supplier.currentBalance) || 0;
+              const creditLimit = Number(supplier.creditLimit) || 0;
+              const hasDue = currentBalance > 0;
               const isOverLimit =
-                supplier.creditLimit > 0 &&
-                supplier.currentBalance > supplier.creditLimit;
+                creditLimit > 0 &&
+                currentBalance > creditLimit;
 
               return (
                 <tr
@@ -130,7 +195,7 @@ export default function SupplierTable({
                   <td className="px-5 py-4">
                     <div className="flex items-start gap-3">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-slate-100 to-slate-200 text-slate-700 font-bold text-sm shadow-xs border border-slate-200/60">
-                        {supplier.name.charAt(0)}
+                        {(supplier.name || supplier.companyName || "S").charAt(0)}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
@@ -186,7 +251,7 @@ export default function SupplierTable({
                   {/* Brands / Products */}
                   <td className="px-5 py-4">
                     <div className="flex flex-wrap gap-1 max-w-[200px]">
-                      {supplier.brands.slice(0, 3).map((brand) => (
+                      {(supplier.brands || []).slice(0, 3).map((brand) => (
                         <span
                           key={brand}
                           className="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700"
@@ -194,13 +259,16 @@ export default function SupplierTable({
                           {brand}
                         </span>
                       ))}
-                      {supplier.brands.length > 3 && (
+                      {(supplier.brands || []).length > 3 && (
                         <span className="inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">
-                          +{supplier.brands.length - 3} more
+                          +{(supplier.brands || []).length - 3} more
                         </span>
                       )}
+                      {(!supplier.brands || supplier.brands.length === 0) && (
+                        <span className="text-[11px] text-slate-400 italic">No brands</span>
+                      )}
                     </div>
-                    {supplier.pendingRmaCount > 0 && (
+                    {(Number(supplier.pendingRmaCount) || 0) > 0 && (
                       <div className="mt-2 inline-flex items-center gap-1 rounded bg-rose-50 px-1.5 py-0.5 text-[10px] font-semibold text-rose-600 border border-rose-100">
                         <span>{supplier.pendingRmaCount} RMA pending</span>
                       </div>

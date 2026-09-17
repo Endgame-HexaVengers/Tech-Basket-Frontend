@@ -9,6 +9,7 @@ interface SummaryProps {
   totalQuantity: number;
   subtotal: number;
   grandTotal: number;
+  totalRefundAmount?: number;
   completedSerials: number;
   totalSerials: number;
   onCancel?: () => void;
@@ -20,6 +21,7 @@ export const PurchaseSummary: React.FC<SummaryProps> = ({
   totalQuantity,
   subtotal,
   grandTotal,
+  totalRefundAmount = 0,
   completedSerials,
   totalSerials,
   onCancel,
@@ -32,7 +34,7 @@ export const PurchaseSummary: React.FC<SummaryProps> = ({
       {/* Summary Box */}
       <div className="md:col-span-2 p-5 bg-white rounded-xl border border-gray-200 shadow-sm">
         <h3 className="text-xl font-bold text-gray-800 border-b border-gray-100 pb-3">Purchase Summary</h3>
-        <div className="grid grid-cols-4 gap-4 pt-4">
+        <div className={`grid gap-4 pt-4 ${totalRefundAmount > 0 ? "grid-cols-2 sm:grid-cols-5" : "grid-cols-2 sm:grid-cols-4"}`}>
           <div>
             <p className="text-xs text-gray-500 font-medium">Total Products</p>
             <p className="text-base font-bold text-gray-800">{totalProducts}</p>
@@ -43,12 +45,20 @@ export const PurchaseSummary: React.FC<SummaryProps> = ({
           </div>
           <div>
             <p className="text-xs text-gray-500 font-medium">Subtotal</p>
-            <p className="text-base font-bold text-gray-400 line-through">
+            <p className="text-base font-bold text-slate-700">
               ৳{subtotal.toLocaleString()}
             </p>
           </div>
+          {totalRefundAmount > 0 && (
+            <div>
+              <p className="text-xs text-red-500 font-medium">Returned</p>
+              <p className="text-base font-bold text-red-600">
+                -৳{totalRefundAmount.toLocaleString()}
+              </p>
+            </div>
+          )}
           <div>
-            <p className="text-xs text-gray-500 font-medium">Grand Total</p>
+            <p className="text-xs text-gray-500 font-medium">Net Grand Total</p>
             <p className="text-xl font-extrabold text-[#001f54]">
               ৳{grandTotal.toLocaleString()}
             </p>

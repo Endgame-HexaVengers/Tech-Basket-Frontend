@@ -62,7 +62,7 @@ export default function SupplierDetailsDrawer({
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-4">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-blue-600 to-indigo-700 text-white font-bold text-xl shadow-md shadow-blue-500/20">
-                {supplier.name.charAt(0)}
+                {(supplier.name || supplier.companyName || "S").charAt(0)}
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -302,14 +302,18 @@ export default function SupplierDetailsDrawer({
                   Brands & Hardware Supplied
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {supplier.brands.map((b) => (
-                    <span
-                      key={b}
-                      className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700"
-                    >
-                      {b}
-                    </span>
-                  ))}
+                  {Array.isArray(supplier.brands) && supplier.brands.length > 0 ? (
+                    supplier.brands.map((b) => (
+                      <span
+                        key={b}
+                        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700"
+                      >
+                        {b}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs text-slate-400 italic">No brands specified</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -342,7 +346,7 @@ export default function SupplierDetailsDrawer({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {supplier.purchases.map((p) => (
+                      {(supplier.purchases || []).map((p) => (
                         <tr key={p.id} className="hover:bg-slate-50/60">
                           <td className="p-3 font-mono font-semibold text-blue-600">
                             {p.invoiceNo}
@@ -409,7 +413,7 @@ export default function SupplierDetailsDrawer({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-mono">
-                      {supplier.ledger.map((entry) => (
+                      {(supplier.ledger || []).map((entry) => (
                         <tr key={entry.id} className="hover:bg-slate-50/60 font-mono">
                           <td className="p-3 text-slate-600 font-sans">{entry.date}</td>
                           <td className="p-3 text-blue-600 font-semibold">
@@ -454,7 +458,7 @@ export default function SupplierDetailsDrawer({
                 </div>
               ) : (
                 <div className="space-y-2.5">
-                  {supplier.rmaItems.map((item) => (
+                  {(supplier.rmaItems || []).map((item) => (
                     <div
                       key={item.id}
                       className="flex items-start justify-between rounded-xl border border-slate-200/80 bg-slate-50/40 p-4"
