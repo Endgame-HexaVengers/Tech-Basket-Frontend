@@ -238,7 +238,8 @@ export default function BranchesPageClient() {
 
   const handleToggleStatus = async (branch: Branch) => {
     const targetId = branch.id || branch._id;
-    const newStatus = branch.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    const newStatus: Branch["status"] =
+      branch.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
 
     try {
       const res = await fetch(`/api/branches/${targetId}`, {

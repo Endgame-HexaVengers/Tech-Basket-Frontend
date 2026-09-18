@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND_PRODUCTS_URL = process.env.BACKEND_PRODUCTS_URL;
+const BACKEND_PRODUCTS_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 export async function DELETE(
   request: NextRequest,

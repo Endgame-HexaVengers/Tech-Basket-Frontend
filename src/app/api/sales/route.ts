@@ -71,14 +71,17 @@ export async function GET(request: NextRequest) {
       const matchedReturns = (docId && returnsBySale[docId]) || (doc.invoiceNo && returnsBySale[doc.invoiceNo]) || [];
 
       if (matchedReturns.length > 0) {
-        const totalRefund = matchedReturns.reduce((sum, r) => sum + (Number(r.totalRefundAmount) || 0), 0);
+        const totalRefund = matchedReturns.reduce(
+          (sum: number, r: any) => sum + (Number(r.totalRefundAmount) || 0),
+          0,
+        );
         const origGrand = Number(doc.originalGrandTotal ?? doc.grandTotal) || 0;
         const origSub = Number(doc.originalSubTotal ?? doc.subTotal) || 0;
         const netGrand = Math.max(0, origGrand - totalRefund);
         const netSub = Math.max(0, origSub - totalRefund);
 
         const returnedQtyMap: Record<string, number> = {};
-        matchedReturns.forEach((r) => {
+        matchedReturns.forEach((r: any) => {
           (r.items || []).forEach((it: any) => {
             const pId = it.productId;
             const q = Number(it.quantity || 1);
