@@ -39,7 +39,7 @@ const defaultBranches: Branch[] = [
   { id: "6", name: "Cumilla Point" },
 ];
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "/api";
 
 export default function ApprovalPage() {
   const [branches, setBranches] = useState<Branch[]>(defaultBranches);

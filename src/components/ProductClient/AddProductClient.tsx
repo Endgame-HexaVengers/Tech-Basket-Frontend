@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTabs } from "@/context/TabContext";
 
@@ -18,6 +18,8 @@ export default function AddProductClient({ onClose, onProductAdded }: AddProduct
   const [productColor, setProductColor] = useState("Black");
   const [warrantyPeriod, setWarrantyPeriod] = useState("1");
   const [warrantyUnit, setWarrantyUnit] = useState("Years");
+  const [productImage, setProductImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [catalogCategories, setCatalogCategories] = useState<string[]>([]);
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -154,7 +156,26 @@ export default function AddProductClient({ onClose, onProductAdded }: AddProduct
     setSaving(true);
 
     const formData = new FormData(form);
-    const payload = {
+    let image = "";
+
+    try {
+      if (productImage) {
+        const imageData = new FormData();
+        imageData.append("image", productImage);
+
+        const uploadResponse = await fetch("/api/image-upload", {
+          method: "POST",
+          body: imageData,
+        });
+
+        const uploadResult = await uploadResponse.json();
+        if (!uploadResponse.ok) {
+          throw new Error(uploadResult?.error || "Could not upload product image.");
+        }
+        image = uploadResult.url;
+      }
+
+      const payload = {
       title: String(formData.get("title") || "").trim(),
       sku: String(formData.get("sku") || "").trim(),
       brand: String(formData.get("brand") || "").trim(),
@@ -163,10 +184,10 @@ export default function AddProductClient({ onClose, onProductAdded }: AddProduct
       color: String(formData.get("color") || productColor || "").trim(),
       warrantyPeriod: Number(formData.get("warrantyPeriod") || warrantyPeriod || 0),
       warrantyUnit: String(formData.get("warrantyUnit") || warrantyUnit || "Years").trim(),
+      image,
       status: "active",
-    };
+      };
 
-    try {
       const response = await fetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -189,6 +210,8 @@ export default function AddProductClient({ onClose, onProductAdded }: AddProduct
       setProductColor("Black");
       setWarrantyPeriod("1");
       setWarrantyUnit("Years");
+      setProductImage(null);
+      setImagePreview("");
 
       if (onClose) {
         setTimeout(() => {
@@ -204,6 +227,12 @@ export default function AddProductClient({ onClose, onProductAdded }: AddProduct
       setSaving(false);
     }
   }
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setProductImage(file);
+    setImagePreview(file ? URL.createObjectURL(file) : "");
+  };
 
   return (
     <>
@@ -229,10 +258,37 @@ export default function AddProductClient({ onClose, onProductAdded }: AddProduct
               Product title
               <input
                 name="title"
+                autoComplete="off"
                 required
                 className="mt-2 h-11 w-full rounded-md border border-[#d6dce6] px-3 text-[13px]"
                 placeholder="e.g. Logitech B175 Mouse"
               />
+            </label>
+            <label className="rounded-lg border border-[#d6dce6] bg-white p-5 text-[11px] font-medium lg:col-span-2">
+              Product image
+              <div className="mt-2 flex flex-wrap items-center gap-4">
+                {imagePreview ? (
+                  // Local object URLs cannot be passed through next/image before upload.
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={imagePreview}
+                    alt="Product preview"
+                    className="h-20 w-20 rounded-lg border border-[#d6dce6] object-cover"
+                  />
+                ) : (
+                  <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-slate-100 text-xs text-slate-400">
+                    No image
+                  </div>
+                )}
+                <input
+                  name="image"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  onChange={handleImageChange}
+                  className="block w-full max-w-md text-xs text-[#536174] file:mr-3 file:rounded-md file:border-0 file:bg-[#e7ecff] file:px-3 file:py-2 file:text-xs file:font-semibold file:text-[#2949a8]"
+                />
+              </div>
+              <p className="mt-2 text-[11px] font-normal text-slate-400">PNG, JPG, WEBP or GIF up to 8 MB.</p>
             </label>
             <label className="rounded-lg border border-[#d6dce6] bg-white p-5 text-[11px] font-medium">
               SKU

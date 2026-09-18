@@ -63,9 +63,7 @@ const createTabFromPath = (path: string): Tab => {
   const title = lastSegment
     ? lastSegment
         .split(/[-_]/)
-        .map(
-          (part) => part.charAt(0).toUpperCase() + part.slice(1),
-        )
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
         .join(" ")
     : "Dashboard";
 
@@ -81,15 +79,12 @@ const getTabFullPath = (tab: Tab): string => {
 };
 
 const DefaultHeader = () => {
-  const { tabs, activeTab, openTab, closeTab, setActiveTab, reorderTabs } =
+  const { tabs, activeTab, openNewTab, closeTab, setActiveTab, reorderTabs } =
     useTabs();
   const [draggedTab, setDraggedTab] = useState<string | null>(null);
   const [dragOverTab, setDragOverTab] = useState<string | null>(null);
 
-  const handleCloseTab = (
-    event: React.MouseEvent,
-    fullPath: string,
-  ) => {
+  const handleCloseTab = (event: React.MouseEvent, fullPath: string) => {
     event.stopPropagation();
 
     const currentIndex = tabs.findIndex(
@@ -118,7 +113,7 @@ const DefaultHeader = () => {
 
   const handleNewTab = () => {
     const homeTab = createTabFromPath("/");
-    openTab(homeTab);
+    openNewTab(homeTab);
   };
 
   return (
@@ -189,16 +184,12 @@ const DefaultHeader = () => {
                       <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500 shadow-[0_0_0_3px_rgba(59,130,246,0.15)]" />
                     )}
 
-                    <span className="truncate tracking-tight">
-                      {tab.title}
-                    </span>
+                    <span className="truncate tracking-tight">{tab.title}</span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={(event) =>
-                      handleCloseTab(event, fullPath)
-                    }
+                    onClick={(event) => handleCloseTab(event, fullPath)}
                     aria-label={`Close ${tab.title}`}
                     className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-400 opacity-0 transition-all duration-200 hover:bg-slate-200 hover:text-slate-700 group-hover:opacity-100 dark:text-slate-500 dark:hover:bg-slate-600 dark:hover:text-white"
                   >

@@ -16,7 +16,12 @@ const globalForMongo = globalThis as typeof globalThis & {
   mongoClient?: MongoClient;
 };
 
-export const mongoClient = globalForMongo.mongoClient || new MongoClient(uri);
+export const mongoClient =
+  globalForMongo.mongoClient ||
+  new MongoClient(uri, {
+    serverSelectionTimeoutMS: 5000,
+    connectTimeoutMS: 5000,
+  });
 
 if (process.env.NODE_ENV !== "production") {
   globalForMongo.mongoClient = mongoClient;

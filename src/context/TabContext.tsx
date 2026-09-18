@@ -21,6 +21,7 @@ type TabContextType = {
   tabs: Tab[];
   activeTab: string;
   openTab: (tab: Tab) => void;
+  openNewTab: (tab: Tab) => void;
   reorderTabs: (draggedPath: string, targetPath: string) => void;
   closeTab: (path: string) => void;
   updateTabTitle: (path: string, title: string) => void;
@@ -79,6 +80,7 @@ export const TabProvider = ({ children }: { children: ReactNode }) => {
           ? storedActiveTab!
           : fullPath;
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setTabs(restoredTabs);
         setActiveTabState(restoredActiveTab);
         window.history.replaceState(null, "", restoredActiveTab);
@@ -115,14 +117,6 @@ export const TabProvider = ({ children }: { children: ReactNode }) => {
 
   const setActiveTab = useCallback((path: string, replace = false) => {
     setActiveTabState(path);
-
-    const basePath = getBasePath(path);
-    const query = path.split("?")[1] || undefined;
-    setTabs((prev) =>
-      prev.map((tab) =>
-        tab.path === basePath ? { ...tab, query } : tab
-      )
-    );
 
     if (replace) {
       window.history.replaceState(null, "", path);
@@ -178,6 +172,15 @@ export const TabProvider = ({ children }: { children: ReactNode }) => {
     [setActiveTab],
   );
 
+  const openNewTab = useCallback((tab: Tab) => {
+    const query = tab.query ?? `tab=${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const fullPath = `${tab.path}?${query}`;
+
+    setTabs((prev) => [...prev, { ...tab, query }]);
+    setActiveTabState(fullPath);
+    window.history.pushState(null, "", fullPath);
+  }, []);
+
   const reorderTabs = useCallback(
     (draggedPath: string, targetPath: string) => {
       if (draggedPath === targetPath) return;
@@ -203,12 +206,20 @@ export const TabProvider = ({ children }: { children: ReactNode }) => {
 
   const closeTab = useCallback(
     (path: string) => {
-      setTabs((prev) =>
-        prev.filter((tab) => {
+      const basePath = path.split("?")[0];
+
+      setTabs((prev) => {
+        const nextTabs = prev.filter((tab) => {
           const fullPath = tab.query ? `${tab.path}?${tab.query}` : tab.path;
           return fullPath !== path;
-        }),
-      );
+        });
+
+        if (!nextTabs.some((tab) => tab.path === basePath)) {
+          unregisterPage(basePath);
+        }
+
+        return nextTabs;
+      });
 
       setActiveTabState((current) => {
         if (current === path) {
@@ -217,8 +228,6 @@ export const TabProvider = ({ children }: { children: ReactNode }) => {
         return current;
       });
 
-      const basePath = path.split("?")[0];
-      unregisterPage(basePath);
     },
     [unregisterPage],
   );
@@ -247,6 +256,7 @@ export const TabProvider = ({ children }: { children: ReactNode }) => {
         tabs,
         activeTab,
         openTab,
+        openNewTab,
         reorderTabs,
         closeTab,
         updateTabTitle,

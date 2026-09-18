@@ -200,6 +200,14 @@ const DefaultSidebar = () => {
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 space-y-1 scrollbar-gutter-stable [scrollbar-width:thin]"
         onWheel={(event) => event.stopPropagation()}
       >
+        <SidebarLink
+          href="/"
+          label="Dashboard"
+          icon={<LuChartColumnDecreasing className="text-blue-600" />}
+          activeTab={activeTab}
+          openTab={openTab}
+        />
+
         {/* Setup */}
         <SidebarDropdown label="Setup" icon={<FcSettings />}>
           <SidebarLink

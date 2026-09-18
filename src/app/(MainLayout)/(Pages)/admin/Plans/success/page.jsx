@@ -15,6 +15,11 @@ export default async function Success({ searchParams }) {
   const {
     status,
     customer_details: { email: customerEmail },
+    amount_total: amountTotal,
+    currency,
+    id: sessionId,
+    payment_status: paymentStatus,
+    line_items: { data: lineItems },
   } = await stripe.checkout.sessions.retrieve(session_id, {
     expand: ['line_items', 'payment_intent'],
   });
@@ -24,6 +29,13 @@ export default async function Success({ searchParams }) {
   }
 
   if (status === 'complete') {
+    const lineItem = lineItems?.[0]
+    const productName = lineItem?.description || 'TechBasket subscription'
+    const amount = new Intl.NumberFormat('en-BD', {
+      style: 'currency',
+      currency: currency || 'bdt',
+    }).format((amountTotal || 0) / 100)
+
     return (
       <section className="min-h-[calc(100vh-92px)] bg-[#07182d] px-4 py-8 text-slate-100">
         <div className="mx-auto max-w-6xl">
