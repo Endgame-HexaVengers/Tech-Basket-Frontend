@@ -95,7 +95,7 @@ export default function BranchTable({
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50/75 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+              <tr className="border-b border-slate-200 bg-slate-50/75 text-[11px] font-semibold uppercase tracking-wider text-black">
                 <th className="px-5 py-3.5">BRANCH</th>
                 <th className="px-5 py-3.5">CODE</th>
                 <th className="px-5 py-3.5">LOCATION</th>
@@ -167,7 +167,7 @@ export default function BranchTable({
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-left text-xs">
           <thead>
-            <tr className="border-b border-slate-200/90 bg-slate-50/75 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            <tr className="border-b border-slate-200/90 bg-slate-50/75 text-[11px] font-semibold uppercase tracking-wider text-black">
               <th className="px-5 py-3.5">BRANCH</th>
               <th className="px-5 py-3.5">CODE</th>
               <th className="px-5 py-3.5">LOCATION</th>

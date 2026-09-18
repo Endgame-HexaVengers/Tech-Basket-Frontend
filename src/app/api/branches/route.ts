@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
       _id: doc._id?.toString(),
       id: doc.id || doc._id?.toString(),
       name: toStr(doc.name, "Unnamed Branch"),
-      code: toStr(doc.code, ""),
+      code: toStr(doc.code || doc.branchCode, ""),
       location: toStr(doc.location, ""),
       address: toStr(doc.address, ""),
       type: toStr(doc.type, "Retail Store"),
@@ -138,7 +138,16 @@ export async function POST(request: NextRequest) {
     const count = await col.countDocuments();
     const nextCodeNumber = String(count + 1).padStart(2, "0");
     const locPrefix = (body.location || "DHK").slice(0, 3).toUpperCase();
-    const code = body.code?.trim() || `BR-${locPrefix}-${nextCodeNumber}`;
+    const requestedCode = body.code?.trim() || `BR-${locPrefix}-${nextCodeNumber}`;
+    let code = requestedCode;
+    let codeSuffix = 1;
+
+    while (await col.findOne({
+      $or: [{ code }, { branchCode: code }],
+    } as any)) {
+      code = `${requestedCode}-${String(codeSuffix).padStart(2, "0")}`;
+      codeSuffix += 1;
+    }
     const id = `br-${Date.now()}`;
     const today = new Date().toISOString().split("T")[0];
 
@@ -146,6 +155,7 @@ export async function POST(request: NextRequest) {
       id,
       name: body.name.trim(),
       code,
+      branchCode: code,
       location: body.location?.trim() || "Dhaka",
       address: body.address?.trim() || "",
       type: body.type || "Retail Store",
@@ -171,11 +181,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Branches POST failed:", error);
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       {
         success: false,
         error: "Failed to create new branch",
-        details: String(error),
+        details: message,
       },
       { status: 500 }
     );
