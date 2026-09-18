@@ -203,7 +203,12 @@ export default function BranchesPageClient() {
         });
 
         if (!res.ok) {
-          throw new Error("Failed to create branch");
+          const errorData = await res.json().catch(() => null);
+          throw new Error(
+            errorData?.details ||
+              errorData?.error ||
+              `Failed to create branch (${res.status})`,
+          );
         }
 
         const data = await res.json();
@@ -213,6 +218,13 @@ export default function BranchesPageClient() {
           const next = [newBranch, ...prev];
           setStats(recalculateStats(next));
           return next;
+        });
+
+        setFilters({
+          search: "",
+          status: "",
+          type: "",
+          location: "",
         });
 
         toast.success("New branch created successfully");

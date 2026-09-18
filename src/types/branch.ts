@@ -12,6 +12,7 @@ export interface Branch {
   _id?: string;
   name: string;
   code: string;
+  branchCode?: string;
   location: string;
   address: string;
   type: BranchType | string;

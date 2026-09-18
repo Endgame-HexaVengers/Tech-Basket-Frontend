@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import AddProductClient from "@/components/ProductClient/AddProductClient";
+import DeleteProductModal from "@/components/ProductClient/DeleteProductModal";
 import {
   AlertCircle,
   ChevronLeft,
@@ -9,6 +10,7 @@ import {
   Plus,
   RefreshCw,
   ServerOff,
+  Trash2,
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -99,6 +101,8 @@ export default function ProductClient() {
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<ProductRow | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -241,6 +245,40 @@ export default function ProductClient() {
     setQuery("");
     setSubmittedQuery("");
     setIsAddModalOpen(false);
+  };
+
+  const deleteProduct = async () => {
+    if (!productToDelete) return;
+
+    const productId = productToDelete._id || productToDelete.id || productToDelete.productId;
+    if (!productId) {
+      setError("This product does not have a valid ID.");
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/products/${encodeURIComponent(productId)}`, {
+        method: "DELETE",
+        headers: { Accept: "application/json" },
+      });
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(payload?.error || "Could not delete product.");
+      }
+
+      setProducts((current) => current.filter((product) => {
+        const id = product._id || product.id || product.productId;
+        return id !== productId;
+      }));
+      setPagination((current) => ({ ...current, total: Math.max(0, current.total - 1) }));
+      setProductToDelete(null);
+    } catch (deleteError) {
+      setError(deleteError instanceof Error ? deleteError.message : "Could not delete product.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const renderPageNumbers = () => {
@@ -390,6 +428,7 @@ export default function ProductClient() {
                         "Brand",
                         "Category",
                         "Color",
+                        "Action",
                       ].map((heading) => (
                         <th key={heading} className="h-10 px-4">
                           {heading}
@@ -443,6 +482,16 @@ export default function ProductClient() {
                           <td className="px-4 text-[#536174]">{category}</td>
 
                           <td className="px-4 text-[#94a3b8]">{color}</td>
+                          <td className="w-16 px-4">
+                            <button
+                              type="button"
+                              onClick={() => setProductToDelete(product)}
+                              aria-label={`Delete ${productName}`}
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-red-500 transition hover:bg-red-50 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </td>
                         </tr>
                       );
                     })}
@@ -605,6 +654,15 @@ export default function ProductClient() {
             />
           </div>
         </FadeUp>
+      )}
+
+      {productToDelete && (
+        <DeleteProductModal
+          productName={getDisplayName(productToDelete, 0)}
+          deleting={isDeleting}
+          onClose={() => setProductToDelete(null)}
+          onConfirm={deleteProduct}
+        />
       )}
     </>
   );
