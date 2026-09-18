@@ -2,7 +2,15 @@ import 'server-only'
 
 import Stripe from 'stripe'
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+export function getStripe() {
+    const secretKey = process.env.STRIPE_SECRET_KEY
+
+    if (!secretKey) {
+        throw new Error('STRIPE_SECRET_KEY is not configured')
+    }
+
+    return new Stripe(secretKey)
+}
 
 export const PRICE_IDS = {
   starter_monthly:'price_1UGbjZ0nyT4Qws2DMtU3GRM4',

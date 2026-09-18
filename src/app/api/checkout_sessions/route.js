@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server'
 
-import { PRICE_IDS, stripe } from '../../../lib/stripe'
+import { getStripe, PRICE_IDS } from '../../../lib/stripe'
 import { auth } from '../../../lib/auth'
 
 
 export async function POST(request) {
   try {
+    const stripe = getStripe()
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json(
         { error: 'Stripe is not configured on the server.' },
@@ -46,8 +47,9 @@ export async function POST(request) {
         },
       ],
       mode: 'subscription',
+      success_url: `${origin}/admin/Plans/success?session_id={CHECKOUT_SESSION_ID}`,
+      integration_identifier: 'tech_basket_checkout',
       customer_email: customerEmail,
-      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/admin/Plans`,
     });
     return NextResponse.redirect(session.url, 303)

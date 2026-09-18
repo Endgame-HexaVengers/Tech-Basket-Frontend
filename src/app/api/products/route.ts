@@ -65,6 +65,12 @@ export async function GET(request: NextRequest) {
           ? json
           : [];
 
+      backendList.sort((first: Record<string, unknown>, second: Record<string, unknown>) => {
+        const firstDate = Date.parse(String(first.createdAt || first.updatedAt || ""));
+        const secondDate = Date.parse(String(second.createdAt || second.updatedAt || ""));
+        return (Number.isNaN(secondDate) ? 0 : secondDate) - (Number.isNaN(firstDate) ? 0 : firstDate);
+      });
+
       const formattedList = backendList.map((product: Record<string, unknown>) => ({
         ...product,
         _id: product._id ? String(product._id) : (product.id as string) || String(Math.random()),
@@ -99,7 +105,12 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
     const [items, total] = await Promise.all([
-      collection.find(filter).skip(skip).limit(limit).toArray(),
+      collection
+        .find(filter)
+        .sort({ createdAt: -1, _id: -1 })
+        .skip(skip)
+        .limit(limit)
+        .toArray(),
       collection.countDocuments(filter),
     ]);
 

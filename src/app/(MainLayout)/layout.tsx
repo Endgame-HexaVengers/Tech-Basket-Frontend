@@ -80,6 +80,7 @@ const ROUTE_MAP: Record<string, ComponentType> = {
   "/Setting": SettingPage,
 
 
+
 };
 
 const MainLayout = () => {

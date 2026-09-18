@@ -28,11 +28,10 @@ type ProductRow = {
   category?: string | { name?: string; _id?: string };
   categoryId?: string;
   color?: string;
-  image?: string;
-  imageUrl?: string;
-  imageURL?: string;
-  thumbnail?: string;
-  photo?: string;
+  image?: unknown;
+  imageUrl?: unknown;
+  thumbnail?: unknown;
+  images?: unknown;
   [key: string]: unknown;
 };
 
@@ -78,13 +77,27 @@ const getDisplayColor = (p: ProductRow) => {
   return p.color || "-";
 };
 
-const getProductImage = (p: ProductRow) => {
-  const image = p.image || p.imageUrl || p.imageURL || p.thumbnail || p.photo;
-  return typeof image === "string" && image.trim() ? image : null;
+const getDisplayImage = (p: ProductRow) => {
+  const image =
+    p.image ??
+    p.imageUrl ??
+    p.thumbnail ??
+    (Array.isArray(p.images) ? p.images[0] : p.images);
+
+  if (typeof image === "string") return image;
+
+  if (typeof image === "object" && image !== null) {
+    const imageRecord = image as { url?: unknown; src?: unknown };
+    if (typeof imageRecord.url === "string") return imageRecord.url;
+    if (typeof imageRecord.src === "string") return imageRecord.src;
+  }
+
+  return "";
 };
 
 export default function ProductClient() {
   const [query, setQuery] = useState("");
+  const [submittedQuery, setSubmittedQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -121,8 +134,8 @@ export default function ProductClient() {
           totalPages: 1,
         };
 
-        const queryParam = query.trim()
-          ? `&search=${encodeURIComponent(query.trim())}`
+        const queryParam = submittedQuery.trim()
+          ? `&search=${encodeURIComponent(submittedQuery.trim())}`
           : "";
 
         const response = await fetch(
@@ -176,7 +189,7 @@ export default function ProductClient() {
     };
 
     fetchProducts();
-  }, [currentPage, query, refreshKey]);
+  }, [currentPage, refreshKey, submittedQuery]);
 
   // Handle Lenis when Add Product modal opens
   useEffect(() => {
@@ -210,9 +223,24 @@ export default function ProductClient() {
     };
   }, [isAddModalOpen]);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setQuery(e.target.value);
     setCurrentPage(1);
+  };
+
+  const openAddProductModal = () => {
+    setQuery("");
+    setSubmittedQuery("");
+    setCurrentPage(1);
+    setIsAddModalOpen(true);
+  };
+
+  const closeAddProductModal = () => {
+    setQuery("");
+    setSubmittedQuery("");
+    setIsAddModalOpen(false);
   };
 
   const renderPageNumbers = () => {
@@ -277,11 +305,8 @@ export default function ProductClient() {
 
             <button
               type="button"
-              onClick={() => {
-                setQuery("");
-                setIsAddModalOpen(true);
-              }}
-              className="flex items-center gap-2 h-10 cursor-pointer rounded-lg bg-[#2949a8] px-4 text-[13px] font-semibold text-white transition hover:bg-[#203a86]"
+              onClick={openAddProductModal}
+              className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg bg-[#2949a8] px-4 text-[13px] font-semibold text-white transition hover:bg-[#203a86]"
             >
               <Plus className="h-4 w-4" />
               Add Product
@@ -291,11 +316,8 @@ export default function ProductClient() {
           {/* Table Container */}
           <div className="overflow-x-auto rounded-[7px] border border-[#d8dee8] bg-white shadow-xs">
             {/* Search */}
-            <div className="flex items-center justify-between gap-3 border-b border-[#edf0f4] p-4">
+            <div className="border-b border-[#edf0f4] p-4">
               <input
-                type="search"
-                name="product-search"
-                autoComplete="off"
                 value={query}
                 onChange={handleSearchChange}
                 placeholder="Search by product title or SKU..."
@@ -384,7 +406,7 @@ export default function ProductClient() {
                       const brand = getDisplayBrand(product);
                       const category = getDisplayCategory(product);
                       const color = getDisplayColor(product);
-                      const image = getProductImage(product);
+                      const image = getDisplayImage(product);
 
                       return (
                         <tr
@@ -395,15 +417,19 @@ export default function ProductClient() {
                           }
                           className="h-14 border-t border-[#edf0f4] transition hover:bg-[#fbfcfd]"
                         >
-                          <td className="w-18 px-4">
+                          <td className="w-20 px-4">
                             {image ? (
+                              // eslint-disable-next-line @next/next/no-img-element
                               <img
                                 src={image}
                                 alt={productName}
-                                className="h-10 w-10 rounded-lg border border-[#e2e8f0] object-cover"
+                                className="h-10 w-10 rounded-md border border-[#e2e8f0] object-cover"
+                                onError={(event) => {
+                                  event.currentTarget.style.display = "none";
+                                }}
                               />
                             ) : (
-                              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] text-[#94a3b8]">
                                 <PackageSearch className="h-4 w-4" />
                               </div>
                             )}
@@ -445,7 +471,7 @@ export default function ProductClient() {
                     {pagination.total === 0 ? (
                       <button
                         type="button"
-                        onClick={() => setIsAddModalOpen(true)}
+                        onClick={openAddProductModal}
                         className="mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-[#2949a8] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#203a86]"
                       >
                         Add Product
@@ -455,6 +481,7 @@ export default function ProductClient() {
                         type="button"
                         onClick={() => {
                           setQuery("");
+                          setSubmittedQuery("");
                           setCurrentPage(1);
                         }}
                         className="mt-3 cursor-pointer text-xs font-medium text-[#2949a8] hover:underline"
@@ -560,7 +587,7 @@ export default function ProductClient() {
             {/* Close Button */}
             <button
               type="button"
-              onClick={() => setIsAddModalOpen(false)}
+              onClick={closeAddProductModal}
               className="absolute right-4 top-4 z-10 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-100"
               aria-label="Close add product form"
             >
@@ -568,9 +595,10 @@ export default function ProductClient() {
             </button>
 
             <AddProductClient
-              onClose={() => setIsAddModalOpen(false)}
+              onClose={closeAddProductModal}
               onProductAdded={() => {
                 setQuery("");
+                setSubmittedQuery("");
                 setCurrentPage(1);
                 setRefreshKey((current) => current + 1);
               }}

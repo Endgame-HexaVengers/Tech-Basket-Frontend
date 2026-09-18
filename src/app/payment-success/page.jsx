@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 
 import PaymentReceipt from '@/components/Subscription/PaymentReceipt'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 
 export default async function PaymentSuccessPage({ searchParams }) {
   const { session_id: sessionId } = await searchParams
@@ -10,6 +10,7 @@ export default async function PaymentSuccessPage({ searchParams }) {
     return redirect('/admin/Plans')
   }
 
+  const stripe = getStripe()
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
     expand: ['line_items', 'payment_intent'],
   })
