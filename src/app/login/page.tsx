@@ -14,12 +14,9 @@ import Link from "next/link";
 import { TiArrowRight } from "react-icons/ti";
 
 const BRANCHES = [
-    "MPL Shop 1316",
-    "Uttora Branch",
-    "Progati Shoroni Branch",
-    "Mirpur Branch",
-    "Tangail Branch",
+    "Dhaka Branch",
     "Chattogram Branch",
+    "Tangail Branch",
 ];
 
 export default function LoginPage() {
@@ -32,12 +29,26 @@ export default function LoginPage() {
         setIsLoading(true);
 
         const formData = new FormData(e.currentTarget);
-        const userData = Object.fromEntries(formData.entries());
+        const userData = Object.fromEntries(formData.entries()) as {
+            userIdOrEmail: string;
+            password: string;
+            branch: string;
+        };
+
+        const email = (userData.userIdOrEmail || "").trim();
+        const branch = (userData.branch || "").trim();
+        const password = (userData.password || "").trim();
+
+        if (!email || !password || !branch) {
+            toast.error("Please fill in your email, password, and branch.");
+            setIsLoading(false);
+            return;
+        }
 
         try {
             const { data, error } = await authClient.signIn.email({
-                email: userData.userIdOrEmail as string,
-                password: userData.password as string,
+                email,
+                password,
                 rememberMe: true,
                 callbackURL: "/",
             });
@@ -178,7 +189,7 @@ export default function LoginPage() {
                                         htmlFor="branch"
                                         className="text-xs font-semibold uppercase tracking-wider text-gray-700 block"
                                     >
-                                        Branch / Location
+                                        Branch
                                     </label>
                                     <div className="relative">
                                         <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">

@@ -54,11 +54,10 @@ const UserInfo = () => {
             <button
               type="button"
               onClick={() => setProfileOpen((prev) => !prev)}
-              className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${
-                profileOpen
+              className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${profileOpen
                   ? "border-indigo-500"
                   : "border-slate-200 hover:border-indigo-400"
-              }`}
+                }`}
               aria-label="Open profile menu"
               aria-haspopup="menu"
               aria-expanded={profileOpen}
@@ -80,11 +79,10 @@ const UserInfo = () => {
 
             {/* Profile Dropdown */}
             <div
-              className={`absolute top-12 right-0 z-50 w-56 origin-top-right rounded-xl border border-slate-200 bg-white p-2 shadow-lg transition-all duration-150 ${
-                profileOpen
+              className={`absolute top-12 right-0 z-50 w-56 origin-top-right rounded-xl border border-slate-200 bg-white p-2 shadow-lg transition-all duration-150 ${profileOpen
                   ? "visible translate-y-0 scale-100 opacity-100"
                   : "invisible -translate-y-1 scale-95 opacity-0"
-              }`}
+                }`}
             >
               {/* User Information */}
               <div className="px-3 py-2">
@@ -98,22 +96,41 @@ const UserInfo = () => {
               <div className="my-1 border-t border-slate-100" />
 
               {/* Profile */}
-              <button
+              <Button
                 type="button"
-                onClick={() => {
+                variant="ghost"
+                onPress={() => {
                   setProfileOpen(false);
+
                   const exists = tabs.some((t) => t.path === "/my-profile");
-                  openTab({ path: "/my-profile", title: "My Profile", icon: "👤" });
+
                   if (!exists) {
-                    openTab({ path: "/my-profile", title: "My Profile", icon: "👤" });
+                    openTab({
+                      path: "/my-profile",
+                      title: "My Profile",
+                      icon: "👤",
+                    });
                   }
                 }}
-                className="flex w-full items-center gap-3
-                rounded-full px-3 py-2.5 text-sm my-3 border border-gray-100 text-slate-700 transition-colors  hover:bg-blue-100 hover:text-indigo-600"
+                className="
+    my-3 flex w-full items-center justify-start gap-3
+    rounded-full 
+    px-3 py-2.5 text-sm font-medium
+    text-slate-700
+    transition-colors
+    hover:bg-blue-100 hover:text-indigo-600
+
+    dark:border-slate-700
+    dark:text-white
+    dark:hover:bg-transparent
+    dark:hover:text-white
+  "
               >
                 <FiUser className="h-4 w-4" />
-                <span>Profile</span>
-              </button>
+                <span className="text-sm font-medium">
+                  Profile
+                </span>
+              </Button>
 
               {/* Logout */}
               <Button

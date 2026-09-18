@@ -1,14 +1,5 @@
-import BranchesLocationPage from "@/components/BranceSection/BranceLocation";
-import BranchManagement from "@/components/BranceSection/BranchManagement";
+import BranchesPageClient from "@/components/BranchSection/BranchesPageClient";
 
-
-const BranchesLocationsPage = () => {
-  return (
-    <div>
-      <BranchesLocationPage />
-      <BranchManagement />
-    </div>
-  );
-};
-
-export default BranchesLocationsPage;
+export default function BranchesLocationsPage() {
+  return <BranchesPageClient />;
+}
