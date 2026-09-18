@@ -5,6 +5,7 @@ import { FiPlus, FiX } from "react-icons/fi";
 
 import HeadingInfo from "./Header/HeadingInfo";
 import FadeUp from "./FadeUp";
+import { useState } from "react";
 
 const TAB_DEFINITIONS: Record<string, Tab> = {
   "/": {
@@ -80,8 +81,10 @@ const getTabFullPath = (tab: Tab): string => {
 };
 
 const DefaultHeader = () => {
-  const { tabs, activeTab, openTab, closeTab, setActiveTab } =
+  const { tabs, activeTab, openTab, closeTab, setActiveTab, reorderTabs } =
     useTabs();
+  const [draggedTab, setDraggedTab] = useState<string | null>(null);
+  const [dragOverTab, setDragOverTab] = useState<string | null>(null);
 
   const handleCloseTab = (
     event: React.MouseEvent,
@@ -136,10 +139,39 @@ const DefaultHeader = () => {
               return (
                 <div
                   key={fullPath}
+                  draggable
+                  onDragStart={(event) => {
+                    setDraggedTab(fullPath);
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", fullPath);
+                  }}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = "move";
+                    if (dragOverTab !== fullPath) setDragOverTab(fullPath);
+                  }}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    const sourcePath =
+                      draggedTab || event.dataTransfer.getData("text/plain");
+                    if (sourcePath) reorderTabs(sourcePath, fullPath);
+                    setDraggedTab(null);
+                    setDragOverTab(null);
+                  }}
+                  onDragEnd={() => {
+                    setDraggedTab(null);
+                    setDragOverTab(null);
+                  }}
                   className={`group relative flex h-10 min-w-[9.5rem] items-center justify-between gap-1 rounded-t-xl border px-3 text-sm transition-all duration-200 ease-out ${
                     isActive
                       ? "border-slate-200/80 border-b-white bg-white font-semibold text-slate-900 shadow-[0_-2px_6px_rgba(15,23,42,0.05)] dark:border-slate-600/80 dark:border-b-slate-800 dark:bg-slate-800 dark:text-white dark:shadow-[0_-2px_8px_rgba(0,0,0,0.2)]"
                       : "border-transparent bg-white/40 text-slate-600 hover:bg-white/80 hover:text-slate-900 dark:bg-slate-800/40 dark:text-slate-400 dark:hover:bg-slate-700/80 dark:hover:text-white"
+                  } ${
+                    draggedTab === fullPath ? "opacity-50" : ""
+                  } ${
+                    dragOverTab === fullPath && draggedTab !== fullPath
+                      ? "ring-2 ring-inset ring-blue-400"
+                      : ""
                   }`}
                 >
                   {isActive && (

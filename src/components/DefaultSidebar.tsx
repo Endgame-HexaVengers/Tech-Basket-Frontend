@@ -28,15 +28,6 @@ import { FaBarsStaggered } from "react-icons/fa6";
 import { MdAppRegistration } from "react-icons/md";
 import { Button } from "@heroui/react";
 
-const SearchOptions = [
-  {
-    href: "/search",
-    label: "Advance Search",
-    query: "tab=advance",
-    permission: PERMISSIONS.SEARCH_ADVANCE,
-  },
-];
-
 const RmaOptions = [
   {
     href: "/rma/complain-received",
@@ -206,12 +197,8 @@ const DefaultSidebar = () => {
 
       {/* Sidebar Navigation */}
       <nav
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 space-y-1 scrollbar-gutter-stable"
-        onWheel={(event) => {
-          event.stopPropagation();
-          event.preventDefault();
-          event.currentTarget.scrollTop += event.deltaY;
-        }}
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 space-y-1 scrollbar-gutter-stable [scrollbar-width:thin]"
+        onWheel={(event) => event.stopPropagation()}
       >
         {/* Setup */}
         <SidebarDropdown label="Setup" icon={<FcSettings />}>
@@ -248,20 +235,6 @@ const DefaultSidebar = () => {
           activeTab={activeTab}
           openTab={openTab}
         />
-
-        {/* Search */}
-        <SidebarDropdown label="Search" icon={<FiSearch className="text-slate-500" />}>
-          {SearchOptions.map((item) => (
-            <SidebarLink
-              key={`${item.href}-${item.query}`}
-              href={item.href}
-              label={item.label}
-              query={item.query}
-              activeTab={activeTab}
-              openTab={openTab}
-            />
-          ))}
-        </SidebarDropdown>
 
         {/* AI Insights */}
         <SidebarLink

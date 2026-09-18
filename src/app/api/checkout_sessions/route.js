@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 
-import { stripe } from '../../../lib/stripe'
+import { getStripe } from '../../../lib/stripe'
 
 export async function POST() {
   try {
+    const stripe = getStripe()
     const headersList = await headers()
     const origin = headersList.get('origin')
 
@@ -18,7 +19,7 @@ export async function POST() {
         },
       ],
       mode: 'subscription',
-      success_url: `${origin}/Plans/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/admin/Plans/success?session_id={CHECKOUT_SESSION_ID}`,
       // Provide a name (for example, hosted_web_0001) to label this Checkout integration and measure its conversion independently
       integration_identifier: 'tech_basket_checkout',
     });

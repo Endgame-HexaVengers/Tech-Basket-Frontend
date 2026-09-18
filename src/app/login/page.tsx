@@ -14,8 +14,8 @@ import Link from "next/link";
 import { TiArrowRight } from "react-icons/ti";
 
 const BRANCHES = [
-    "Uttora Branch",
-    "Mirpur Branch",
+    "Dhaka Branch",
+    "Chattogram Branch",
     "Tangail Branch",
 ];
 

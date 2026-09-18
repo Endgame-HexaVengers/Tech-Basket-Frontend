@@ -1,12 +1,14 @@
 ﻿"use client";
 
 import AddProductClient from "@/components/ProductClient/AddProductClient";
+import Image from "next/image";
 import {
   AlertCircle,
   ChevronLeft,
   ChevronRight,
   PackageSearch,
   RefreshCw,
+  Search,
   ServerOff,
   X,
 } from "lucide-react";
@@ -27,6 +29,10 @@ type ProductRow = {
   category?: string | { name?: string; _id?: string };
   categoryId?: string;
   color?: string;
+  image?: unknown;
+  imageUrl?: unknown;
+  thumbnail?: unknown;
+  images?: unknown;
   [key: string]: unknown;
 };
 
@@ -87,8 +93,27 @@ const getDisplayColor = (p: ProductRow) => {
   return p.color || "-";
 };
 
+const getDisplayImage = (p: ProductRow) => {
+  const image =
+    p.image ??
+    p.imageUrl ??
+    p.thumbnail ??
+    (Array.isArray(p.images) ? p.images[0] : p.images);
+
+  if (typeof image === "string") return image;
+
+  if (typeof image === "object" && image !== null) {
+    const imageRecord = image as { url?: unknown; src?: unknown };
+    if (typeof imageRecord.url === "string") return imageRecord.url;
+    if (typeof imageRecord.src === "string") return imageRecord.src;
+  }
+
+  return "";
+};
+
 export default function ProductClient() {
   const [query, setQuery] = useState("");
+  const [submittedQuery, setSubmittedQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -125,8 +150,8 @@ export default function ProductClient() {
           totalPages: 1,
         };
 
-        const queryParam = query.trim()
-          ? `&search=${encodeURIComponent(query.trim())}`
+        const queryParam = submittedQuery.trim()
+          ? `&search=${encodeURIComponent(submittedQuery.trim())}`
           : "";
 
         // 1. Try direct fetch from backend server
@@ -215,7 +240,7 @@ export default function ProductClient() {
     };
 
     fetchProducts();
-  }, [currentPage, query, refreshKey]);
+  }, [currentPage, refreshKey, submittedQuery]);
 
   // Handle Lenis when Add Product modal opens
   useEffect(() => {
@@ -251,11 +276,15 @@ export default function ProductClient() {
     };
   }, [isAddModalOpen]);
 
-  const handleSearchChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setQuery(e.target.value);
+  const handleSearch = () => {
     setCurrentPage(1);
+    setSubmittedQuery(query.trim());
+  };
+
+  const closeAddProductModal = () => {
+    setQuery("");
+    setSubmittedQuery("");
+    setIsAddModalOpen(false);
   };
 
   const renderPageNumbers = () => {
@@ -325,7 +354,12 @@ export default function ProductClient() {
 
             <button
               type="button"
-              onClick={() => setIsAddModalOpen(true)}
+              onClick={() => {
+                setQuery("");
+                setSubmittedQuery("");
+                setCurrentPage(1);
+                setIsAddModalOpen(true);
+              }}
               className="h-10 cursor-pointer rounded-lg bg-[#2949a8] px-4 text-[13px] font-semibold text-white transition hover:bg-[#203a86]"
             >
               Add Product
@@ -336,12 +370,24 @@ export default function ProductClient() {
           <div className="overflow-x-auto rounded-[7px] border border-[#d8dee8] bg-white shadow-xs">
             {/* Search */}
             <div className="border-b border-[#edf0f4] p-4">
-              <input
-                value={query}
-                onChange={handleSearchChange}
-                placeholder="Search by product title or SKU..."
-                className="h-9 w-full max-w-75 rounded-lg border border-[#d6dce6] px-3 text-[12px] focus:border-[#2949a8] focus:outline-hidden"
-              />
+              <div className="flex w-full max-w-100 gap-2">
+                <input
+                  name="product-search"
+                  autoComplete="off"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search by product title or SKU..."
+                  className="h-9 min-w-0 flex-1 rounded-lg border border-[#d6dce6] px-3 text-[12px] focus:border-[#2949a8] focus:outline-hidden"
+                />
+                <button
+                  type="button"
+                  onClick={handleSearch}
+                  className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#2949a8] px-3 text-[12px] font-semibold text-white transition hover:bg-[#203a86]"
+                >
+                  <Search size={14} />
+                  Search
+                </button>
+              </div>
             </div>
 
             {/* Loading */}
@@ -431,6 +477,7 @@ export default function ProductClient() {
                   <thead className="bg-[#f1f3f6] text-[10px] uppercase text-[#43516a]">
                     <tr>
                       {[
+                        "Image",
                         "Product",
                         "SKU",
                         "Brand",
@@ -458,6 +505,7 @@ export default function ProductClient() {
                       const brand = getDisplayBrand(product);
                       const category = getDisplayCategory(product);
                       const color = getDisplayColor(product);
+                      const image = getDisplayImage(product);
 
                       return (
                         <tr
@@ -468,6 +516,25 @@ export default function ProductClient() {
                           }
                           className="h-14 border-t border-[#edf0f4] transition hover:bg-[#fbfcfd]"
                         >
+                          <td className="w-20 px-4">
+                            {image ? (
+                              <Image
+                                src={image}
+                                alt={productName}
+                                width={40}
+                                height={40}
+                                unoptimized
+                                className="h-10 w-10 rounded-md border border-[#e2e8f0] object-cover"
+                                onError={(event) => {
+                                  event.currentTarget.style.display = "none";
+                                }}
+                              />
+                            ) : (
+                              <div className="flex h-10 w-10 items-center justify-center rounded-md border border-dashed border-[#cbd5e1] bg-[#f8fafc] text-[#94a3b8]">
+                                <PackageSearch className="h-4 w-4" />
+                              </div>
+                            )}
+                          </td>
                           <td className="px-4 font-medium">
                             {productName}
                           </td>
@@ -515,7 +582,12 @@ export default function ProductClient() {
                     {pagination.total === 0 ? (
                       <button
                         type="button"
-                        onClick={() => setIsAddModalOpen(true)}
+                        onClick={() => {
+                          setQuery("");
+                          setSubmittedQuery("");
+                          setCurrentPage(1);
+                          setIsAddModalOpen(true);
+                        }}
                         className="mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-[#2949a8] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#203a86]"
                       >
                         Add Product
@@ -525,6 +597,7 @@ export default function ProductClient() {
                         type="button"
                         onClick={() => {
                           setQuery("");
+                          setSubmittedQuery("");
                           setCurrentPage(1);
                         }}
                         className="mt-3 cursor-pointer text-xs font-medium text-[#2949a8] hover:underline"
@@ -640,7 +713,7 @@ export default function ProductClient() {
             {/* Close Button */}
             <button
               type="button"
-              onClick={() => setIsAddModalOpen(false)}
+              onClick={closeAddProductModal}
               className="absolute right-4 top-4 z-10 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-100"
               aria-label="Close add product form"
             >
@@ -648,10 +721,13 @@ export default function ProductClient() {
             </button>
 
             <AddProductClient
-              onClose={() => setIsAddModalOpen(false)}
-              onProductAdded={() =>
-                setRefreshKey((current) => current + 1)
-              }
+              onClose={closeAddProductModal}
+              onProductAdded={() => {
+                setQuery("");
+                setSubmittedQuery("");
+                setCurrentPage(1);
+                setRefreshKey((current) => current + 1);
+              }}
             />
           </div>
         </FadeUp>

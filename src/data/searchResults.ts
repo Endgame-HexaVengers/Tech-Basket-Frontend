@@ -1,7 +1,6 @@
 import type { ResultSection, SearchTab, SearchTabConfig } from "@/types/search";
 
 export const SEARCH_TABS: SearchTabConfig[] = [
-  { key: "advance", label: "Advance Search" },
   { key: "rma", label: "RMA Search" },
   { key: "production", label: "Production Search" },
 ];

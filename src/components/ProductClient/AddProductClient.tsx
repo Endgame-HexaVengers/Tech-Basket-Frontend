@@ -222,6 +222,7 @@ export default function AddProductClient({ onClose, onProductAdded }: AddProduct
           </div>
           <form
             onSubmit={submit}
+            autoComplete="off"
             className="grid grid-cols-1 gap-5 lg:grid-cols-2"
           >
             <label className="rounded-lg border border-[#d6dce6] bg-white p-5 text-[11px] font-medium lg:col-span-2">
