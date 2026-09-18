@@ -596,7 +596,7 @@ function LegacySalesInvoicePage() {
               </div>
             </div>
             <div>
-              <label className={labelClass}>Date From</label>
+              <label className={legacyLabelClass}>Date From</label>
               <input
                 className={legacyFieldClass}
                 type="date"
@@ -605,7 +605,7 @@ function LegacySalesInvoicePage() {
               />
             </div>
             <div>
-              <label className={labelClass}>Date To</label>
+              <label className={legacyLabelClass}>Date To</label>
               <input
                 className={legacyFieldClass}
                 type="date"

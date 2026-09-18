@@ -19,7 +19,8 @@ import {
   Package,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { Sale, SalesReturn, SalesReturnSettlementType } from "@/types/sale";
+import { Sale } from "@/types/sale";
+import type { SalesReturn, SalesReturnSettlementType } from "@/types/sale";
 import SalesCreditNoteModal from "@/components/SalesSection/SalesCreditNoteModal";
 
 type ReturnStats = {

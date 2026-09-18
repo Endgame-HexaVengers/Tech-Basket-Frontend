@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Tech-Basket",
-  description:"AI-Powered Inventory Management System in Bangladesh",
+  description: "AI-Powered Inventory Management System in Bangladesh",
 };
 
 

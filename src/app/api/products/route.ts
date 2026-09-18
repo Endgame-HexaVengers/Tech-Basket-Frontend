@@ -4,7 +4,8 @@ import { buildProductDocument } from "@/lib/productDoc";
 
 export const runtime = "nodejs";
 
-const BACKEND_PRODUCTS_URL = process.env.BACKEND_PRODUCTS_URL + "/api/v1/products";
+const BACKEND_SERVER_URL =
+  process.env.BACKEND_PRODUCTS_URL || process.env.NEXT_PUBLIC_SERVER_URL;
 
 async function getProductsCollection() {
   const collections = await catalogDatabase.listCollections().toArray();
@@ -44,52 +45,52 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get("search") || "";
 
   try {
-    const backendUrl = new URL(BACKEND_PRODUCTS_URL);
-    backendUrl.searchParams.set("page", String(page));
-    backendUrl.searchParams.set("limit", String(limit));
-    if (search) {
-      backendUrl.searchParams.set("search", search);
-    }
+    if (BACKEND_SERVER_URL) {
+      const backendUrl = new URL("/api/v1/products", BACKEND_SERVER_URL);
+      backendUrl.searchParams.set("page", String(page));
+      backendUrl.searchParams.set("limit", String(limit));
+      if (search) {
+        backendUrl.searchParams.set("search", search);
+      }
 
-    const backendRes = await fetch(backendUrl.toString(), {
-      cache: "no-store",
-      headers: { Accept: "application/json" },
-      signal: AbortSignal.timeout(4000),
-    });
-
-    if (backendRes.ok) {
-      const json = await backendRes.json();
-      const backendList = Array.isArray(json?.data)
-        ? json.data
-        : Array.isArray(json)
-          ? json
-          : [];
-
-      backendList.sort((first: Record<string, unknown>, second: Record<string, unknown>) => {
-        const firstDate = Date.parse(String(first.createdAt || first.updatedAt || ""));
-        const secondDate = Date.parse(String(second.createdAt || second.updatedAt || ""));
-        return (Number.isNaN(secondDate) ? 0 : secondDate) - (Number.isNaN(firstDate) ? 0 : firstDate);
+      const backendRes = await fetch(backendUrl.toString(), {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(4000),
       });
 
-      const formattedList = backendList.map((product: Record<string, unknown>) => ({
-        ...product,
-        _id: product._id ? String(product._id) : (product.id as string) || String(Math.random()),
-      }));
+      if (backendRes.ok) {
+        const json = await backendRes.json();
+        const backendList = Array.isArray(json?.data)
+          ? json.data
+          : Array.isArray(json)
+            ? json
+            : [];
 
-      return NextResponse.json({
-        success: true,
-        data: formattedList,
-        pagination: json.pagination || {
-          page,
-          limit,
-          total: formattedList.length,
-          totalPages: Math.ceil(formattedList.length / limit) || 1,
-        },
-      });
+        backendList.sort((first: Record<string, unknown>, second: Record<string, unknown>) => {
+          const firstDate = Date.parse(String(first.createdAt || first.updatedAt || ""));
+          const secondDate = Date.parse(String(second.createdAt || second.updatedAt || ""));
+          return (Number.isNaN(secondDate) ? 0 : secondDate) - (Number.isNaN(firstDate) ? 0 : firstDate);
+        });
+
+        const formattedList = backendList.map((product: Record<string, unknown>) => ({
+          ...product,
+          _id: product._id ? String(product._id) : (product.id as string) || String(Math.random()),
+        }));
+
+        return NextResponse.json({
+          success: true,
+          data: formattedList,
+          pagination: json.pagination || {
+            page,
+            limit,
+            total: formattedList.length,
+            totalPages: Math.ceil(formattedList.length / limit) || 1,
+          },
+        });
+      }
     }
-  } catch (error) {
-    console.warn("Backend server not reachable, attempting direct MongoDB fallback:", error);
-  }
+  } catch {}
 
   // Fallback: If backend is down, query MongoDB directly with pagination
   try {
