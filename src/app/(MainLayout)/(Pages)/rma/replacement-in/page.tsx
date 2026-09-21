@@ -164,7 +164,15 @@ export default function ReplacementInPage() {
     paged.length > 0 && paged.every((item) => selected.includes(item.id));
 
   const toggleAll = () =>
-    setSelected(allSelected ? [] : paged.map((item) => item.id));
+    setSelected((prev) => {
+      const pageIds = new Set(paged.map((item) => item.id));
+
+      if (allSelected) {
+        return prev.filter((id) => !pageIds.has(id));
+      }
+
+      return Array.from(new Set([...prev, ...paged.map((item) => item.id)]));
+    });
 
   const toggleOne = (id: string) =>
     setSelected((prev) =>
@@ -222,15 +230,15 @@ export default function ReplacementInPage() {
   };
 
   return (
-    <main className="min-h-[calc(100vh-108px)] bg-[#f8fafc] px-5 py-5 text-[#172235] sm:px-6 lg:px-7">
-      <div className="mx-auto max-w-[1500px]">
+    <main className=" px-5 py-5 text-[#172235] sm:px-6 lg:px-7">
+      <div>
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-[29px] font-bold tracking-tight text-[#111827]">
+            <h1 className="text-[30px] font-bold tracking-tight text-[#111827]">
               Replacement In
             </h1>
-            <p className="mt-1 text-[13px] text-[#526079]">
+            <p className="mt-1 text-[14px] text-[#526079]">
               Track and manage incoming product replacements from customers under
               RMA warranty.
             </p>
@@ -239,7 +247,7 @@ export default function ReplacementInPage() {
             <button
               type="button"
               onClick={handleReset}
-              className="inline-flex h-10 items-center gap-2 rounded-md border border-[#d3dbe7] bg-white px-4 text-[12px] font-semibold text-[#344054] shadow-sm hover:bg-[#f1f5f9]"
+              className="inline-flex h-10 items-center gap-2 rounded-md border border-[#d3dbe7] bg-white px-4 text-[13px] font-semibold text-[#344054] shadow-sm hover:bg-[#f1f5f9]"
             >
               <RefreshCw size={13} /> Reset Filters
             </button>
@@ -247,9 +255,9 @@ export default function ReplacementInPage() {
         </div>
 
         {/* Filters */}
-        <section className="mb-5 rounded-md border border-[#d6dce6] bg-white p-4 shadow-[0_2px_5px_rgba(15,23,42,0.05)]">
+        <section className="mb-5 rounded-md border border-[#d6dce6] bg-white p-4 shadow">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
-            <label className="block text-[11px] font-semibold text-[#344054]">
+            <label className="block text-[25px] font-semibold text-[#344054]">
               Search
               <div className="relative">
                 <Search
@@ -260,7 +268,7 @@ export default function ReplacementInPage() {
                   value={query}
                   onChange={(e) => { setQuery(e.target.value); setPage(1); }}
                   placeholder="Ticket, Product, Customer..."
-                  className="mt-1.5 h-10 w-full rounded-md border border-[#d6dce6] pl-8 pr-2 text-[12px] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
+                  className="mt-1.5 h-10 w-full rounded-md border border-[#d6dce6] pl-8 pr-2 text-[13px] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
                 />
               </div>
             </label>
@@ -282,22 +290,22 @@ export default function ReplacementInPage() {
               options={["All", "Dhaka Main", "Tangail", "Chittagong", "Gazipur", "Sylhet", "Rajshahi"]}
               onChange={(v) => { setBranchFilter(v); setPage(1); }}
             />
-            <label className="block text-[11px] font-semibold text-[#344054]">
+            <label className="block text-[12px] font-semibold text-[#344054]">
               From Date
               <input
                 type="date"
                 value={fromDate}
                 onChange={(e) => { setFromDate(e.target.value); setPage(1); }}
-                className="mt-1.5 h-10 w-full rounded-md border border-[#d6dce6] bg-white px-2 text-[11px] text-[#718096] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
+                className="mt-1.5 h-10 w-full rounded-md border border-[#d6dce6] bg-white px-2 text-[13px] text-[#718096] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
               />
             </label>
-            <label className="block text-[11px] font-semibold text-[#344054]">
+            <label className="block text-[12px] font-semibold text-[#344054]">
               To Date
               <input
                 type="date"
                 value={toDate}
                 onChange={(e) => { setToDate(e.target.value); setPage(1); }}
-                className="mt-1.5 h-10 w-full rounded-md border border-[#d6dce6] bg-white px-2 text-[11px] text-[#718096] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
+                className="mt-1.5 h-10 w-full rounded-md border border-[#d6dce6] bg-white px-2 text-[13px] text-[#718096] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
               />
             </label>
           </div>
@@ -310,21 +318,21 @@ export default function ReplacementInPage() {
             <button
               type="button"
               onClick={() => handleReceive(selected)}
-              className="inline-flex h-7 items-center gap-1 rounded-md border border-[#a7e4c4] bg-[#e9faf2] px-2.5 text-[10px] font-semibold text-[#1a7a52] hover:bg-[#d4f2e4]"
+              className="inline-flex h-7 items-center gap-1 rounded-md border border-[#a7e4c4] bg-[#e9faf2] px-2.5 text-[11px] font-semibold text-[#1a7a52] hover:bg-[#d4f2e4]"
             >
               <Truck size={11} /> Mark Received
             </button>
             <button
               type="button"
               onClick={() => handleCancel(selected)}
-              className="inline-flex h-7 items-center gap-1 rounded-md border border-[#ffcbbd] bg-[#fff0eb] px-2.5 text-[10px] font-semibold text-[#c35b42] hover:bg-[#ffe4dd]"
+              className="inline-flex h-7 items-center gap-1 rounded-md border border-[#ffcbbd] bg-[#fff0eb] px-2.5 text-[11px] font-semibold text-[#c35b42] hover:bg-[#ffe4dd]"
             >
               <X size={11} /> Cancel
             </button>
             <button
               type="button"
               onClick={() => setSelected([])}
-              className="ml-auto text-[10px] font-medium text-[#718096] underline hover:text-[#344054]"
+              className="ml-auto text-[11px] font-medium text-[#718096] underline hover:text-[#344054]"
             >
               Clear selection
             </button>
@@ -341,9 +349,9 @@ export default function ReplacementInPage() {
 
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1200px] border-collapse text-left">
-              <thead className="bg-[#f1f3f6] text-[10px] font-bold uppercase tracking-[0.04em] text-[#43516a]">
+              <thead className="bg-[#f1f3f6] text-[13px] font-bold uppercase tracking-[0.04em] text-[#43516a]">
                 <tr>
-                  <th className="h-9 border-b border-[#d9dee7] px-3 font-bold">
+                  <th className="h-10 border-b border-[#d9dee7] px-3 font-bold">
                     <input
                       type="checkbox"
                       aria-label="Select all"
@@ -365,18 +373,18 @@ export default function ReplacementInPage() {
                   ].map(([key, label]) => (
                     <th
                       key={key}
-                      className="h-9 border-b border-[#d9dee7] px-3 font-bold"
+                      className="h-10 border-b border-[#d9dee7] px-3 font-bold"
                     >
                       {label}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="text-[11px] text-[#344054]">
+              <tbody className="text-[15px] text-[#344054]">
                 {paged.map((item) => (
                   <tr
                     key={item.id}
-                    className="h-12 border-b border-[#e5e9ef] last:border-0 hover:bg-[#fbfcff]"
+                    className="h-14 border-b border-[#e5e9ef] last:border-0 hover:bg-[#fbfcff]"
                   >
                     <td className="px-3">
                       <input
@@ -387,26 +395,26 @@ export default function ReplacementInPage() {
                         className="accent-[#2949a8]"
                       />
                     </td>
-                    <td className="px-3 text-[10px] font-semibold text-[#163c7a]">
+                    <td className="px-3 text-[15px] font-semibold text-[#163c7a]">
                       {item.ticketNo}
                     </td>
                     <td className="px-3">
                       <div className="font-medium text-[#163c7a]">{item.product}</div>
-                      <div className="text-[9px] text-[#718096]">{item.sku} &middot; SN: {item.serialNo}</div>
+                      <div className="text-[15px] text-[#718096]">{item.sku} &middot; SN: {item.serialNo}</div>
                     </td>
                     <td className="px-3">
                       <div>{item.customerName}</div>
-                      <div className="text-[9px] text-[#718096]">{item.customerPhone}</div>
+                      <div className="text-[15px] text-[#718096]">{item.customerPhone}</div>
                     </td>
-                    <td className="px-3 text-[11px]">{item.branch}</td>
-                    <td className="px-3 text-[10px]">{item.replacementOutDate}</td>
-                    <td className="px-3 text-[10px]">{item.expectedReturnDate}</td>
-                    <td className="px-3 text-[10px]">
+                    <td className="px-3 text-[15px]">{item.branch}</td>
+                    <td className="px-3 text-[15px]">{item.replacementOutDate}</td>
+                    <td className="px-3 text-[15px]">{item.expectedReturnDate}</td>
+                    <td className="px-3 text-[15px]">
                       {item.receivedDate ?? <span className="text-[#b0b8c5]">-</span>}
                     </td>
                     <td className="px-3">
                       <span
-                        className={`rounded-full border px-2 py-0.5 text-[9px] font-medium uppercase ${statusColor(item.status)}`}
+                        className={`rounded-full border px-2 py-0.5 text-[13px] font-medium uppercase ${statusColor(item.status)}`}
                       >
                         {item.status}
                       </span>
@@ -416,16 +424,16 @@ export default function ReplacementInPage() {
                         <button
                           type="button"
                           onClick={() => handleReceive([item.id])}
-                          className="inline-flex h-7 items-center gap-1 rounded-md border border-[#b9c8e6] bg-[#f5f8ff] px-2.5 text-[10px] font-semibold text-[#2949a8] hover:bg-[#e8efff]"
+                          className="inline-flex h-7 items-center gap-1 rounded-md border border-[#b9c8e6] bg-[#f5f8ff] px-2.5 text-[13px] font-semibold text-[#2949a8] hover:bg-[#e8efff]"
                         >
                           <PackageCheck size={12} /> Receive
                         </button>
                       ) : item.status === "Received" ? (
-                        <span className="text-[10px] text-[#1a7a52] font-medium">
+                        <span className="text-[13px] text-[#1a7a52] font-medium">
                           Completed
                         </span>
                       ) : (
-                        <span className="text-[10px] text-[#718096]">-</span>
+                        <span className="text-[11px] text-[#718096]">-</span>
                       )}
                     </td>
                   </tr>
@@ -433,7 +441,7 @@ export default function ReplacementInPage() {
               </tbody>
             </table>
             {paged.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-16 text-[12px] text-[#718096]">
+              <div className="flex flex-col items-center justify-center py-16 text-[13px] text-[#718096]">
                 <Truck size={40} className="mb-3 text-[#c5cdd8]" />
                 <p className="font-medium">No replacement-in records found.</p>
                 <p className="mt-1 text-[11px]">Try adjusting your filters.</p>
@@ -442,7 +450,8 @@ export default function ReplacementInPage() {
           </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between border-t border-[#d9dee7] bg-[#fbfcfe] px-3 py-2 text-[10px] text-[#536174]">
+          <div className="flex items-center justify-between border-t border-[#d9dee7] bg-[#fbfcfe] 
+          px-3 py-2 text-[14px] text-[#536174]">
             <span>
               Showing{" "}
               {filtered.length
@@ -456,11 +465,12 @@ export default function ReplacementInPage() {
                 aria-label="Previous page"
                 disabled={safePage <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="text-[#9aa5b5] disabled:opacity-40"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[#536174]
+                 hover:bg-[#eef2f7] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft size={14} />
               </button>
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-[#153fa4] text-white">
+              <span className="inline-flex h-7 min-w-7 items-center justify-center px-1.5 rounded-sm bg-[#153fa4] text-white">
                 {safePage}
               </span>
               <button
@@ -468,7 +478,8 @@ export default function ReplacementInPage() {
                 aria-label="Next page"
                 disabled={safePage >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="text-[#9aa5b5] disabled:opacity-40"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-md text-[#536174] 
+                hover:bg-[#eef2f7] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronRight size={14} />
               </button>
@@ -492,13 +503,13 @@ function FilterSelect({
   onChange: (v: string) => void;
 }) {
   return (
-    <label className="block text-[11px] font-semibold text-[#344054]">
+    <label className="block text-[12px] font-semibold text-[#344054]">
       {label}
       <span className="relative block">
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="mt-1.5 h-10 w-full appearance-none rounded-md border border-[#d6dce6] bg-white px-2.5 pr-7 text-[12px] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
+          className="mt-1.5 h-10 w-full appearance-none rounded-md border border-[#d6dce6] bg-white px-2.5 pr-7 text-[13px] outline-none transition focus:border-[#2949a8] focus:ring-2 focus:ring-[#dbe5ff]"
         >
           {options.map((opt) => (
             <option key={opt} value={opt}>

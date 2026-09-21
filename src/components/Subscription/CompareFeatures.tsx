@@ -138,6 +138,7 @@ export default function CompareFeatures() {
 
     return (
         <motion.section 
+            id="compare-features"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}

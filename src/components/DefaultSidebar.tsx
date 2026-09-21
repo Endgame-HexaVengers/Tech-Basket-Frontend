@@ -23,18 +23,10 @@ import { FiCpu, FiRefreshCcw, FiSearch, FiTruck, FiUsers } from "react-icons/fi"
 import { IoDiamondSharp } from "react-icons/io5";
 import { GiDropletSplash } from "react-icons/gi";
 import { LuChartColumnDecreasing } from "react-icons/lu";
-import { GrEdit } from "react-icons/gr";
+import { GrEdit, GrSettingsOption } from "react-icons/gr";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { MdAppRegistration } from "react-icons/md";
-
-const SearchOptions = [
-  {
-    href: "/search",
-    label: "Advance Search",
-    query: "tab=advance",
-    permission: PERMISSIONS.SEARCH_ADVANCE,
-  },
-];
+import { Button } from "@heroui/react";
 
 const RmaOptions = [
   {
@@ -190,7 +182,7 @@ const DefaultSidebar = () => {
         onClick={handleLogoClick}
         className="group flex h-16 w-full cursor-pointer shrink-0 items-center gap-3 border-b border-slate-200/80 bg-white px-5 text-left transition-all duration-200 hover:bg-slate-50"
       >
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-[#00175c] to-blue-600 font-bold text-white shadow-md shadow-blue-900/10 transition-transform duration-200 group-hover:scale-105">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-tr from-[#00175c] to-blue-600 font-bold text-white shadow-md shadow-blue-900/10 transition-transform duration-200 group-hover:scale-105">
           T
         </div>
 
@@ -205,13 +197,17 @@ const DefaultSidebar = () => {
 
       {/* Sidebar Navigation */}
       <nav
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 space-y-1 scrollbar-gutter-stable"
-        onWheel={(event) => {
-          event.stopPropagation();
-          event.preventDefault();
-          event.currentTarget.scrollTop += event.deltaY;
-        }}
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 space-y-1 scrollbar-gutter-stable [scrollbar-width:thin]"
+        onWheel={(event) => event.stopPropagation()}
       >
+        <SidebarLink
+          href="/"
+          label="Dashboard"
+          icon={<LuChartColumnDecreasing className="text-blue-600" />}
+          activeTab={activeTab}
+          openTab={openTab}
+        />
+
         {/* Setup */}
         <SidebarDropdown label="Setup" icon={<FcSettings />}>
           <SidebarLink
@@ -247,20 +243,6 @@ const DefaultSidebar = () => {
           activeTab={activeTab}
           openTab={openTab}
         />
-
-        {/* Search */}
-        <SidebarDropdown label="Search" icon={<FiSearch className="text-slate-500" />}>
-          {SearchOptions.map((item) => (
-            <SidebarLink
-              key={`${item.href}-${item.query}`}
-              href={item.href}
-              label={item.label}
-              query={item.query}
-              activeTab={activeTab}
-              openTab={openTab}
-            />
-          ))}
-        </SidebarDropdown>
 
         {/* AI Insights */}
         <SidebarLink
@@ -394,11 +376,56 @@ const DefaultSidebar = () => {
             openTab={openTab}
           />
         </SidebarDropdown>
+        <SidebarLink
+          href="/Setting"
+          label="Setting"
+          icon={<GrSettingsOption />}
+          activeTab={activeTab}
+          openTab={openTab}
+        />
       </nav>
+
+      {/*Upgrade plan */}
+      <div className="mt-3 border-b  to-violet-50/40 px-4 pb-4 pt-4">
+        <div className="rounded-xl border border-indigo-50 bg-white/90 p-3 shadow-[0_14px_35px_rgba(99,102,241,0.10)] backdrop-blur-sm">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25">
+                <IoDiamondSharp className="text-lg" />
+              </div>
+
+              <div className="min-w-0">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                  Current plan
+                </p>
+                <p className="truncate text-base font-semibold text-slate-900">Free plan</p>
+              </div>
+            </div>
+
+            <span className="inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500 ring-4 ring-emerald-100" />
+          </div>
+
+          <p className="mt-3 text-sm text-slate-500">Unlock more as you grow</p>
+
+          <Button
+            type="button"
+            onClick={() =>
+              openTab({
+                path: "/admin/Plans",
+                title: "Plans",
+                icon: "•",
+              })
+            }
+            className="mt-4 w-full rounded bg-linear-to-r from-indigo-600 to-violet-600 px-3 py-2.5 text-sm font-semibold text-white shadow shadow-indigo-500/20 transition-all duration-200 hover:from-indigo-500 hover:to-violet-500 cursor-pointer"
+          >
+            Upgrade plan
+          </Button>
+        </div>
+      </div>
 
       {/* Footer */}
       <div className="shrink-0 border-t border-slate-200/80 bg-white p-3">
-        <p className="text-center text-[11px] font-medium text-slate-400">
+        <p className="text-center text-[11px] font-medium text-slate-600">
           TechBasket ERP
         </p>
       </div>
@@ -425,15 +452,23 @@ const SidebarDropdown = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="w-full">
+    <div
+      className="w-full"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+      onFocus={() => setIsOpen(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+          setIsOpen(false);
+        }
+      }}
+    >
       <button
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        className={`group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-          isOpen
-            ? "bg-white text-slate-900 shadow-sm"
-            : "text-slate-600 hover:bg-white hover:text-slate-900"
-        }`}
+        className={`group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isOpen
+          ? "bg-white text-slate-900 shadow-sm"
+          : "text-slate-600 hover:bg-white hover:text-slate-900"
+          }`}
       >
         <div className="flex min-w-0 items-center gap-3">
           {icon && (
@@ -454,11 +489,17 @@ const SidebarDropdown = ({
         </div>
       </button>
 
-      {isOpen && (
-        <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-200/70 pl-2">
+      <div
+        aria-hidden={!isOpen}
+        className={`ml-4 grid overflow-hidden border-l-2 border-slate-200/70 pl-2 transition-all duration-300 ease-out ${isOpen
+          ? "mt-1 grid-rows-[1fr] space-y-1 opacity-100"
+          : "mt-0 grid-rows-[0fr] space-y-0 opacity-0"
+          }`}
+      >
+        <div className="min-h-0">
           {children}
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -506,11 +547,10 @@ const SidebarLink = ({
     <button
       type="button"
       onClick={handleClick}
-      className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 ${
-        isActive
-          ? "bg-blue-50/80 font-semibold text-blue-600 shadow-xs"
-          : "text-slate-600 hover:bg-white hover:text-slate-900"
-      }`}
+      className={`relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-200 ${isActive
+        ? "bg-blue-50/80 font-semibold text-blue-600 shadow-xs"
+        : "text-slate-600 hover:bg-white hover:text-slate-900"
+        }`}
     >
       {/* Active Left Line Indicator */}
       {isActive && (

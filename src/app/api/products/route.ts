@@ -4,7 +4,8 @@ import { buildProductDocument } from "@/lib/productDoc";
 
 export const runtime = "nodejs";
 
-const BACKEND_PRODUCTS_URL = "http://localhost:5000/api/v1/products";
+const BACKEND_SERVER_URL =
+  process.env.BACKEND_PRODUCTS_URL || process.env.NEXT_PUBLIC_SERVER_URL;
 
 async function getProductsCollection() {
   const collections = await catalogDatabase.listCollections().toArray();
@@ -44,46 +45,52 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get("search") || "";
 
   try {
-    const backendUrl = new URL(BACKEND_PRODUCTS_URL);
-    backendUrl.searchParams.set("page", String(page));
-    backendUrl.searchParams.set("limit", String(limit));
-    if (search) {
-      backendUrl.searchParams.set("search", search);
-    }
+    if (BACKEND_SERVER_URL) {
+      const backendUrl = new URL("/api/v1/products", BACKEND_SERVER_URL);
+      backendUrl.searchParams.set("page", String(page));
+      backendUrl.searchParams.set("limit", String(limit));
+      if (search) {
+        backendUrl.searchParams.set("search", search);
+      }
 
-    const backendRes = await fetch(backendUrl.toString(), {
-      cache: "no-store",
-      headers: { Accept: "application/json" },
-      signal: AbortSignal.timeout(4000),
-    });
-
-    if (backendRes.ok) {
-      const json = await backendRes.json();
-      const backendList = Array.isArray(json?.data)
-        ? json.data
-        : Array.isArray(json)
-          ? json
-          : [];
-
-      const formattedList = backendList.map((product: Record<string, unknown>) => ({
-        ...product,
-        _id: product._id ? String(product._id) : (product.id as string) || String(Math.random()),
-      }));
-
-      return NextResponse.json({
-        success: true,
-        data: formattedList,
-        pagination: json.pagination || {
-          page,
-          limit,
-          total: formattedList.length,
-          totalPages: Math.ceil(formattedList.length / limit) || 1,
-        },
+      const backendRes = await fetch(backendUrl.toString(), {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(4000),
       });
+
+      if (backendRes.ok) {
+        const json = await backendRes.json();
+        const backendList = Array.isArray(json?.data)
+          ? json.data
+          : Array.isArray(json)
+            ? json
+            : [];
+
+        backendList.sort((first: Record<string, unknown>, second: Record<string, unknown>) => {
+          const firstDate = Date.parse(String(first.createdAt || first.updatedAt || ""));
+          const secondDate = Date.parse(String(second.createdAt || second.updatedAt || ""));
+          return (Number.isNaN(secondDate) ? 0 : secondDate) - (Number.isNaN(firstDate) ? 0 : firstDate);
+        });
+
+        const formattedList = backendList.map((product: Record<string, unknown>) => ({
+          ...product,
+          _id: product._id ? String(product._id) : (product.id as string) || String(Math.random()),
+        }));
+
+        return NextResponse.json({
+          success: true,
+          data: formattedList,
+          pagination: json.pagination || {
+            page,
+            limit,
+            total: formattedList.length,
+            totalPages: Math.ceil(formattedList.length / limit) || 1,
+          },
+        });
+      }
     }
-  } catch (error) {
-    console.warn("Backend server not reachable, attempting direct MongoDB fallback:", error);
-  }
+  } catch {}
 
   // Fallback: If backend is down, query MongoDB directly with pagination
   try {
@@ -99,7 +106,12 @@ export async function GET(request: NextRequest) {
 
     const skip = (page - 1) * limit;
     const [items, total] = await Promise.all([
-      collection.find(filter).skip(skip).limit(limit).toArray(),
+      collection
+        .find(filter)
+        .sort({ createdAt: -1, _id: -1 })
+        .skip(skip)
+        .limit(limit)
+        .toArray(),
       collection.countDocuments(filter),
     ]);
 
@@ -117,7 +129,7 @@ export async function GET(request: NextRequest) {
     console.error("Backend & MongoDB fallback both failed:", fallbackError);
     return NextResponse.json(
       {
-        error: "Backend server (http://localhost:5000) is unreachable. Please ensure the backend server is running.",
+        error: "Backend server is unreachable. Please ensure the backend server is running.",
         details: String(fallbackError),
       },
       { status: 503 }
@@ -139,6 +151,7 @@ export async function POST(request: NextRequest) {
       warrantyPeriod?: number;
       warrantyUnit?: string;
       description?: string;
+      image?: string;
       status?: "active" | "inactive" | string;
     };
 

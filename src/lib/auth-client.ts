@@ -9,7 +9,9 @@ import {
 import type { auth } from "./auth";
 
 export const authClient = createAuthClient({
-    baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL as string,
+    baseURL:
+        process.env.NEXT_PUBLIC_BETTER_AUTH_URL ||
+        (typeof window !== "undefined" ? window.location.origin : undefined),
 
     plugins: [
         jwtClient(),

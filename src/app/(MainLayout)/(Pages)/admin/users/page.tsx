@@ -2,19 +2,18 @@
 
 import { useState, useEffect } from "react";
 import FadeUp from "@/components/FadeUp";
-import UserFilters from "@/components/UserManagement/UserFilters";
+
 import UserPagination from "@/components/UserManagement/UserPagination";
 import UserTable from "@/components/UserManagement/UserTable";
-import CreateUserDrawer, {
-  UserType,
-} from "@/components/UserManagement/CreateUserDrawer";
+import CreateUserDrawer, {UserType,} from "@/components/UserManagement/CreateUserDrawer";
 import { Plus, Loader2 } from "lucide-react";
 
-// Local Backend API URL
-const API_BASE_URL = "http://localhost:5000/api/users";
+const API_BASE_URL = "/api/users";
+const USERS_PER_PAGE = 7;
 
 const UserManagementPage = () => {
   const [users, setUsers] = useState<UserType[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,14 +25,12 @@ const UserManagementPage = () => {
       setError(null);
 
 
-      const token = localStorage.getItem("token");
-
       const response = await fetch(API_BASE_URL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
         },
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -44,6 +41,7 @@ const UserManagementPage = () => {
       
 
       setUsers(Array.isArray(data) ? data : data.users || []);
+      setCurrentPage(1);
     } catch (err: unknown) {
       console.error("Error fetching users:", err);
       setError((err as Error).message || "Something went wrong while fetching users.");
@@ -58,35 +56,46 @@ const UserManagementPage = () => {
   }, []);
 
   // 2. Add User to Local Backend and Update UI
-  const handleAddUser = async (newUser: UserType) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(API_BASE_URL, {
+  const handleAddUser = async (newUser: UserType, password: string, actionType: "draft" | "create") => {
+    const response = await fetch(API_BASE_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
         },
-        body: JSON.stringify(newUser),
+        credentials: "include",
+        body: JSON.stringify({
+          fullName: newUser.fullName,
+          username: newUser.username,
+          email: newUser.email,
+          phone: newUser.phone,
+          password,
+          role: newUser.systemRole,
+          branch: newUser.assignedBranch,
+          status: actionType === "draft" ? "Draft" : "Active",
+        }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to save user in backend");
-      }
-
-      const createdUser = await response.json();
-
-      setUsers((prevUsers) => [createdUser.user || createdUser, ...prevUsers]);
-    } catch (err: unknown) {
-      console.error("Error creating user:", err);
-     
-      setUsers((prevUsers) => [newUser, ...prevUsers]);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.error || "Failed to save user in backend");
     }
+
+    await response.json();
+    await fetchUsers();
+  };
+
+  const totalPages = Math.max(1, Math.ceil(users.length / USERS_PER_PAGE));
+  const visibleUsers = users.slice(
+    (currentPage - 1) * USERS_PER_PAGE,
+    currentPage * USERS_PER_PAGE,
+  );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(Math.min(Math.max(page, 1), totalPages));
   };
 
   return (
-    <FadeUp className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 lg:p-8">
+    <FadeUp className="min-h-screen p-4 sm:p-6 lg:p-8">
       {/* Header */}
       <FadeUp className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -101,7 +110,8 @@ const UserManagementPage = () => {
         <button
           type="button"
           onClick={() => setIsDrawerOpen(true)}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98] cursor-pointer"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded bg-blue-600 px-4 text-sm font-semibold
+           text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98] cursor-pointer"
         >
           <Plus size={17} />
           Create User
@@ -110,7 +120,7 @@ const UserManagementPage = () => {
 
       {/* Table Section */}
       <section className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-        <UserFilters />
+
 
         {/* Loading State */}
         {isLoading ? (
@@ -131,10 +141,14 @@ const UserManagementPage = () => {
           </div>
         ) : (
           /* User Table */
-          <UserTable users={users} />
+          <UserTable users={visibleUsers} />
         )}
 
-        <UserPagination />
+        <UserPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </section>
 
       {/* Static Slider Drawer */}

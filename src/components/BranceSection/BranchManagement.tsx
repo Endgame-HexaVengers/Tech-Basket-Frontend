@@ -24,7 +24,7 @@ export default function BranchManagement() {
       if (filters?.type) queryParams.append('type', filters.type);
       if (filters?.location) queryParams.append('location', filters.location);
 
-      const API_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
+      const API_URL = process.env.BACKEND_PRODUCTS_URL;
       const response = await fetch(`${API_URL}/api/branches?${queryParams.toString()}`);
 
       if (!response.ok) {
@@ -56,91 +56,138 @@ export default function BranchManagement() {
   };
 
   return (
-    <FadeUp className="p-6 bg-gray-50">
+    <FadeUp className="p-6">
       <div>
-
         {/* Filter Component */}
         <SearchFilters onFilterChange={handleFilterChange} />
 
         {/* Table Container */}
-        <div className="bg-white rounded-xl border border-dashed border-gray-200 shadow-sm overflow-hidden">
+        <div className="overflow-hidden rounded-xl border border-dashed border-gray-200 bg-white shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50/50 text-xs text-gray-500 font-semibold uppercase tracking-wider">
-                  <th className="py-4 px-6">Branch</th>
-                  <th className="py-4 px-6">Code</th>
-                  <th className="py-4 px-6">Location</th>
-                  <th className="py-4 px-6">Type</th>
-                  <th className="py-4 px-6">Manager</th>
-                  <th className="py-4 px-6">Users</th>
-                  <th className="py-4 px-6">Status</th>
-                  <th className="py-4 px-6 text-right">Actions</th>
+                <tr className="border-b border-gray-200 bg-gray-50/50 text-xs font-semibold uppercase tracking-wider">
+                  <th className="px-6 py-4 text-gray-500 dark:!text-white">
+                    Branch
+                  </th>
+
+                  <th className="px-6 py-4 text-gray-500 dark:!text-white">
+                    Code
+                  </th>
+
+                  <th className="px-6 py-4 text-gray-500 dark:!text-white">
+                    Location
+                  </th>
+
+                  <th className="px-6 py-4 text-gray-500 dark:!text-white">
+                    Type
+                  </th>
+
+                  <th className="px-6 py-4 text-gray-500 dark:!text-white">
+                    Manager
+                  </th>
+
+                  <th className="px-6 py-4 text-gray-500 dark:!text-white">
+                    Users
+                  </th>
+
+                  <th className="px-6 py-4 text-gray-500 dark:!text-white">
+                    Status
+                  </th>
+
+                  <th className="px-6 py-4 text-right text-gray-500 dark:!text-white">
+                    Actions
+                  </th>
                 </tr>
               </thead>
+
               <tbody className="divide-y divide-gray-100 text-sm">
                 {loading ? (
                   <tr>
-                    <td colSpan={8} className="text-center py-8 text-gray-500">
+                    <td
+                      colSpan={8}
+                      className="py-8 text-center text-gray-500 dark:!text-white"
+                    >
                       Loading branches...
                     </td>
                   </tr>
                 ) : branches.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="text-center py-8 text-gray-500">
+                    <td
+                      colSpan={8}
+                      className="py-8 text-center text-gray-500 dark:!text-white"
+                    >
                       No branches found.
                     </td>
                   </tr>
                 ) : (
                   branches.map((branch) => (
-                    <tr key={branch.id} className="hover:bg-gray-50/50 transition">
-                      {/* Name & Icon */}
-                      <td className="py-4 px-6">
+                    <tr
+                      key={branch.id}
+                      className="transition hover:bg-gray-50/50"
+                    >
+                      {/* Branch Name & Icon */}
+                      <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-gray-100 border border-gray-200 rounded-lg text-gray-600">
-                            {branch.type === 'Service Center' ? (
+                          <div className="rounded-lg border border-gray-200 bg-gray-100 p-2 text-gray-600">
+                            {branch.type === "Service Center" ? (
                               <LuCompass className="text-lg" />
                             ) : (
-                              <FaStore  className="text-lg" />
+                              <FaStore className="text-lg" />
                             )}
                           </div>
-                          <span className="font-semibold text-gray-800">{branch.name}</span>
+
+                          <span className="font-semibold text-gray-800 dark:!text-white">
+                            {branch.name}
+                          </span>
                         </div>
                       </td>
 
                       {/* Code */}
-                      <td className="py-4 px-6 text-gray-500 font-mono text-xs">{branch.code}</td>
+                      <td className="px-6 py-4 font-mono text-xs text-gray-500 dark:!text-white">
+                        {branch.code}
+                      </td>
 
                       {/* Location */}
-                      <td className="py-4 px-6 text-gray-600">{branch.location}</td>
+                      <td className="px-6 py-4 text-gray-600 dark:!text-white">
+                        {branch.location}
+                      </td>
 
                       {/* Type */}
-                      <td className="py-4 px-6 text-gray-600">{branch.type}</td>
+                      <td className="px-6 py-4 text-gray-600 dark:!text-white">
+                        {branch.type}
+                      </td>
 
                       {/* Manager */}
-                      <td className={`py-4 px-6 ${branch.manager === 'Not Assigned' ? 'italic text-gray-400' : 'text-gray-700'}`}>
+                      <td
+                        className={`px-6 py-4 ${branch.manager === "Not Assigned"
+                            ? "italic text-gray-400 dark:!text-white"
+                            : "text-gray-700 dark:!text-white"
+                          }`}
+                      >
                         {branch.manager}
                       </td>
 
                       {/* Users */}
-                      <td className="py-4 px-6 text-gray-600">{branch.users}</td>
+                      <td className="px-6 py-4 text-gray-600 dark:!text-white">
+                        {branch.users}
+                      </td>
 
                       {/* Status */}
-                      <td className="py-4 px-6">
+                      <td className="px-6 py-4">
                         <span
-                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${
-                            branch.status === 'ACTIVE'
-                              ? 'bg-blue-50 text-blue-600'
-                              : 'bg-gray-200 text-gray-600'
-                          }`}
+                          className={`inline-block rounded-full px-3 py-1 text-xs font-semibold tracking-wide ${branch.status === "ACTIVE"
+                              ? "bg-blue-50 text-blue-600"
+                              : "bg-gray-200 text-gray-600"
+                            }`}
                         >
                           {branch.status}
                         </span>
                       </td>
 
                       {/* Actions */}
-                      <td className="py-4 px-6 text-right">
-                        <button className="p-1.5 text-gray-400 hover:text-gray-600 rounded-md">
+                      <td className="px-6 py-4 text-right">
+                        <button className="rounded-md p-1.5 text-gray-400 transition hover:text-gray-600 dark:!text-white">
                           <FiMoreVertical className="text-lg" />
                         </button>
                       </td>
@@ -152,19 +199,25 @@ export default function BranchManagement() {
           </div>
 
           {/* Pagination Footer */}
-          {/* <div className="p-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-            <span>Showing 1–{branches.length} of {totalCount} branches</span>
-            <div className="flex items-center gap-1">
-              <button className="p-1.5 border border-gray-200 rounded hover:bg-gray-50 text-gray-600 disabled:opacity-50">
-                <FiChevronLeft className="text-base" />
-              </button>
-              <button className="p-1.5 border border-gray-200 rounded hover:bg-gray-50 text-gray-600 disabled:opacity-50">
-                <FiChevronRight className="text-base" />
-              </button>
-            </div>
-          </div> */}
+          {/* 
+      <div className="flex items-center justify-between border-t border-gray-100 p-4 text-xs text-gray-500">
+        <span>
+          Showing 1–{branches.length} of {totalCount} branches
+        </span>
+
+        <div className="flex items-center gap-1">
+          <button className="rounded border border-gray-200 p-1.5 text-gray-600 hover:bg-gray-50 disabled:opacity-50">
+            <FiChevronLeft className="text-base" />
+          </button>
+
+          <button className="rounded border border-gray-200 p-1.5 text-gray-600 hover:bg-gray-50 disabled:opacity-50">
+            <FiChevronRight className="text-base" />
+          </button>
         </div>
       </div>
-    </FadeUp >
+      */}
+        </div>
+      </div>
+    </FadeUp>
   );
 }

@@ -1,34 +1,103 @@
-export interface Supplier {
-  id: string;
-  name: string;
-  location: string;
-}
-
-export interface Product {
-  id: string;
-  title: string;
-  defaultPrice: number;
-}
-
 export interface PurchaseItem {
-  id: string;
+  id: string; // unique ID for the line item
   productId: string;
   title: string;
+  productName?: string;
   price: number;
+  unitCost?: number;
   quantity: number;
+  serialNumbers?: string[];
+  returnedQuantity?: number;
+  availableQuantity?: number;
   total: number;
+  tax?: number;
+  discount?: number;
+  discountPercent?: number;
+  discountType?: "percent" | "fixed";
 }
 
-export const DUMMY_SUPPLIERS: Supplier[] = [
-  { id: '1', name: 'ABC Computer Ltd.', location: 'Dhaka, Bangladesh' },
-  { id: '2', name: 'Global Tech Solutions', location: 'Chittagong, Bangladesh' },
-  { id: '3', name: 'Nexus Electronics', location: 'Dhaka, Bangladesh' },
-  { id: '4', name: 'Prime IT Systems', location: 'Sylhet, Bangladesh' },
-];
+export type PurchaseStatus = "Pending" | "Received" | "Returned" | "Partially Returned" | "Cancelled";
+export type PaymentStatus = "Unpaid" | "Partial" | "Paid";
 
-export const DUMMY_PRODUCTS: Product[] = [
-  { id: 'p1', title: 'ThinkPad T14 Gen 3', defaultPrice: 125000 },
-  { id: 'p2', title: 'Logitech MX Master 3S', defaultPrice: 8500 },
-  { id: 'p3', title: "Dell UltraSharp 27' Monitor", defaultPrice: 45000 },
-  { id: 'p4', title: "Apple MacBook Pro 14'", defaultPrice: 210000 },
-];
+export interface Purchase {
+  _id?: string;
+  id?: string; // e.g. PUR-2026-001
+  purchaseNumber?: string;
+  supplierId: string;
+  supplierName: string;
+  supplierPhone?: string;
+  branchId: string;
+  branchName: string;
+  purchasePerson: string;
+  employeeId?: string;
+  purchaseDate: string;
+  referenceNo?: string;
+  items: PurchaseItem[];
+  subTotal: number;
+  originalSubTotal?: number;
+  totalTax: number;
+  totalDiscount: number;
+  grandTotal: number;
+  originalGrandTotal?: number;
+  totalRefundAmount?: number;
+  paidAmount: number;
+  dueAmount: number;
+  status: PurchaseStatus;
+  paymentStatus: PaymentStatus;
+  invoiceGenerated?: boolean;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PurchaseReturnItem {
+  purchaseItemId?: string;
+  productId: string;
+  productName?: string;
+  title?: string;
+  quantity: number;
+  quantityReturned?: number;
+  price?: number;
+  unitPrice?: number;
+  refundAmount: number;
+  returnReason?: string;
+  serialNumbers?: string[];
+}
+
+export type ReturnSettlementType = "adjust_due" | "supplier_credit" | "cash_refund";
+
+export interface PurchaseReturn {
+  _id?: string;
+  returnId: string; // e.g. RET-2026-001
+  purchaseId: string;
+  purchaseInvoiceNo?: string;
+  supplierId?: string;
+  supplierName?: string;
+  supplierPhone?: string;
+  branchName?: string;
+  returnDate: string;
+  items: PurchaseReturnItem[];
+  totalRefundAmount: number;
+  totalReturnedQty?: number;
+  settlementType?: ReturnSettlementType;
+  returnReason?: string;
+  notes?: string;
+  status: "Pending" | "Completed";
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export type InventoryItemStatus = "Available" | "Sold" | "Returned" | "Defective";
+
+export interface InventoryItem {
+  _id?: string;
+  itemId: string; // Unique ID for this specific serial numbered item
+  productId: string;
+  productName: string;
+  purchaseId: string;
+  serialNumber?: string;
+  branchId: string;
+  status: InventoryItemStatus;
+  createdAt: string;
+  updatedAt: string;
+}
