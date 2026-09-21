@@ -8,7 +8,7 @@ import { DangerZone } from '@/components/settings/DangerZone';
 
 const SettingsPage: React.FC = () => {
   return (
-    <div className=" bg-background p-4 sm:p-6 md:p-10 max-w-7xl mx-auto space-y-8">
+    <div className="p-4 sm:p-6 md:p-10 space-y-8">
       {/* Header with Animation */}
       <motion.div 
         initial={{ opacity: 0, x: -20 }}

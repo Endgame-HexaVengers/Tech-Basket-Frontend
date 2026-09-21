@@ -13,7 +13,7 @@ const UserInfo = () => {
 
   const user = session?.user;
   const router = useRouter();
-  const { openTab, tabs } = useTabs();
+  const { openTab } = useTabs();
 
   // Profile dropdown state
   const [profileOpen, setProfileOpen] = useState(false);
@@ -47,13 +47,23 @@ const UserInfo = () => {
   };
   return (
     <div>
-      <div ref={profileRef} className="relative ml-2">
+      <div
+        ref={profileRef}
+        className="relative ml-2"
+        onMouseEnter={() => setProfileOpen(true)}
+        onMouseLeave={() => setProfileOpen(false)}
+        onFocus={() => setProfileOpen(true)}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+            setProfileOpen(false);
+          }
+        }}
+      >
         {user ? (
           <>
             {/* Avatar Button */}
             <button
               type="button"
-              onClick={() => setProfileOpen((prev) => !prev)}
               className={`flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${profileOpen
                   ? "border-indigo-500"
                   : "border-slate-200 hover:border-indigo-400"
@@ -79,9 +89,9 @@ const UserInfo = () => {
 
             {/* Profile Dropdown */}
             <div
-              className={`absolute top-12 right-0 z-50 w-56 origin-top-right rounded-xl border border-slate-200 bg-white p-2 shadow-lg transition-all duration-150 ${profileOpen
+                className={`absolute top-12 right-0 z-50 w-56 origin-top-right rounded-xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-900/10 transition-all duration-200 ease-out ${profileOpen
                   ? "visible translate-y-0 scale-100 opacity-100"
-                  : "invisible -translate-y-1 scale-95 opacity-0"
+                  : "invisible -translate-y-2 scale-95 opacity-0"
                 }`}
             >
               {/* User Information */}
@@ -101,16 +111,11 @@ const UserInfo = () => {
                 variant="ghost"
                 onPress={() => {
                   setProfileOpen(false);
-
-                  const exists = tabs.some((t) => t.path === "/my-profile");
-
-                  if (!exists) {
-                    openTab({
-                      path: "/my-profile",
-                      title: "My Profile",
-                      icon: "👤",
-                    });
-                  }
+                  openTab({
+                    path: "/my-profile",
+                    title: "My Profile",
+                    icon: "👤",
+                  });
                 }}
                 className="
     my-3 flex w-full items-center justify-start gap-3

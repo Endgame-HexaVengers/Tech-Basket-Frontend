@@ -6,21 +6,16 @@ import {
   Search,
   RotateCcw,
   Package,
-  Layers,
   CheckCircle2,
-  AlertCircle,
-  Clock,
   Printer,
   X,
   FileSpreadsheet,
   Building2,
   Calendar,
-  Wallet,
+
   ArrowRight,
   Info,
   DollarSign,
-  User,
-  Phone,
   RefreshCw,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -99,6 +94,7 @@ export default function PurchaseReturnClient() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchReturnHistory();
   }, []);
 
@@ -114,23 +110,26 @@ export default function PurchaseReturnClient() {
     try {
       const res = await fetch(`/api/purchases?search=${encodeURIComponent(invToSearch)}`);
       const data = await res.json();
+      const purchases = Array.isArray(data.purchases)
+        ? (data.purchases as Purchase[])
+        : [];
 
-      if (data.success && data.purchases && data.purchases.length > 0) {
+      if (data.success && purchases.length > 0) {
         // Find exact match first or pick the first matching purchase
         const found =
-          data.purchases.find(
-            (p: Purchase) =>
-              p.id?.toLowerCase() === invToSearch.toLowerCase() ||
-              (p as any).purchaseNumber?.toLowerCase() === invToSearch.toLowerCase() ||
-              p.referenceNo?.toLowerCase() === invToSearch.toLowerCase()
-          ) || data.purchases[0];
+          purchases.find(
+            (candidate) =>
+              candidate.id?.toLowerCase() === invToSearch.toLowerCase() ||
+              candidate.purchaseNumber?.toLowerCase() === invToSearch.toLowerCase() ||
+              candidate.referenceNo?.toLowerCase() === invToSearch.toLowerCase()
+          ) || purchases[0];
 
         setPurchase(found);
-        setSearchInvoice(found.id || (found as any).purchaseNumber || invToSearch);
+        setSearchInvoice(found.id || found.purchaseNumber || invToSearch);
 
         // Pre-populate items map (none selected by default)
         const initialMap: Record<string, SelectedReturnItem> = {};
-        found.items?.forEach((it: any) => {
+        found.items?.forEach((it) => {
           initialMap[it.productId] = {
             productId: it.productId,
             purchaseItemId: it.id,
@@ -156,7 +155,7 @@ export default function PurchaseReturnClient() {
   };
 
   // Select/Deselect product in table
-  const handleToggleProduct = (item: any) => {
+  const handleToggleProduct = (item: Purchase["items"][number]) => {
     setSelectedItems((prev) => {
       const copy = { ...prev };
       if (copy[item.productId]) {
@@ -236,8 +235,8 @@ export default function PurchaseReturnClient() {
     setSubmitting(true);
     try {
       const payload = {
-        purchaseId: purchase.id || (purchase as any).purchaseNumber || purchase._id,
-        purchaseInvoiceNo: purchase.id || (purchase as any).purchaseNumber,
+        purchaseId: purchase.id || purchase.purchaseNumber || purchase._id,
+        purchaseInvoiceNo: purchase.id || purchase.purchaseNumber,
         supplierId: purchase.supplierId,
         supplierName: purchase.supplierName,
         supplierPhone: purchase.supplierPhone,
@@ -294,8 +293,8 @@ export default function PurchaseReturnClient() {
   });
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-[#f8fafc] px-4 py-6 text-slate-900 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-6">
+    <main className=" px-4 py-6 text-slate-900 sm:px-6 lg:px-8">
+      <div className="space-y-6">
         {/* Top Header */}
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -443,7 +442,7 @@ export default function PurchaseReturnClient() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-base font-black text-blue-900">
-                      {purchase.id || (purchase as any).purchaseNumber}
+                      {purchase.id || purchase.purchaseNumber}
                     </span>
                     {purchase.referenceNo && (
                       <span className="rounded bg-white px-2 py-0.5 text-xs text-slate-600 border border-slate-200">

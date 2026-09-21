@@ -2,8 +2,11 @@ export interface PurchaseItem {
   id: string; // unique ID for the line item
   productId: string;
   title: string;
+  productName?: string;
   price: number;
+  unitCost?: number;
   quantity: number;
+  serialNumbers?: string[];
   returnedQuantity?: number;
   availableQuantity?: number;
   total: number;
@@ -19,6 +22,7 @@ export type PaymentStatus = "Unpaid" | "Partial" | "Paid";
 export interface Purchase {
   _id?: string;
   id?: string; // e.g. PUR-2026-001
+  purchaseNumber?: string;
   supplierId: string;
   supplierName: string;
   supplierPhone?: string;

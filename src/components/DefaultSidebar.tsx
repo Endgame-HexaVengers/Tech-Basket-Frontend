@@ -452,10 +452,19 @@ const SidebarDropdown = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="w-full">
+    <div
+      className="w-full"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+      onFocus={() => setIsOpen(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+          setIsOpen(false);
+        }
+      }}
+    >
       <button
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
         className={`group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${isOpen
           ? "bg-white text-slate-900 shadow-sm"
           : "text-slate-600 hover:bg-white hover:text-slate-900"
@@ -480,11 +489,17 @@ const SidebarDropdown = ({
         </div>
       </button>
 
-      {isOpen && (
-        <div className="ml-4 mt-1 space-y-1 border-l-2 border-slate-200/70 pl-2">
+      <div
+        aria-hidden={!isOpen}
+        className={`ml-4 grid overflow-hidden border-l-2 border-slate-200/70 pl-2 transition-all duration-300 ease-out ${isOpen
+          ? "mt-1 grid-rows-[1fr] space-y-1 opacity-100"
+          : "mt-0 grid-rows-[0fr] space-y-0 opacity-0"
+          }`}
+      >
+        <div className="min-h-0">
           {children}
         </div>
-      )}
+      </div>
     </div>
   );
 };
