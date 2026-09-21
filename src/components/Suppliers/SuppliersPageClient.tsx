@@ -192,7 +192,7 @@ export default function SuppliersPageClient() {
       setEditingSupplier(null);
       // Refresh list to update all live amounts, dues, and statistics
       await fetchSuppliers();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Save supplier error:", err);
       toast.error(err.message || "Something went wrong while saving.", { id: toastId });
     }

@@ -101,7 +101,7 @@ export default function BranchModal({
         manager: formData.manager?.trim() || "Not Assigned",
       });
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err?.message || "Failed to save branch. Please try again.");
     } finally {
       setIsSubmitting(false);

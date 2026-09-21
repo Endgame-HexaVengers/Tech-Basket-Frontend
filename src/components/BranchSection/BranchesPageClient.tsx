@@ -229,7 +229,7 @@ export default function BranchesPageClient() {
 
         toast.success("New branch created successfully");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       toast.error(err.message || "Failed to save branch");
       throw err;
@@ -261,7 +261,7 @@ export default function BranchesPageClient() {
       });
 
       toast.success(`Branch is now ${newStatus}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error("Could not update status");
     }
   };
@@ -297,7 +297,7 @@ export default function BranchesPageClient() {
         });
 
         toast.success("Branch deleted successfully");
-      } catch (err: any) {
+      } catch (err: unknown) {
         toast.error("Could not delete branch");
       }
     }

@@ -14,6 +14,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { PurchaseItem } from "@/types/purchase";
+import toast from "react-hot-toast";
 
 const inputClass =
   "h-11 w-full rounded-sm border border-slate-200 bg-white px-3 text-[14px] text-slate-700 outline-none transition focus:border-[#123b9c] focus:ring-2 focus:ring-blue-100";
@@ -181,8 +182,8 @@ export default function PurchaseEntryClient() {
     setItems((current) => [
       ...current,
       {
-        id: Date.now().toString(),
-        productId: "TEMP_PROD_" + Date.now(),
+        id: `TEMP_ITEM_${items.length + 1}`,
+        productId: `TEMP_PROD_${items.length + 1}`,
         title: search,
         quantity: qty,
         price: price,
@@ -241,7 +242,7 @@ export default function PurchaseEntryClient() {
     }
     
     if (!supplierName) {
-      setError("Supplier Name is required.");
+      toast.error("Supplier Name is required.");
       return;
     }
 
@@ -251,7 +252,7 @@ export default function PurchaseEntryClient() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          supplierId: supplierId || "SUP_" + Date.now(), // Fallback if not selected
+          supplierId: supplierId || "SUP_UNSELECTED",
           supplierName,
           supplierPhone,
           branchId,
@@ -296,15 +297,15 @@ export default function PurchaseEntryClient() {
         const errorMsg = data.details ? `${data.error}: ${data.details}` : (data.error || "Failed to save purchase.");
         setError(errorMsg);
       }
-    } catch (err: any) {
-      setError(err?.message || "An error occurred while saving.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An error occurred while saving.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-[#f6f8fa] px-5 py-6 text-slate-900 sm:px-8 lg:px-10">
+    <main className="min-h-[calc(100vh-64px)] px-5 py-6 text-slate-900 sm:px-8 lg:px-10">
       <div className="w-full">
         <header className="mb-4 flex items-center justify-between">
           <div>

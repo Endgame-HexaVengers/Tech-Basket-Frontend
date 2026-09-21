@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import DashboardView from "@/components/Dashboard/DashboardView";

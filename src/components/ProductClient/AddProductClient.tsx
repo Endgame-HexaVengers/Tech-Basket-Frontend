@@ -293,9 +293,7 @@ export default function AddProductClient({
 
     try {
       /*
-       * ----------------------------------------
        * STEP 1: Upload image to ImgBB
-       * ----------------------------------------
        */
       const imageData = new FormData();
 
@@ -329,9 +327,7 @@ export default function AddProductClient({
       const image = uploadResult.url;
 
       /*
-       * ----------------------------------------
        * STEP 2: Create product
-       * ----------------------------------------
        */
       const payload = {
         title: String(
@@ -381,9 +377,7 @@ export default function AddProductClient({
       };
 
       /*
-       * ----------------------------------------
        * STEP 3: Send product to backend
-       * ----------------------------------------
        */
       const response = await fetch("/api/products", {
         method: "POST",
@@ -405,17 +399,15 @@ export default function AddProductClient({
       }
 
       /*
-       * ----------------------------------------
        * SUCCESS
-       * ----------------------------------------
        */
 
       setMessage(
-        "Product created successfully in the database."
+        "Product added successfully to the database."
       );
 
       toast.success(
-        "Product created successfully!"
+        "Product added successfully!"
       );
 
       onProductAdded?.();

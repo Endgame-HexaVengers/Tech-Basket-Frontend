@@ -32,7 +32,7 @@ export default function BranchTable({
   onToggleStatus,
 }: BranchTableProps) {
   /** Guard against legacy MongoDB docs where a field may be an object instead of a string */
-  const safeStr = (val: any, fallback = ""): string => {
+  const safeStr = (val: unknown, fallback = ""): string => {
     if (!val) return fallback;
     if (typeof val === "string") return val;
     if (typeof val === "object") {
