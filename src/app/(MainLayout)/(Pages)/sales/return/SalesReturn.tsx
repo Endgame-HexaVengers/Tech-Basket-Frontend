@@ -19,8 +19,12 @@ import {
   Package,
 } from "lucide-react";
 import toast from "react-hot-toast";
+<<<<<<< Updated upstream
 import { Sale } from "@/types/sale";
 import type { SalesReturn, SalesReturnSettlementType } from "@/types/sale";
+=======
+import type { Sale, SalesReturn, SalesReturnSettlementType } from "@/types/sale";
+>>>>>>> Stashed changes
 import SalesCreditNoteModal from "@/components/SalesSection/SalesCreditNoteModal";
 
 type ReturnStats = {

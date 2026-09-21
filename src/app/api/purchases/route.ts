@@ -62,7 +62,11 @@ export async function GET(request: NextRequest) {
       if (matched.length > 0) {
         const totalRefund = matched.reduce(
           (sum: number, r: any) => sum + (Number(r.totalRefundAmount) || 0),
+<<<<<<< Updated upstream
           0,
+=======
+          0
+>>>>>>> Stashed changes
         );
         const origGrand = Number(doc.originalGrandTotal ?? doc.grandTotal) || 0;
         const origSub = Number(doc.originalSubTotal ?? doc.subTotal) || 0;
