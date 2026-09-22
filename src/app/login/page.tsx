@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Form, Button, TextField, Label, InputGroup, FieldError } from "@heroui/react";
 import { Eye, EyeSlash } from "@gravity-ui/icons";
@@ -22,10 +22,69 @@ const BRANCHES = [
 export default function LoginPage() {
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isVerifying, setIsVerifying] = useState<boolean>(false);
+    const [verificationCode, setVerificationCode] = useState("");
+    const [pendingLogin, setPendingLogin] = useState<{ email: string; password: string } | null>(null);
+    const [countdown, setCountdown] = useState(120); // 2 minutes
+    const [isResendLoading, setIsResendLoading] = useState(false);
+    const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const router = useRouter();
+
+    const startCountdown = useCallback(() => {
+        if (countdownRef.current) clearInterval(countdownRef.current);
+        setCountdown(120);
+        countdownRef.current = setInterval(() => {
+            setCountdown((prev) => {
+                if (prev <= 1) {
+                    clearInterval(countdownRef.current!);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    }, []);
+
+    useEffect(() => {
+        if (isVerifying) startCountdown();
+        return () => { if (countdownRef.current) clearInterval(countdownRef.current); };
+    }, [isVerifying, startCountdown]);
+
+    const sendOtp = async (email: string, password: string): Promise<{ ok: boolean; email?: string }> => {
+        const response = await fetch("/api/auth/login-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            toast.error(result.error || "Invalid email or password.");
+            return { ok: false };
+        }
+        return { ok: true, email: result.email || email };
+    };
+
+    const handleResend = async () => {
+        if (!pendingLogin || countdown > 0 || isResendLoading) return;
+        setIsResendLoading(true);
+        try {
+            const res = await sendOtp(pendingLogin.email, pendingLogin.password);
+            if (res.ok) {
+                setVerificationCode("");
+                startCountdown();
+                toast.success("A new verification code was sent to your email.");
+            }
+        } catch {
+            toast.error("Failed to resend. Please try again.");
+        } finally {
+            setIsResendLoading(false);
+        }
+    };
+
+    const formatCountdown = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (isLoading) return;
         setIsLoading(true);
 
         const formData = new FormData(e.currentTarget);
@@ -37,7 +96,7 @@ export default function LoginPage() {
 
         const email = (userData.userIdOrEmail || "").trim();
         const branch = (userData.branch || "").trim();
-        const password = (userData.password || "").trim();
+        const password = userData.password || "";
 
         if (!email || !password || !branch) {
             toast.error("Please fill in your email, password, and branch.");
@@ -46,18 +105,12 @@ export default function LoginPage() {
         }
 
         try {
-            const { data, error } = await authClient.signIn.email({
-                email,
-                password,
-                rememberMe: true,
-                callbackURL: "/",
-            });
-
-            if (error) {
-                toast.error(error.message || "An error occurred during login.");
-            } else if (data) {
-                toast.success("Successfully logged in!");
-                router.push("/");
+            const res = await sendOtp(email, password);
+            if (res.ok) {
+                const targetEmail = res.email || email;
+                setPendingLogin({ email: targetEmail, password });
+                setIsVerifying(true);
+                toast.success("A verification code was sent to your email.");
             }
         } catch {
             toast.error("Something went wrong. Please try again.");
@@ -162,6 +215,122 @@ export default function LoginPage() {
                             </p>
                         </div>
 
+                        {isVerifying && pendingLogin ? (
+                            <Form
+                                className="flex flex-col gap-4"
+                                onSubmit={async (event) => {
+                                    event.preventDefault();
+                                    setIsLoading(true);
+                                    try {
+                                        const response = await fetch("/api/auth/verify-login-otp", {
+                                            method: "POST",
+                                            headers: { "Content-Type": "application/json" },
+                                            body: JSON.stringify({ email: pendingLogin.email, otp: verificationCode }),
+                                        });
+                                        const result = await response.json();
+                                        if (!response.ok) {
+                                            toast.error(result.error || "Invalid verification code.");
+                                            return;
+                                        }
+
+                                        const { data, error } = await authClient.signIn.email({
+                                            email: pendingLogin.email,
+                                            password: pendingLogin.password,
+                                            rememberMe: true,
+                                            callbackURL: "/",
+                                        });
+                                        if (error || !data) {
+                                            toast.error(error?.message || "An error occurred during login.");
+                                        } else {
+                                            toast.success("Successfully logged in!");
+                                            router.push("/");
+                                        }
+                                    } catch {
+                                        toast.error("Something went wrong. Please try again.");
+                                    } finally {
+                                        setIsLoading(false);
+                                    }
+                                }}
+                            >
+                                {/* Header */}
+                                <div className="text-center mb-4">
+                                    <div className="flex items-center justify-center mb-3">
+                                        <div className="h-14 w-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center shadow-sm">
+                                            <svg className="w-7 h-7 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-900">Verify your email</h3>
+                                    <p className="text-sm text-gray-500 mt-1">
+                                        Enter the 6-digit code sent to{" "}
+                                        <span className="font-medium text-gray-800">{pendingLogin.email}</span>
+                                    </p>
+                                </div>
+
+                                {/* OTP Input */}
+                                <TextField isRequired name="verificationCode" className="w-full">
+                                    <Label className="text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1 block">Verification Code</Label>
+                                    <InputGroup className="border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-all bg-gray-50/50">
+                                        <InputGroup.Input
+                                            name="verificationCode"
+                                            inputMode="numeric"
+                                            maxLength={6}
+                                            value={verificationCode}
+                                            onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, ""))}
+                                            placeholder="Enter 6-digit code"
+                                            className="w-full py-2.5 px-3 text-sm text-gray-800 bg-transparent outline-none tracking-[0.35em] font-mono"
+                                        />
+                                    </InputGroup>
+                                </TextField>
+
+                                {/* Countdown + Resend */}
+                                <div className="flex items-center justify-between px-1 mt-1">
+                                    <span className="text-xs text-gray-500">
+                                        {countdown > 0 ? (
+                                            <>Code expires in{" "}
+                                                <span className={`font-semibold tabular-nums ${countdown <= 30 ? "text-red-500" : "text-indigo-600"}`}>
+                                                    {formatCountdown(countdown)}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <span className="text-red-500 font-medium">Code expired</span>
+                                        )}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={handleResend}
+                                        disabled={countdown > 0 || isResendLoading}
+                                        className={`text-xs font-semibold transition-colors ${
+                                            countdown > 0 || isResendLoading
+                                                ? "text-gray-300 cursor-not-allowed"
+                                                : "text-indigo-600 hover:text-indigo-800 cursor-pointer hover:underline"
+                                        }`}
+                                    >
+                                        {isResendLoading ? "Sending..." : "Resend code"}
+                                    </button>
+                                </div>
+
+                                {/* Verify Button */}
+                                <Button
+                                    type="submit"
+                                    isDisabled={isLoading || verificationCode.length !== 6}
+                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-3 mt-2 font-semibold shadow-lg shadow-indigo-600/20 transition-all"
+                                >
+                                    {isLoading ? "Verifying..." : "Verify & Sign In"}
+                                </Button>
+
+                                {/* Back to login */}
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    onPress={() => { setIsVerifying(false); setPendingLogin(null); setVerificationCode(""); }}
+                                    className="text-indigo-600 text-sm"
+                                >
+                                    ← Back to login
+                                </Button>
+                            </Form>
+                        ) : (
                         <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
                             {/* COMPANY NAME */}
                             <TextField isRequired name="companyName" className="w-full">
@@ -317,6 +486,7 @@ export default function LoginPage() {
                                 </Link>
                             </div>
                         </Form>
+                        )}
                     </div>
 
                     {/* FOOTER LINKS */}

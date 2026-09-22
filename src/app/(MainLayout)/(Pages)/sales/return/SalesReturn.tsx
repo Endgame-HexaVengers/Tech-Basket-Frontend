@@ -1,26 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Check,
-  ChevronDown,
-  FileText,
-  Phone,
-  Plus,
-  Search,
-  X,
-  Printer,
-  RotateCcw,
-  CheckCircle2,
-  AlertCircle,
-  Building2,
-  Calendar,
-  User,
-  Package,
-} from "lucide-react";
+import {  Search, X, Printer, RotateCcw,} from "lucide-react";
 import toast from "react-hot-toast";
-import { Sale } from "@/types/sale";
-import type { SalesReturn, SalesReturnSettlementType } from "@/types/sale";
+import type { Sale, SalesReturn, SalesReturnSettlementType } from "@/types/sale";
 import SalesCreditNoteModal from "@/components/SalesSection/SalesCreditNoteModal";
 
 type ReturnStats = {
@@ -41,6 +24,7 @@ const RETURN_REASONS = [
 export default function SalesReturn() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loadingSales, setLoadingSales] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [eligibleSales, setEligibleSales] = useState<Sale[]>([]);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
@@ -100,6 +84,7 @@ export default function SalesReturn() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchReturnHistory();
   }, []);
 

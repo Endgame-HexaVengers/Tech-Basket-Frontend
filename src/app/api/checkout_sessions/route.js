@@ -1,8 +1,16 @@
+<<<<<<< Updated upstream
 import { NextResponse } from 'next/server';
 
 import { getStripe, PRICE_IDS } from '../../../lib/stripe';
 import { auth } from '../../../lib/auth';
 
+=======
+import { NextResponse } from 'next/server'
+
+import { PRICE_IDS, getStripe } from '../../../lib/stripe'
+import { auth } from '../../../lib/auth'
+
+>>>>>>> Stashed changes
 export async function POST(request) {
   try {
     const stripe = getStripe();
@@ -73,6 +81,7 @@ export async function POST(request) {
     // Current website URL
     const origin = new URL(request.url).origin;
 
+<<<<<<< Updated upstream
     // Create Stripe Checkout Session
     const session =
       await stripe.checkout.sessions.create({
@@ -107,6 +116,11 @@ export async function POST(request) {
     // Make sure Stripe returned a URL
     if (!session.url) {
       return NextResponse.json(
+=======
+    const stripe = getStripe()
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+>>>>>>> Stashed changes
         {
           error:
             'Stripe did not return a checkout URL.',
