@@ -41,7 +41,7 @@ const RegisterPage = () => {
     try {
       const { error } = await signUp.email({
         name: userData.name,
-        email: userData.email,
+        email: userData.email.trim().toLowerCase(),
         password: userData.password,
         companyName: "N/A",
         branch: "Main Branch",

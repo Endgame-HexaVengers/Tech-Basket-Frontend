@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
@@ -231,19 +232,14 @@ export default function BranchesPageClient() {
       }
     } catch (err: unknown) {
       console.error(err);
-      toast.error(err.message || "Failed to save branch");
+      toast.error(err instanceof Error ? err.message : "Failed to save branch");
       throw err;
     }
   };
 
   const handleToggleStatus = async (branch: Branch) => {
     const targetId = branch.id || branch._id;
-<<<<<<< Updated upstream
-    const newStatus: Branch["status"] =
-      branch.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-=======
     const newStatus: Branch["status"] = branch.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
->>>>>>> Stashed changes
 
     try {
       const res = await fetch(`/api/branches/${targetId}`, {
@@ -265,6 +261,7 @@ export default function BranchesPageClient() {
       });
 
       toast.success(`Branch is now ${newStatus}`);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err: unknown) {
       toast.error("Could not update status");
     }
@@ -301,6 +298,7 @@ export default function BranchesPageClient() {
         });
 
         toast.success("Branch deleted successfully");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err: unknown) {
         toast.error("Could not delete branch");
       }
