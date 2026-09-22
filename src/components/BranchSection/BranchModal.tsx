@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { X, Building2, MapPin, User, Phone, Mail, Clock } from "lucide-react";
-import { Branch, BranchType, BranchStatus } from "@/types/branch";
+import { Branch, BranchType, } from "@/types/branch";
 
 interface BranchModalProps {
   isOpen: boolean;
@@ -61,6 +61,7 @@ export default function BranchModal({
 
   useEffect(() => {
     if (initialData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData(initialData);
     } else {
       setFormData({
@@ -86,6 +87,7 @@ export default function BranchModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!formData.name?.trim()) {
       setError("Branch name is required.");
       return;
@@ -94,19 +96,28 @@ export default function BranchModal({
     try {
       setIsSubmitting(true);
       setError("");
+
       await onSave({
         ...formData,
         name: formData.name.trim(),
         location: formData.location?.trim() || "Dhaka",
         manager: formData.manager?.trim() || "Not Assigned",
       });
+
       onClose();
     } catch (err: unknown) {
-      setError(err?.message || "Failed to save branch. Please try again.");
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Failed to save branch. Please try again.";
+
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 overflow-y-auto">
@@ -352,8 +363,8 @@ export default function BranchModal({
                   ? "Saving Changes..."
                   : "Adding Branch..."
                 : isEditing
-                ? "Update Branch"
-                : "Add Branch"}
+                  ? "Update Branch"
+                  : "Add Branch"}
             </button>
           </div>
         </form>

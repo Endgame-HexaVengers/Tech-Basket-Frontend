@@ -64,6 +64,7 @@ export default function SuppliersPageClient() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchSuppliers();
   }, [fetchSuppliers]);
 
@@ -194,7 +195,7 @@ export default function SuppliersPageClient() {
       await fetchSuppliers();
     } catch (err: unknown) {
       console.error("Save supplier error:", err);
-      toast.error(err.message || "Something went wrong while saving.", { id: toastId });
+      toast.error("Something went wrong while saving.", { id: toastId });
     }
   };
 
