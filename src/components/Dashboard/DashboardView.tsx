@@ -5,18 +5,14 @@ import { useTabs } from "@/context/TabContext";
 import {
   FiAlertTriangle,
   FiArrowUpRight,
-  FiBox,
   FiCheckCircle,
-  FiChevronDown,
   FiClock,
   FiCode,
   FiDatabase,
-  FiHeadphones,
   FiPlus,
   FiRefreshCw,
   FiShoppingBag,
   FiTag,
-  FiUsers,
 } from "react-icons/fi";
 
 const chartBars = [42, 54, 49, 63, 52, 70, 62, 76, 68, 81, 73, 92];
@@ -29,14 +25,14 @@ export default function DashboardView() {
     openTab({ path, title, icon: "•" });
 
   return (
-    <div className="min-h-screen space-y-3 bg-[#f7f9fc] pb-8 text-slate-900">
+    <div className="min-h-screen space-y-3  pb-8 text-slate-900">
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
             Company control center
           </p>
           <h1 className="mt-0.5 text-xl font-bold tracking-tight">
-            Good morning, TechBasket
+            Good morning, <span className="text-indigo-600">TechBasket</span>
           </h1>
         </div>
         <div className="flex flex-wrap gap-2">

@@ -19,7 +19,7 @@ import {
   FcSettings,
 } from "react-icons/fc";
 
-import { FiCpu, FiRefreshCcw, FiSearch, FiTruck, FiUsers } from "react-icons/fi";
+import { FiCpu, FiMessageSquare, FiRefreshCcw, FiSearch, FiTruck, FiUsers } from "react-icons/fi";
 import { IoDiamondSharp } from "react-icons/io5";
 import { GiDropletSplash } from "react-icons/gi";
 import { LuChartColumnDecreasing } from "react-icons/lu";
@@ -249,6 +249,14 @@ const DefaultSidebar = () => {
           href="/ai-insights"
           label="AI Insights"
           icon={<FiCpu className="text-indigo-500" />}
+          activeTab={activeTab}
+          openTab={openTab}
+        />
+
+        <SidebarLink
+          href="/ai-chat"
+          label="AI Chat"
+          icon={<FiMessageSquare className="text-cyan-600" />}
           activeTab={activeTab}
           openTab={openTab}
         />
