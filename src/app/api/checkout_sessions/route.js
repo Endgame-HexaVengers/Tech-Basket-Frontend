@@ -1,30 +1,24 @@
-<<<<<<< Updated upstream
-import { NextResponse } from 'next/server';
 
-import { getStripe, PRICE_IDS } from '../../../lib/stripe';
-import { auth } from '../../../lib/auth';
+import { NextResponse } from "next/server";
 
-=======
-import { NextResponse } from 'next/server'
+import { PRICE_IDS, getStripe } from "../../../lib/stripe";
+import { auth } from "../../../lib/auth";
 
-import { PRICE_IDS, getStripe } from '../../../lib/stripe'
-import { auth } from '../../../lib/auth'
-
->>>>>>> Stashed changes
 export async function POST(request) {
   try {
-    const stripe = getStripe();
-
+    // Check Stripe configuration
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json(
         {
-          error: 'Stripe is not configured on the server.',
+          error: "Stripe is not configured on the server.",
         },
         {
           status: 500,
         }
       );
     }
+
+    const stripe = getStripe();
 
     // Get logged-in user
     const userSession = await auth.api.getSession({
@@ -36,8 +30,7 @@ export async function POST(request) {
     if (!customerEmail) {
       return NextResponse.json(
         {
-          error:
-            'You must be logged in before starting checkout.',
+          error: "You must be logged in before starting checkout.",
         },
         {
           status: 401,
@@ -48,20 +41,22 @@ export async function POST(request) {
     // Get form data
     const formData = await request.formData();
 
-    const plan = String(formData.get('plan') || '');
+    const plan = String(formData.get("plan") || "");
+
     const billingCycle = String(
-      formData.get('billingCycle') || 'monthly'
+      formData.get("billingCycle") || "monthly"
     );
 
     // Custom plan uses Agency_Reseller prices
     const priceKey =
-      plan === 'custom'
-        ? 'Agency_Reseller'
+      plan === "custom"
+        ? "Agency_Reseller"
         : plan;
 
     // Example:
     // starter + monthly
     // => starter_monthly
+
     const priceIdKey = `${priceKey}_${billingCycle}`;
 
     const price = PRICE_IDS[priceIdKey];
@@ -69,8 +64,7 @@ export async function POST(request) {
     if (!price) {
       return NextResponse.json(
         {
-          error:
-            'This plan is not configured for checkout.',
+          error: "This plan is not configured for checkout.",
         },
         {
           status: 400,
@@ -81,49 +75,35 @@ export async function POST(request) {
     // Current website URL
     const origin = new URL(request.url).origin;
 
-<<<<<<< Updated upstream
     // Create Stripe Checkout Session
-    const session =
-      await stripe.checkout.sessions.create({
-        line_items: [
-          {
-            price,
-            quantity: 1,
-          },
-        ],
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
 
-        mode: 'subscription',
+      customer_email: customerEmail,
 
-        // IMPORTANT
-        // Stripe automatically replaces
-        // {CHECKOUT_SESSION_ID}
-        // with the real checkout session ID.
-        success_url:
-          `${origin}/admin/Plans/success` +
-          `?session_id={CHECKOUT_SESSION_ID}`,
+      line_items: [
+        {
+          price: price,
+          quantity: 1,
+        },
+      ],
 
-        // If user cancels payment
-        cancel_url:
-          `${origin}/admin/Plans`,
+      success_url: `${origin}/admin/Plans/success?session_id={CHECKOUT_SESSION_ID}`,
 
-        // Logged-in user's email
-        customer_email: customerEmail,
+      cancel_url: `${origin}/admin/Plans`,
 
-        integration_identifier:
-          'tech_basket_checkout',
-      });
+      metadata: {
+        plan: priceKey,
+        billingCycle: billingCycle,
+        userEmail: customerEmail,
+      },
+    });
 
-    // Make sure Stripe returned a URL
+    // Check checkout URL
     if (!session.url) {
       return NextResponse.json(
-=======
-    const stripe = getStripe()
-    const session = await stripe.checkout.sessions.create({
-      line_items: [
->>>>>>> Stashed changes
         {
-          error:
-            'Stripe did not return a checkout URL.',
+          error: "Stripe did not return a checkout URL.",
         },
         {
           status: 500,
@@ -132,22 +112,16 @@ export async function POST(request) {
     }
 
     // Redirect user to Stripe Checkout
-    return NextResponse.redirect(
-      session.url,
-      303
-    );
+    return NextResponse.redirect(session.url, 303);
   } catch (err) {
-    console.error(
-      'Stripe checkout error:',
-      err
-    );
+    console.error("Stripe checkout error:", err);
 
     return NextResponse.json(
       {
         error:
           err instanceof Error
             ? err.message
-            : 'Something went wrong while creating checkout session.',
+            : "Something went wrong while creating checkout session.",
       },
       {
         status:
