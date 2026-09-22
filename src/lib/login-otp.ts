@@ -185,15 +185,27 @@ export async function sendLoginOtp(email: string) {
   // ২. Resend API দিয়ে পাঠানোর চেষ্টা (fallback)
   if (hasResend) {
     try {
-      const { Resend } = await import("resend");
-      const resend = new Resend(resendApiKey);
-      const { error } = await resend.emails.send({
-        from: `TechBasket <${resendFrom}>`,
-        to: normalizedEmail,
-        subject: "Your TechBasket Login Verification Code",
-        html: emailHtml,
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: `TechBasket <${resendFrom}>`,
+          to: [normalizedEmail],
+          subject: "Your TechBasket Login Verification Code",
+          html: emailHtml,
+        }),
       });
-      if (error) throw error;
+
+      if (!response.ok) {
+        const details = await response.text();
+        throw new Error(
+          `Resend API returned ${response.status}: ${details || "No error details"}`,
+        );
+      }
+
       console.log(`✅ OTP sent via Resend to ${normalizedEmail}`);
       return;
     } catch (err) {
@@ -228,7 +240,10 @@ export async function sendLoginOtp(email: string) {
       console.log(`✅ OTP sent via Brevo to ${normalizedEmail}`);
       return;
     } catch (err) {
-      console.error("Brevo OTP send failed", err);
+      console.error(
+        "Brevo OTP send failed. Install dependencies with `npm install` if nodemailer is missing.",
+        err,
+      );
     }
   }
 
