@@ -102,7 +102,7 @@ export default function BranchModal({
       });
       onClose();
     } catch (err: unknown) {
-      setError(err?.message || "Failed to save branch. Please try again.");
+      setError((err as Error)?.message || "Failed to save branch. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

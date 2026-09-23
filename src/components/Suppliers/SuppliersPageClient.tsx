@@ -194,7 +194,7 @@ export default function SuppliersPageClient() {
       await fetchSuppliers();
     } catch (err: unknown) {
       console.error("Save supplier error:", err);
-      toast.error(err.message || "Something went wrong while saving.", { id: toastId });
+      toast.error((err as Error)?.message || "Something went wrong while saving.", { id: toastId });
     }
   };
 

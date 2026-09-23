@@ -3,23 +3,13 @@ import 'server-only'
 import Stripe from 'stripe'
 
 export function getStripe() {
-<<<<<<< Updated upstream
-    const secretKey = process.env.STRIPE_SECRET_KEY
-
-    if (!secretKey) {
-        throw new Error('STRIPE_SECRET_KEY is not configured')
-    }
-
-    return new Stripe(secretKey)
-=======
   const secretKey = process.env.STRIPE_SECRET_KEY
 
   if (!secretKey) {
-    throw new Error('Stripe is not configured on the server.')
+    throw new Error('STRIPE_SECRET_KEY is not configured')
   }
 
   return new Stripe(secretKey)
->>>>>>> Stashed changes
 }
 
 export const PRICE_IDS = {

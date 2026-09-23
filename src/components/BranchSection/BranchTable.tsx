@@ -36,8 +36,9 @@ export default function BranchTable({
     if (!val) return fallback;
     if (typeof val === "string") return val;
     if (typeof val === "object") {
+      const obj = val as any;
       return (
-        [val.street || val.address || "", val.city || val.state || "", val.zip || ""]
+        [obj.street || obj.address || "", obj.city || obj.state || "", obj.zip || ""]
           .filter(Boolean)
           .join(", ") || fallback
       );

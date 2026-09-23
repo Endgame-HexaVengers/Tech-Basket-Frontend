@@ -3,13 +3,10 @@ dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 import { MongoClient } from "mongodb";
 
-const uri =
-  process.env.MONGODB_URI ||
-  process.env.MONGODB_URL ||
-  "mongodb+srv://TechBasket:DGSiflfSApQP7zPw@cluster0.3kbubif.mongodb.net/TechBasket?appName=Cluster0";
+const uri = process.env.MONGODB_URI || process.env.MONGODB_URL;
 
 if (!uri) {
-  throw new Error("MONGODB_URI or MONGODB_URL is not configured.");
+  throw new Error("MONGODB_URI or MONGODB_URL environment variable is not configured.");
 }
 
 const globalForMongo = globalThis as typeof globalThis & {
