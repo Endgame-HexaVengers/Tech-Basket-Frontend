@@ -105,7 +105,7 @@ export default function SalesApproval() {
   };
 
   return (
-    <section className="min-h-[calc(100vh-72px)] bg-[#f8fafc] px-4 py-10 text-[#1f2937] sm:px-8 lg:px-10">
+    <section className="min-h-[calc(100vh-72px)] px-4 py-10 text-[#1f2937] sm:px-8 lg:px-10">
       <div className="mx-0 flex min-h-170 max-w-none flex-col">
         <header className="mb-6">
           <h1 className="text-[28px] font-extrabold tracking-[-0.04em] text-[#20262d]">
