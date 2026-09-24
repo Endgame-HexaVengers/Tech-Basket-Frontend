@@ -369,7 +369,7 @@ export default function NewSaleEntry() {
   };
 
   return (
-    <section className="w-full min-h-[calc(100vh-64px)] bg-[#f6f8fa] px-4 py-6 text-slate-900 sm:px-6 lg:px-8">
+    <section className="w-full min-h-[calc(100vh-64px)] px-4 py-6 text-slate-900 sm:px-6 lg:px-8">
       <div className="w-full space-y-4">
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200/80 pb-3">

@@ -105,7 +105,7 @@ const AddProductApproval = () => {
   };
 
   return (
-    <main className="min-h-[calc(100vh-108px)] bg-[#f8fafc] px-5 py-5 text-[#172235] sm:px-6 lg:px-7">
+    <main className="min-h-[calc(100vh-108px)] px-5 py-5 text-[#172235] sm:px-6 lg:px-7">
       <div className="mx-auto max-w-362.5">
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>

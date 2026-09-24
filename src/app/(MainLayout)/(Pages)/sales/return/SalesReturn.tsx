@@ -224,7 +224,7 @@ export default function SalesReturn() {
   };
 
   return (
-    <section className="min-h-[calc(100vh-72px)] w-full bg-[#f8fafc] px-4 py-6 text-slate-900 sm:px-6 lg:px-8">
+    <section className="min-h-[calc(100vh-72px)] w-full px-4 py-6 text-slate-900 sm:px-6 lg:px-8">
       <div className="w-full space-y-4">
         {/* Header */}
         <header className="border-b border-slate-200/80 pb-3">

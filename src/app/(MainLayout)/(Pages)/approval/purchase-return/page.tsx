@@ -18,7 +18,7 @@ export default function PurchaseReturnApprovalPage() {
   };
 
   return (
-    <section className="flex min-h-[calc(100vh-72px)] w-full flex-col bg-[#f8fafc] px-4 py-8 text-[#20262d] sm:px-8 lg:px-12">
+    <section className="flex min-h-[calc(100vh-72px)] w-full flex-col px-4 py-8 text-[#20262d] sm:px-8 lg:px-12">
       <div className="mx-auto flex w-full max-w-360 flex-1 flex-col">
         <header className="mb-6">
           <h1 className="text-2xl font-extrabold tracking-[-0.04em] text-[#17202a]">PURCHASE RETURN APPROVAL</h1>
